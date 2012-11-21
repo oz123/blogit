@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block page_title %} {{ entry.title }} {% endblock %}
+{% block header %}
+<div class="published"><a href="oz123.github.com">{{ entry.author }}</a> &ndash; {{ entry.published_html }}</div>
+<h1>{{ entry.title }}</h1>
+{% endblock %}
+{% block content %}
+<div class="body">
+  {{ entry.body_html }}
+</div>
+<div class="meta">
+  {% if entry.kind == 'link' %}
+  <div class="link-url"><a href="{{ entry.url }}">continue reading on {{ entry.domain_name }}</a></div>
+  {% endif %}
+</div>
+<div class="tags">
+  <p>This entry was tagged 
+  {% for tag in entry.tags %}
+  <a class="tag" href="oz123.github.com/{{ tag.slug }}"><span>{{ tag.name }}</span></a>{% if not loop.last %}, {% endif %}
+  {% endfor %}
+</div>
+<div id="underpost">
+  <h3>Discussions/Feedback.</h3>
+  {% if entry.discussions_link %}
+    <p>If you wish to, you can discuss/mock/upvote/downvote at <a href="{{ entry.discussions_link }}">Hacker News</a>.</p>
+  {% endif %}
+  <p>I do not accept comments on this blog. Managing the spam is a headache and I am better off without it. 
+  However, I do welcome your feedback - good or bad via email at <code>nahum.oz@gmail.com</code>. 
+  Specifically, I would be grateful for your feedback on errors, omissions, broken links, etc. </p>
+
+  {% if entry.credits %}
+    <h3>Credits.</h3>
+    <p>{{ entry.credits_html }}</p>
+  {% endif %}
+</div>
+<!--creadet by entry.html-->
+{% endblock %}

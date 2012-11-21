@@ -1,0 +1,11 @@
+{% extends "entry_index.html" %}
+{% block page_title %}tag: {{tag.name}} {% endblock %}
+{% block head_feed_link %}/tags/{{tag.slug}}/atom.xml{% endblock %}
+{% block head_feed_title %}tagged: {{tag.name}} &raquo; mirnazim.org {% endblock %}
+{% block header %}
+{% if tag.name %}
+<h1 class="tag_name"> 
+tag: {{ tag.name }}<sup>[<a class="tag_feed_icon" title="Atom feed for {{tag.name}} tag" href="/tags/{{ tag.slug }}/atom.xml">atom feeds</a>]</sup>
+</h1>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,34 @@
+<html>
+<head>
+  <title> Archive &raquo; oz123.github.com</title>
+  <link rel="stylesheet" type="text/css" href="../media/css/pygments_style.css" media="screen" />
+  <link rel="stylesheet" type="text/css" href="../media/css/site.css" media="screen" />
+<style>
+body.loc
+{
+margin-top:50px;
+}
+p.margin
+{
+margin-left:150px;
+margin-top:-20px;
+}
+h2.loc
+{
+margin-left:150px; 
+margin-right:800px;  
+}
+</style>
+<body class=loc>
+<h2 class=loc> This is an archive of everything posted here ...</h2>
+{% block content %}
+  {% for entry in entries %}
+    <p class="margin">{{ entry.published_html }} <a title="{{ permalink }}" href="{{entry.permalink}}"> {{ entry.title }}</a> </p>
+  {% endfor %}
+{% endblock %}
+
+
+{{side_bar}}
+
+</body>
+</html>

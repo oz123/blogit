@@ -1,0 +1,27 @@
+<html>
+<head>
+  <meta name="google-site-verification" content="7kNes4_ZZZxK2SmNwu1AB1fFQtxf_ZyFxSJ_4su_LDU" />
+  <title>{% block page_title %} Home {% endblock %} &raquo; oz123.github.com</title>
+  <link rel="stylesheet" type="text/css" href="/media/css/pygments_style.css" media="screen" /> 
+  <link rel="stylesheet" type="text/css" href="/media/css/site.css" media="screen" /> 
+  {% block css %}{% endblock %}
+  <link href="{% block head_feed_link %}/atom.xml{% endblock %}" type="application/atom+xml" rel="alternate" title="{% block head_feed_title %}Oz's github &raquo; Oz's Weblog{% endblock %}" /> 
+<link rel="stylesheet" type="text/css" media="screen" href="http://www.devslide.com/public/labs/browser-detection/browser-detection.css" />
+</head>
+<body>
+<div id="page" class="loading">
+  <div id="header">
+    {% block header %}
+    {% endblock %}
+  </div>
+  <div id="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+  <div id="footer">
+    <p>&copy; Oz Nahum Tiram 2012. Some Rights Reserved</p>
+  </div>
+</div>
+{{side_bar}}
+</body>
+</html>

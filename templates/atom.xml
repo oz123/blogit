@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<title>Oz's Blog</title>
+<subtitle>Oz's weblog</subtitle>
+<link href="http://oz123.github.com/atom.xml" rel="self" />
+<link href="http://oz123.github.com/" />
+<id>http://oz123.github.com/atom.xml</id>
+<updated>{{ last_build }}</updated>
+<author>
+  <name>Oz Nahum Tiram</name>
+  <email>nahumoz@gmail.com</email>
+</author>
+{% for entry in entries %}
+<entry>
+  <title>{{ entry.title }}</title>
+  <link href="{{ entry.permalink }}" />
+  <id>{{ entry.destination }}</id>
+  <content type="xhtml">
+    <div xmlns="http://www.w3.org/1999/xhtml">{{ entry.summary_atom }}</div>
+  </content>
+  </entry>
+{% endfor %}
+</feed>
