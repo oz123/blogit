@@ -47,8 +47,9 @@ import markdown2
 import argparse
 import sys
 from distutils import dir_util
-
+import shutil
 import pdb
+
 CONFIG = {
     'content_root': 'content', # where the markdown files are
     'output_to': 'oz123.github.com',
@@ -428,14 +429,21 @@ def preview(PREVIEW_ADDR = '127.0.1.1',PREVIEW_PORT = 11000):
 def publish(GITDIRECTORY="oz123.github.com"):
     pass
     
-
+def clean(GITDIRECTORY="oz123.github.com"):
+    directoriestoclean=["writings", "notes", "links", "tags", "archive"]
+    os.chdir(GITDIRECTORY)
+    for directory in directoriestoclean:
+        shutil.rmtree(directory) 
+        
+        
 if __name__== '__main__':
     parser = argparse.ArgumentParser(description='blogit - a tool blog on github.')
     parser.add_argument('-b','--build', action="store_true",
     help='convert the markdown files to HTML')
     parser.add_argument('-p','--preview', action="store_true",
     help='Launch HTTP server to preview the website')
-    
+    parser.add_argument('-c','--clean', action="store_true",
+    help='cleanoutputfiles')
     
     args = parser.parse_args()
 
@@ -443,6 +451,8 @@ if __name__== '__main__':
         parser.print_help()
         sys.exit()
     #import pdb; pdb.set_trace()
+    if args.clean:
+        clean()
     if args.build:
         #pdb.set_trace()
         build()
