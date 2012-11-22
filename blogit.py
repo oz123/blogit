@@ -23,11 +23,18 @@
 """
 Summary: |
    some summary ...
+   
+Your post
 """
 
 """
-Everything the Header can't have ":" in it, you can't have title
-with ":" it makes markdown breark!
+Everything the Header can't have ":" or "..." in it, you can't have title
+with ":" it makes markdown break!
+"""
+
+"""
+The content directory can contain only mardown or txt files, no images
+allowed!
 """
 import os
 import re
