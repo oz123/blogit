@@ -18,6 +18,17 @@
 # 2. If anything goes wrong, sue the "The Empire".
 
 
+# Note about Summary
+# has to be 1 line, no '\n' allowed!
+"""
+Summary: |
+   some summary ...
+"""
+
+"""
+Everything the Header can't have ":" in it, you can't have title
+with ":" it makes markdown breark!
+"""
 import os
 import re
 import datetime
@@ -348,8 +359,14 @@ def build():
     entries = list()
     tags = dict()
     for root, dirs, files in os.walk(CONFIG['content_root']):
-        for file in files:
-            entry = Entry(os.path.join(root, file))
+        for fileName in files:
+            try:
+                entry = Entry(os.path.join(root, fileName))
+            except Exception, e:
+                print "Found some problem in: ", fileName
+                print e
+                raw_input("Please correct")
+                sys.exit()
             if entry.render():
                 entries.append(entry)
                 for tag in entry.tags:
