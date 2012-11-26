@@ -43,12 +43,15 @@ import yaml # in debian python-yaml
 from StringIO import StringIO
 import codecs
 from jinja2 import Environment, FileSystemLoader # in debian python-jinja2
-import markdown2
+try:
+    import markdown2
+except ImportError:
+    import markdown as markdown2
+
 import argparse
 import sys
 from distutils import dir_util
 import shutil
-import pdb
 
 CONFIG = {
     'content_root': 'content', # where the markdown files are
@@ -79,7 +82,19 @@ GLOBAL_TEMPLATE_CONTEXT = {
   <a title="Stackoverflow" href="http://stackoverflow.com/users/492620/oz123">stackoverflow</a>
   <a title="Github" href="https://github.com/oz123">github</a>
 </div>
-                """
+    """,
+    'google_analytics':"""
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36587163-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>"""
 }
 
 KINDS = {
@@ -191,7 +206,7 @@ class Entry(object):
 
     @property
     def body_html(self):
-        return markdown2.markdown(self.body, extras=['code-color'])
+        return markdown2.markdown(self.body)#, extras=['code-color'])
 
 
     @property
@@ -226,7 +241,7 @@ class Entry(object):
         body = list()
         for line in file.readlines():
             body.append(line)
-        self.body = '\n'.join(body)
+        self.body = ' '.join(body)
         file.close()
 
         if self.kind == 'link':
@@ -249,19 +264,13 @@ class Entry(object):
         except:
             pass
         context = GLOBAL_TEMPLATE_CONTEXT.copy()
-        print "context"
-        print context
-        
+
         context['entry'] = self
-        print "entry", context['entry']
         
         template = jinja_env.get_template("entry.html")
-        print "template" , template
         
-        #print dir(template)
-        #raw_input()
         html = template.render(context)
-        print "in render", self.destination
+        
         destination = codecs.open(self.destination, 'w', CONFIG['content_encoding'])
         destination.write(html)
         destination.close()
@@ -393,14 +402,12 @@ def build():
     print
     print " site wide index"
     entries = _sort_entries(entries)
-    #render_index(_sort_entries(entries))
     render_index(entries)
     print "................done"
     print " archive index"
     render_archive(entries)
     print "................done"
     print " site wide atom feeds"
-    #render_atom_feed(_sort_entries(entries))
     render_atom_feed(entries)
     print "...........done"
     print
@@ -450,11 +457,9 @@ if __name__== '__main__':
     if len(sys.argv) < 2 :
         parser.print_help()
         sys.exit()
-    #import pdb; pdb.set_trace()
     if args.clean:
         clean()
     if args.build:
-        #pdb.set_trace()
         build()
     if args.preview:
         preview()
