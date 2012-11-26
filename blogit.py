@@ -81,6 +81,18 @@ GLOBAL_TEMPLATE_CONTEXT = {
   <a title="Twitter" href="https://twitter.com/#!/OzNTiram">twitter</a>
   <a title="Stackoverflow" href="http://stackoverflow.com/users/492620/oz123">stackoverflow</a>
   <a title="Github" href="https://github.com/oz123">github</a>
+  <script type="text/javascript"><!--
+      google_ad_client = "ca-pub-2570499281263620";
+      /* new_tower_for_oz123githubcom */
+      google_ad_slot = "8107518414";
+      google_ad_width = 120;
+      google_ad_height = 600;
+      //-->
+  </script>
+  <script type="text/javascript"
+      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+  </script>
+
 </div>
     """,
     'google_analytics':"""
@@ -94,7 +106,7 @@ GLOBAL_TEMPLATE_CONTEXT = {
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
-</script>"""
+V</script>"""
 }
 
 KINDS = {
