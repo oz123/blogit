@@ -254,7 +254,7 @@ class Entry(object):
         body = list()
         for line in file.readlines():
             body.append(line)
-        self.body = ' '.join(body)
+        self.body = ''.join(body)
         file.close()
 
         if self.kind == 'link':
@@ -377,7 +377,6 @@ def render_tag_pages(tag_tree):
         file = codecs.open("%s/index.html" % destination, 'w', CONFIG['content_encoding'])
         file.write(html)
         file.close()
-        #print "    tags/%s" % (context['tag'].slug, )
         render_atom_feed(context['entries'], render_to="%s/atom.xml" % destination)
 
 
