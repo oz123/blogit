@@ -135,7 +135,7 @@ class Tag(object):
         super(Tag, self).__init__()
         self.name = name
         self.prepare()
-        self.permalink = "oz123.github.com"
+        self.permalink = GLOBAL_TEMPLATE_CONTEXT["site_url"]
 
     def prepare(self):
         _slug = self.name.lower()
@@ -209,10 +209,11 @@ class Entry(object):
 
     @property
     def atom_id(self):
-        return "tag:oz123.github.com,%s:%s" % \
+        return "tag:%s,%s:%s" % \
                 (
                     self.published.strftime("%Y-%m-%d"),
                     self.permalink,
+		    GLOBAL_TEMPLATE_CONTEXT["site_url"]
                 )
 
 
