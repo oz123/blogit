@@ -58,7 +58,7 @@ CONFIG = {
     'output_to': 'oz123.github.com',
     'templates': 'templates',
     'date_format': '%Y-%m-%d',
-    'base_url': 'oz123.github.com',
+    'base_url': 'http://oz123.github.com',
     'http_port': 3030,
     'content_encoding': 'utf-8',
 }
@@ -66,7 +66,7 @@ CONFIG = {
 GLOBAL_TEMPLATE_CONTEXT = {
     'media_base': '/media/',
     'media_url': '../media/',
-    'site_url' : 'oz123.github.com',
+    'site_url' : 'http://oz123.github.com',
     'last_build' : datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
     'twitter' : 'https://twitter.com/#!/OzNTiram',
     'stackoverflow': "http://stackoverflow.com/users/492620/oz123",
