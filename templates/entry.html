@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block page_title %} {{ entry.title }} {% endblock %}
 {% block header %}
-<div class="published"><a href="oz123.github.com">{{ entry.author }}</a> &ndash; {{ entry.published_html }}</div>
+<div class="published"><a href="{{site_url}}">{{ entry.author }}</a> &ndash; {{ entry.published_html }}</div>
 <h1>{{ entry.title }}</h1>
 {% endblock %}
 {% block content %}
@@ -16,7 +16,7 @@
 <div class="tags">
   <p>This entry was tagged 
   {% for tag in entry.tags %}
-  <a class="tag" href="oz123.github.com/{{ tag.slug }}"><span>{{ tag.name }}</span></a>{% if not loop.last %}, {% endif %}
+  <a class="tag" href="{{site_url}}/{{ tag.slug }}"><span>{{ tag.name }}</span></a>{% if not loop.last %}, {% endif %}
   {% endfor %}
 </div>
 <div id="underpost">
