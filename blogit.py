@@ -253,7 +253,7 @@ class Entry(object):
         body = list()
         for line in file.readlines():
             body.append(line)
-        self.body = ' '.join(body)
+        self.body = ''.join(body)
         file.close()
 
         if self.kind == 'link':
