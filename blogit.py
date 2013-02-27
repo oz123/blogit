@@ -469,7 +469,13 @@ def clean(GITDIRECTORY="oz123.github.com"):
     for directory in directoriestoclean:
         shutil.rmtree(directory) 
         
-        
+def dist(SOURCEDIR="/home/ozn/blogit/content/",DESTDIR="oz123.github.com/writings_raw/content/"):
+    """
+    sync raw files from SOURCE to DEST 
+    """
+    import subprocess as sp
+    sp.call(["rsync", "-av", SOURCEDIR, DESTDIR], shell=False, cwd=os.getcwd())
+    
 if __name__== '__main__':
     parser = argparse.ArgumentParser(description='blogit - a tool blog on github.')
     parser.add_argument('-b','--build', action="store_true",
@@ -477,7 +483,9 @@ if __name__== '__main__':
     parser.add_argument('-p','--preview', action="store_true",
     help='Launch HTTP server to preview the website')
     parser.add_argument('-c','--clean', action="store_true",
-    help='cleanoutputfiles')
+    help='clean output files')
+    parser.add_argument('-d','--dist', action="store_true",
+    help='sync raw files from SOURCE to DEST')
     
     args = parser.parse_args()
 
@@ -488,6 +496,8 @@ if __name__== '__main__':
         clean()
     if args.build:
         build()
+    if args.dist:
+        dist()
     if args.preview:
         preview()
     
