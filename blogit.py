@@ -3,6 +3,7 @@
 
 
 # Copyleft (C) 2010 Mir Nazim <hello@mirnazim.org>
+# Copyleft (C) 2013 Oz Nahum <nahumoz@gmail.com>
 #
 # Everyone is permitted to copy and distribute verbatim or modified
 # copies of this license document, and changing it is allowed as long
@@ -39,10 +40,10 @@ allowed!
 import os
 import re
 import datetime
-import yaml # in debian python-yaml
+import yaml  # in debian python-yaml
 from StringIO import StringIO
 import codecs
-from jinja2 import Environment, FileSystemLoader # in debian python-jinja2
+from jinja2 import Environment, FileSystemLoader  # in debian python-jinja2
 try:
     import markdown2
 except ImportError:
@@ -54,7 +55,7 @@ from distutils import dir_util
 import shutil
 
 CONFIG = {
-    'content_root': 'content', # where the markdown files are
+    'content_root': 'content',  # where the markdown files are
     'output_to': 'oz123.github.com',
     'templates': 'templates',
     'date_format': '%Y-%m-%d',
@@ -66,11 +67,11 @@ CONFIG = {
 GLOBAL_TEMPLATE_CONTEXT = {
     'media_base': '/media/',
     'media_url': '../media/',
-    'site_url' : 'http://oz123.github.com',
-    'last_build' : datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
-    'twitter' : 'https://twitter.com/#!/OzNTiram',
+    'site_url': 'http://oz123.github.com',
+    'last_build': datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
+    'twitter': 'https://twitter.com/#!/OzNTiram',
     'stackoverflow': "http://stackoverflow.com/users/492620/oz123",
-    'github' : "https://github.com/oz123",
+    'github': "https://github.com/oz123",
     'side_bar': """
 <div id="nav">
   <div><img src="/media/img/me.png"></div>
@@ -95,7 +96,7 @@ GLOBAL_TEMPLATE_CONTEXT = {
 
 </div>
     """,
-    'google_analytics':"""
+    'google_analytics': """
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-36587163-1']);
@@ -145,6 +146,7 @@ KINDS = {
 
 jinja_env = Environment(loader=FileSystemLoader(CONFIG['templates']))
 
+
 class Tag(object):
     def __init__(self, name):
         super(Tag, self).__init__()
@@ -157,6 +159,7 @@ class Tag(object):
         _slug = re.sub(r'[;;,. ]', '-', _slug)
         self.slug = _slug
 
+
 class Entry(object):
     def __init__(self, path):
         super(Entry, self).__init__()
@@ -164,31 +167,26 @@ class Entry(object):
         self.path = path
         self.prepare()
 
-
     def __str__(self):
         return self.path
 
-
     def __repr__(self):
         return self.path
-
 
     @property
     def name(self):
         return os.path.splitext(os.path.basename(self.path))[0]
 
-
     @property
     def abspath(self):
         return os.path.abspath(os.path.join(CONFIG['content_root'], self.path))
 
-
     @property
     def destination(self):
-        dest = "%s/%s/index.html" % (KINDS[self.kind]['name_plural'], self.name)
+        dest = "%s/%s/index.html" % (KINDS[
+                                     self.kind]['name_plural'], self.name)
         print dest
         return os.path.join(CONFIG['output_to'], dest)
-
 
     @property
     def title(self):
@@ -202,21 +200,18 @@ class Entry(object):
     def credits_html(self):
         return "%s" % markdown2.markdown(self.header['credits'].strip())
 
-
     @property
     def summary_atom(self):
-        summarya=markdown2.markdown(self.header['summary'].strip())
-        summarya=re.sub("<p>|</p>","",summarya)
+        summarya = markdown2.markdown(self.header['summary'].strip())
+        summarya = re.sub("<p>|</p>", "", summarya)
         more = '<a href="%s"> continue reading...</a>' % (self.permalink)
         return summarya+more
-
 
     @property
     def published_html(self):
         if self.kind in ['link', 'note', 'photo']:
             return self.header['published'].strftime("%B %d, %Y %I:%M %p")
         return self.header['published'].strftime("%B %d, %Y")
-
 
     @property
     def published_atom(self):
@@ -225,17 +220,15 @@ class Entry(object):
     @property
     def atom_id(self):
         return "tag:%s,%s:%s" % \
-                (
-                    self.published.strftime("%Y-%m-%d"),
-                    self.permalink,
-            GLOBAL_TEMPLATE_CONTEXT["site_url"]
-                )
-
+            (
+                self.published.strftime("%Y-%m-%d"),
+                self.permalink,
+                GLOBAL_TEMPLATE_CONTEXT["site_url"]
+            )
 
     @property
     def body_html(self):
-        return markdown2.markdown(self.body)#, extras=['code-color'])
-
+        return markdown2.markdown(self.body)  # , extras=['code-color'])
 
     @property
     def permalink(self):
@@ -248,14 +241,14 @@ class Entry(object):
             tags.append(Tag(t))
         return tags
 
-
     def prepare(self):
         file = codecs.open(self.abspath, 'r')
         header = ['---']
         while True:
             line = file.readline()
             line = line.rstrip()
-            if not line: break
+            if not line:
+                break
             header.append(line)
         self.header = yaml.load(StringIO('\n'.join(header)))
         for h in self.header.items():
@@ -264,7 +257,6 @@ class Entry(object):
                     setattr(self, h[0], h[1])
                 except:
                     pass
-
 
         body = list()
         for line in file.readlines():
@@ -282,7 +274,6 @@ class Entry(object):
         elif self.kind == 'writing':
             pass
 
-
     def render(self):
         if not self.header['public']:
             return False
@@ -299,25 +290,27 @@ class Entry(object):
 
         html = template.render(context)
 
-        destination = codecs.open(self.destination, 'w', CONFIG['content_encoding'])
+        destination = codecs.open(
+            self.destination, 'w', CONFIG['content_encoding'])
         destination.write(html)
         destination.close()
         return True
+
 
 class Link(Entry):
     def __init__(self, path):
         super(Link, self).__init__(path)
 
-
     @property
     def permalink(self):
-        print  "self.url", self.url
+        print "self.url", self.url
         raw_input()
         return self.url
 
 
 def entry_factory():
     pass
+
 
 def _sort_entries(entries):
     _entries = dict()
@@ -344,7 +337,8 @@ def render_index(entries):
     context['entries'] = entries[:10]
     template = jinja_env.get_template('entry_index.html')
     html = template.render(context)
-    destination = codecs.open("%s/index.html" % CONFIG['output_to'], 'w', CONFIG['content_encoding'])
+    destination = codecs.open("%s/index.html" % CONFIG[
+                              'output_to'], 'w', CONFIG['content_encoding'])
     destination.write(html)
     destination.close()
 
@@ -361,7 +355,8 @@ def render_archive(entries, render_to=None):
         render_to = "%s/archive/index.html" % CONFIG['output_to']
         dir_util.mkpath("%s/archive" % CONFIG['output_to'])
 
-    destination = codecs.open("%s/archive/index.html" % CONFIG['output_to'], 'w', CONFIG['content_encoding'])
+    destination = codecs.open("%s/archive/index.html" % CONFIG[
+                              'output_to'], 'w', CONFIG['content_encoding'])
     destination.write(html)
     destination.close()
 
@@ -377,6 +372,7 @@ def render_atom_feed(entries, render_to=None):
     destination.write(html)
     destination.close()
 
+
 def render_tag_pages(tag_tree):
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
     for t in tag_tree.items():
@@ -389,10 +385,12 @@ def render_tag_pages(tag_tree):
             pass
         template = jinja_env.get_template('tag_index.html')
         html = template.render(context)
-        file = codecs.open("%s/index.html" % destination, 'w', CONFIG['content_encoding'])
+        file = codecs.open("%s/index.html" %
+                           destination, 'w', CONFIG['content_encoding'])
         file.write(html)
         file.close()
-        render_atom_feed(context['entries'], render_to="%s/atom.xml" % destination)
+        render_atom_feed(context[
+                         'entries'], render_to="%s/atom.xml" % destination)
 
 
 def build():
@@ -414,7 +412,7 @@ def build():
             if entry.render():
                 entries.append(entry)
                 for tag in entry.tags:
-                    if not tags.has_key(tag.name):
+                    if tag.name not in tags:
                         tags[tag.name] = {
                             'tag': tag,
                             'entries': list(),
@@ -441,7 +439,7 @@ def build():
     print "All done "
 
 
-def preview(PREVIEW_ADDR = '127.0.1.1',PREVIEW_PORT = 11000):
+def preview(PREVIEW_ADDR='127.0.1.1', PREVIEW_PORT=11000):
     """
     launch an HTTP to preview the website
     """
@@ -460,36 +458,40 @@ def preview(PREVIEW_ADDR = '127.0.1.1',PREVIEW_PORT = 11000):
         print
         httpd.server_close()
 
+
 def publish(GITDIRECTORY="oz123.github.com"):
     pass
 
+
 def clean(GITDIRECTORY="oz123.github.com"):
-    directoriestoclean=["writings", "notes", "links", "tags", "archive"]
+    directoriestoclean = ["writings", "notes", "links", "tags", "archive"]
     os.chdir(GITDIRECTORY)
     for directory in directoriestoclean:
         shutil.rmtree(directory)
 
-def dist(SOURCEDIR="/home/ozn/blogit/content/",DESTDIR="oz123.github.com/writings_raw/content/"):
+
+def dist(SOURCEDIR=os.getcwd()+"/content/", DESTDIR="oz123.github.com/writings_raw/content/"):
     """
     sync raw files from SOURCE to DEST
     """
     import subprocess as sp
-    sp.call(["rsync", "-av", SOURCEDIR, DESTDIR], shell=False, cwd=os.getcwd())
+    sp.call(["rsync", "-avP", SOURCEDIR, DESTDIR], shell=False, cwd=os.getcwd())
 
-if __name__== '__main__':
-    parser = argparse.ArgumentParser(description='blogit - a tool to blog on github.')
-    parser.add_argument('-b','--build', action="store_true",
-    help='convert the markdown files to HTML')
-    parser.add_argument('-p','--preview', action="store_true",
-    help='Launch HTTP server to preview the website')
-    parser.add_argument('-c','--clean', action="store_true",
-    help='clean output files')
-    parser.add_argument('-d','--dist', action="store_true",
-    help='sync raw files from SOURCE to DEST')
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description='blogit - a tool to blog on github.')
+    parser.add_argument('-b', '--build', action="store_true",
+                        help='convert the markdown files to HTML')
+    parser.add_argument('-p', '--preview', action="store_true",
+                        help='Launch HTTP server to preview the website')
+    parser.add_argument('-c', '--clean', action="store_true",
+                        help='clean output files')
+    parser.add_argument('-d', '--dist', action="store_true",
+                        help='sync raw files from SOURCE to DEST')
 
     args = parser.parse_args()
 
-    if len(sys.argv) < 2 :
+    if len(sys.argv) < 2:
         parser.print_help()
         sys.exit()
     if args.clean:
@@ -500,4 +502,3 @@ if __name__== '__main__':
         dist()
     if args.preview:
         preview()
-
