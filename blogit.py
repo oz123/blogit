@@ -403,7 +403,8 @@ def build():
     for root, dirs, files in os.walk(CONFIG['content_root']):
         for fileName in files:
             try:
-                entry = Entry(os.path.join(root, fileName))
+                if fileName.endswith('md') or fileName.endswith('markdown'):
+                    entry = Entry(os.path.join(root, fileName))
             except Exception, e:
                 print "Found some problem in: ", fileName
                 print e
