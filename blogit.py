@@ -3,16 +3,16 @@
 
 
 # Copyleft (C) 2010 Mir Nazim <hello@mirnazim.org>
-# 
+#
 # Everyone is permitted to copy and distribute verbatim or modified
 # copies of this license document, and changing it is allowed as long
 # as the name is changed.
-# 
+#
 # TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-# 
+#
 # 0. You just DO WHATEVER THE FUCK YOU WANT TO. (IT'S SLOPPY CODE ANYWAY)
 #
-# WARANTIES: 
+# WARANTIES:
 # 0. Are you kidding me?
 # 1. Seriously, Are you fucking kidding me?
 # 2. If anything goes wrong, sue the "The Empire".
@@ -23,7 +23,7 @@
 """
 Summary: |
    some summary ...
-   
+
 Your post
 """
 
@@ -163,7 +163,7 @@ class Entry(object):
         path = path.split('content/')[-1]
         self.path = path
         self.prepare()
-        
+
 
     def __str__(self):
         return self.path
@@ -240,7 +240,7 @@ class Entry(object):
     @property
     def permalink(self):
         return "/%s/%s" % (KINDS[self.kind]['name_plural'], self.name)
-       
+
     @property
     def tags(self):
         tags = list()
@@ -294,11 +294,11 @@ class Entry(object):
         context = GLOBAL_TEMPLATE_CONTEXT.copy()
 
         context['entry'] = self
-        
+
         template = jinja_env.get_template("entry.html")
-        
+
         html = template.render(context)
-        
+
         destination = codecs.open(self.destination, 'w', CONFIG['content_encoding'])
         destination.write(html)
         destination.close()
@@ -360,10 +360,10 @@ def render_archive(entries, render_to=None):
     if not render_to:
         render_to = "%s/archive/index.html" % CONFIG['output_to']
         dir_util.mkpath("%s/archive" % CONFIG['output_to'])
-    
+
     destination = codecs.open("%s/archive/index.html" % CONFIG['output_to'], 'w', CONFIG['content_encoding'])
     destination.write(html)
-    destination.close()    
+    destination.close()
 
 
 def render_atom_feed(entries, render_to=None):
@@ -462,22 +462,22 @@ def preview(PREVIEW_ADDR = '127.0.1.1',PREVIEW_PORT = 11000):
 
 def publish(GITDIRECTORY="oz123.github.com"):
     pass
-    
+
 def clean(GITDIRECTORY="oz123.github.com"):
     directoriestoclean=["writings", "notes", "links", "tags", "archive"]
     os.chdir(GITDIRECTORY)
     for directory in directoriestoclean:
-        shutil.rmtree(directory) 
-        
+        shutil.rmtree(directory)
+
 def dist(SOURCEDIR="/home/ozn/blogit/content/",DESTDIR="oz123.github.com/writings_raw/content/"):
     """
-    sync raw files from SOURCE to DEST 
+    sync raw files from SOURCE to DEST
     """
     import subprocess as sp
     sp.call(["rsync", "-av", SOURCEDIR, DESTDIR], shell=False, cwd=os.getcwd())
-    
+
 if __name__== '__main__':
-    parser = argparse.ArgumentParser(description='blogit - a tool blog on github.')
+    parser = argparse.ArgumentParser(description='blogit - a tool to blog on github.')
     parser.add_argument('-b','--build', action="store_true",
     help='convert the markdown files to HTML')
     parser.add_argument('-p','--preview', action="store_true",
@@ -486,7 +486,7 @@ if __name__== '__main__':
     help='clean output files')
     parser.add_argument('-d','--dist', action="store_true",
     help='sync raw files from SOURCE to DEST')
-    
+
     args = parser.parse_args()
 
     if len(sys.argv) < 2 :
@@ -500,4 +500,4 @@ if __name__== '__main__':
         dist()
     if args.preview:
         preview()
-    
+
