@@ -64,6 +64,11 @@ CONFIG = {
     'content_encoding': 'utf-8',
 }
 
+# EDIT THIS PARAMETER TO CHANGE ARCHIVE SIZE
+# 0 Means that all the entries will be in the archive
+# 10 meas that all the entries except the last 10
+ARCHIVE_SIZE = 0
+
 GLOBAL_TEMPLATE_CONTEXT = {
     'media_base': '/media/',
     'media_url': '../media/',
@@ -348,7 +353,7 @@ def render_archive(entries, render_to=None):
     this function creates the archive page
     """
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
-    context['entries'] = entries[10:]
+    context['entries'] = entries[ARCHIVE_SIZE:]
     template = jinja_env.get_template('archive_index.html')
     html = template.render(context)
     if not render_to:
