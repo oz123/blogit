@@ -16,7 +16,7 @@
 <div class="tags">
   <p>This entry was tagged 
   {% for tag in entry.tags %}
-  <a class="tag" href="{{site_url}}/{{ tag.slug }}"><span>{{ tag.name }}</span></a>{% if not loop.last %}, {% endif %}
+  <a class="tag" href="{{site_url}}/tags/{{ tag.slug }}"><span>{{ tag.name }}</span></a>{% if not loop.last %}, {% endif %}
   {% endfor %}
 </div>
 <div id="underpost">
