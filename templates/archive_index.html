@@ -26,8 +26,8 @@ margin-right:800px;
     <p class="margin">{{ entry.published_html }} <a title="{{ permalink }}" href="{{entry.permalink}}"> {{ entry.title }}</a> </p>
   {% endfor %}
 {% endblock %}
+{% include 'sidebar.html' %}
 
-{{side_bar}}
 {{google_analytics}}
 
 

@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8
-
 
 # Copyleft (C) 2010 Mir Nazim <hello@mirnazim.org>
 # Copyleft (C) 2013 Oz Nahum <nahumoz@gmail.com>
@@ -77,30 +75,6 @@ GLOBAL_TEMPLATE_CONTEXT = {
     'twitter': 'https://twitter.com/#!/OzNTiram',
     'stackoverflow': "http://stackoverflow.com/users/492620/oz123",
     'github': "https://github.com/oz123",
-    'side_bar': """
-<div id="nav">
-  <div><img src="/media/img/me.png"></div>
-  <a title="Home" href="/">home</a>
-  <a title="About" class="about" href="/about.html">about</a>
-  <a title="Archive" class="archive" href="/archive">archive</a>
-  <a title="Atom feeds" href="/atom.xml">atom</a>
-  <a title="Twitter" href="https://twitter.com/#!/OzNTiram">twitter</a>
-  <a title="Stackoverflow" href="http://stackoverflow.com/users/492620/oz123">stackoverflow</a>
-  <a title="Github" href="https://github.com/oz123">github</a>
-  <script type="text/javascript"><!--
-      google_ad_client = "ca-pub-2570499281263620";
-      /* new_tower_for_oz123githubcom */
-      google_ad_slot = "8107518414";
-      google_ad_width = 120;
-      google_ad_height = 600;
-      //-->
-  </script>
-  <script type="text/javascript"
-      src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-  </script>
-
-</div>
-    """,
     'google_analytics': """
 <script type="text/javascript">
   var _gaq = _gaq || [];
