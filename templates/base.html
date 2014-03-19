@@ -1,16 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
-<script type="text/javascript">
-<!--[if IE]>
- window.location.href = "http://oz123.github.com/explorer.html";
-<![endif]-->
-</script>
 <head>
   <title>{% block page_title %} Home {% endblock %} &raquo; oz123.github.com</title>
   <link rel="stylesheet" type="text/css" href="/media/css/pygments_style.css" media="screen" /> 
   <link rel="stylesheet" type="text/css" href="/media/css/site.css" media="screen" /> 
   {% block css %}{% endblock %}
   <link href="{% block head_feed_link %}/atom.xml{% endblock %}" type="application/atom+xml" rel="alternate" title="{% block head_feed_title %}Oz's github &raquo; Oz's Weblog{% endblock %}" /> 
-<link rel="stylesheet" type="text/css" media="screen" href="http://www.devslide.com/public/labs/browser-detection/browser-detection.css" />
+  <link rel="stylesheet" type="text/css" media="screen" href="http://www.devslide.com/public/labs/browser-detection/browser-detection.css" />
+    <script type="text/javascript">
+    <!--[if IE]>
+    window.location.href = "http://oz123.github.com/explorer.html";
+    <![endif]-->
+</script>
 </head>
 <body>
 <div id="page" class="loading">
@@ -30,6 +32,6 @@
 </div>
 
 {% include 'sidebar.html' %}
-{{google_analytics}}
+{% include 'google_analytics.html' %}
 </body>
 </html>

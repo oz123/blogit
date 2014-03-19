@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-# Copyleft (C) 2010 Mir Nazim <hello@mirnazim.org>
-# Copyleft (C) 2013 Oz Nahum <nahumoz@gmail.com>
+# Copyright (C) 2013 Oz Nahum <nahumoz@gmail.com>
 #
 # Everyone is permitted to copy and distribute verbatim or modified
 # copies of this license document, and changing it is allowed as long
@@ -75,19 +74,7 @@ GLOBAL_TEMPLATE_CONTEXT = {
     'twitter': 'https://twitter.com/#!/OzNTiram',
     'stackoverflow': "http://stackoverflow.com/users/492620/oz123",
     'github': "https://github.com/oz123",
-    'google_analytics': """
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-36587163-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>""",
-    'disquss' : """<div id="disqus_thread"></div>
+    'disquss': """<div id="disqus_thread"></div>
         <script type="text/javascript">
             /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
             var disqus_shortname = 'oz123githubcom'; // required: replace example with your forum shortname
