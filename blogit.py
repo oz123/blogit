@@ -41,11 +41,7 @@ import yaml  # in debian python-yaml
 from StringIO import StringIO
 import codecs
 from jinja2 import Environment, FileSystemLoader  # in debian python-jinja2
-try:
-    import markdown2
-except ImportError:
-    import markdown as markdown2
-
+import markdown2
 import argparse
 import sys
 from distutils import dir_util
@@ -180,7 +176,7 @@ class Entry(object):
 
     @property
     def body_html(self):
-        return markdown2.markdown(self.body)  # , extras=['code-color'])
+        return markdown2.markdown(self.body, extras=['fenced-code-blocks'])
 
     @property
     def permalink(self):
