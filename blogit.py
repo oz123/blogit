@@ -59,6 +59,7 @@ CONFIG = {
     'base_url': 'http://oz123.github.com',
     'http_port': 3030,
     'content_encoding': 'utf-8',
+    'author': 'Oz Nahum Tiram'
 }
 
 # EDIT THIS PARAMETER TO CHANGE ARCHIVE SIZE
@@ -74,21 +75,6 @@ GLOBAL_TEMPLATE_CONTEXT = {
     'twitter': 'https://twitter.com/#!/OzNTiram',
     'stackoverflow': "http://stackoverflow.com/users/492620/oz123",
     'github': "https://github.com/oz123",
-    'disquss': """<div id="disqus_thread"></div>
-        <script type="text/javascript">
-            /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-            var disqus_shortname = 'oz123githubcom'; // required: replace example with your forum shortname
-
-            /* * * DON'T EDIT BELOW THIS LINE * * */
-            (function() {
-                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-            })();
-        </script>
-        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-    """
 }
 
 KINDS = {
@@ -426,8 +412,35 @@ def preview(PREVIEW_ADDR='127.0.1.1', PREVIEW_PORT=11000):
         httpd.server_close()
 
 
-def publish(GITDIRECTORY="oz123.github.com"):
+def publish(GITDIRECTORY=CONFIG['output_to']):
     pass
+
+
+def new_post(GITDIRECTORY=CONFIG['output_to']):
+    """
+    This function should create a template for a new post with a title
+    read from the user input.
+    Most other fields should be defaults.
+    """
+    title = raw_input("Give the title of the post:")
+    # TODO check there is not : in the title
+    author = CONFIG['author']
+    date = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d')
+    tags = '['+raw_input("Give the tags, separated by ', ':")+']'
+    published = 'yes'
+    chronological = 'yes'
+    kind = 'writing'
+    summary = ("summary: |\n   Type your summary here\nDo not change the "
+               "indentation"
+               "to the left\n...\nStart writing your post here!")
+
+    # make file name
+    fname = os.path.join(os.getcwd(), 'content', kind,
+                         datetime.datetime.strftime(datetime.datetime.now(),
+                                                    '%Y'),
+                         date+'-'+title.replace(' ', '-')+'.markdown')
+
+    print fname
 
 
 def clean(GITDIRECTORY="oz123.github.com"):
@@ -437,12 +450,14 @@ def clean(GITDIRECTORY="oz123.github.com"):
         shutil.rmtree(directory)
 
 
-def dist(SOURCEDIR=os.getcwd()+"/content/", DESTDIR="oz123.github.com/writings_raw/content/"):
+def dist(SOURCEDIR=os.getcwd()+"/content/",
+         DESTDIR="oz123.github.com/writings_raw/content/"):
     """
     sync raw files from SOURCE to DEST
     """
     import subprocess as sp
-    sp.call(["rsync", "-avP", SOURCEDIR, DESTDIR], shell=False, cwd=os.getcwd())
+    sp.call(["rsync", "-avP", SOURCEDIR, DESTDIR], shell=False,
+            cwd=os.getcwd())
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -453,6 +468,8 @@ if __name__ == '__main__':
                         help='Launch HTTP server to preview the website')
     parser.add_argument('-c', '--clean', action="store_true",
                         help='clean output files')
+    parser.add_argument('-n', '--new', action="store_true",
+                        help='create new post')
     parser.add_argument('-d', '--dist', action="store_true",
                         help='sync raw files from SOURCE to DEST')
 
@@ -469,3 +486,5 @@ if __name__ == '__main__':
         dist()
     if args.preview:
         preview()
+    if args.new:
+        new_post()
