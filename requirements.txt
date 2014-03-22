@@ -1,3 +1,4 @@
 PyYAML>=3.10
 markdown2>=1.1.1
 python-jinja2 
+pygments
