@@ -37,15 +37,27 @@ allowed!
 import os
 import re
 import datetime
-import yaml  # in debian python-yaml
-from StringIO import StringIO
-import codecs
-from jinja2 import Environment, FileSystemLoader  # in debian python-jinja2
-import markdown2
 import argparse
 import sys
 from distutils import dir_util
 import shutil
+from StringIO import StringIO
+import codecs
+try:
+    import yaml  # in debian python-yaml
+    from jinja2 import Environment, FileSystemLoader  # in debian python-jinja2
+except ImportError, e:
+    print e
+    print "On Debian based system you can install the dependencies with: "
+    print "apt-get install python-yaml python-jinja2"
+    sys.exit(1)
+
+try:
+    import markdown2
+except ImportError, e:
+    print e
+    print "try: sudo pip install markdown2"
+    sys.exit(1)
 
 CONFIG = {
     'content_root': 'content',  # where the markdown files are
