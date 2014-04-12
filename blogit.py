@@ -67,7 +67,8 @@ CONFIG = {
     'base_url': 'http://oz123.github.com',
     'http_port': 3030,
     'content_encoding': 'utf-8',
-    'author': 'Oz Nahum Tiram'
+    'author': 'Oz Nahum Tiram',
+    'editor': 'editor'
 }
 
 # EDIT THIS PARAMETER TO CHANGE ARCHIVE SIZE
@@ -424,32 +425,43 @@ def publish(GITDIRECTORY=CONFIG['output_to']):
     pass
 
 
-def new_post(GITDIRECTORY=CONFIG['output_to']):
+def new_post(GITDIRECTORY=CONFIG['output_to'],
+             kind=KINDS['writing']):
     """
     This function should create a template for a new post with a title
     read from the user input.
     Most other fields should be defaults.
     """
-    title = raw_input("Give the title of the post:")
-    # TODO check there is not : in the title
+    title = raw_input("Give the title of the post: ")
+    while ':' in title:
+        title = raw_input("Give the title of the post (':' not allowed): ")
+
     author = CONFIG['author']
     date = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d')
     tags = '['+raw_input("Give the tags, separated by ', ':")+']'
     published = 'yes'
     chronological = 'yes'
-    kind = 'writing'
-    summary = ("summary: |\n   Type your summary here\nDo not change the "
+    summary = ("summary: |\n\tType your summary here\n\tDo not change the "
                "indentation"
-               "to the left\n...\nStart writing your post here!")
+               "to the left\n...\n\nStart writing your post here!")
 
     # make file name
-    fname = os.path.join(os.getcwd(), 'content', kind,
+    fname = os.path.join(os.getcwd(), 'content', kind['name_plural'],
                          datetime.datetime.strftime(datetime.datetime.now(),
                                                     '%Y'),
                          date+'-'+title.replace(' ', '-')+'.markdown')
 
-    print fname
+    with open(fname, 'w') as npost:
+        npost.write('title: %s\n' % title)
+        npost.write('author: %s\n' % author)
+        npost.write('published: %s\n' % date)
+        npost.write('tags: %s\n' % tags)
+        npost.write('public: %s\n' % published)
+        npost.write('chronological: %s\n' % chronological)
+        npost.write('kind: %s\n' % kind['name'])
+        npost.write('summary: %s' % summary)
 
+    os.system('%s %s' % (CONFIG['editor'], fname))
 
 def clean(GITDIRECTORY="oz123.github.com"):
     directoriestoclean = ["writings", "notes", "links", "tags", "archive"]
