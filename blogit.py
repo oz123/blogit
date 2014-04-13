@@ -1,20 +1,20 @@
 #!/usr/bin/env python
-
+#============================================================================
+# Blogit.py is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 3
+# as published by the Free Software Foundation;
+#
+# Blogit.py is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Blogit.py; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+#============================================================================
 # Copyright (C) 2013 Oz Nahum <nahumoz@gmail.com>
-#
-# Everyone is permitted to copy and distribute verbatim or modified
-# copies of this license document, and changing it is allowed as long
-# as the name is changed.
-#
-# TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-#
-# 0. You just DO WHATEVER THE FUCK YOU WANT TO. (IT'S SLOPPY CODE ANYWAY)
-#
-# WARANTIES:
-# 0. Are you kidding me?
-# 1. Seriously, Are you fucking kidding me?
-# 2. If anything goes wrong, sue the "The Empire".
-
+#============================================================================
 
 # Note about Summary
 # has to be 1 line, no '\n' allowed!
@@ -369,7 +369,7 @@ def build():
             except Exception, e:
                 print "Found some problem in: ", fileName
                 print e
-                raw_input("Please correct")
+                print "Please correct this problem ..."
                 sys.exit()
             if entry.render():
                 entries.append(entry)
@@ -443,7 +443,7 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
     chronological = 'yes'
     summary = ("summary: |\n\tType your summary here\n\tDo not change the "
                "indentation"
-               "to the left\n...\n\nStart writing your post here!")
+               "to the left\n\t...\n\nStart writing your post here!")
 
     # make file name
     fname = os.path.join(os.getcwd(), 'content', kind['name_plural'],
