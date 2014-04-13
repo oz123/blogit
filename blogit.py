@@ -247,14 +247,19 @@ class Entry(object):
 
         context['entry'] = self
 
+        # this is redundant ! every time we render entry we get_template?
+        # todo: make template class property !
         template = jinja_env.get_template("entry.html")
 
         html = template.render(context)
-
         destination = codecs.open(
             self.destination, 'w', CONFIG['content_encoding'])
         destination.write(html)
         destination.close()
+
+        # before returning write log to csv
+        # file name, date first seen, date rendered
+        # self.path , date-first-seen, if rendered datetime.now
         return True
 
 
