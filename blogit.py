@@ -441,9 +441,9 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
     tags = '['+raw_input("Give the tags, separated by ', ':")+']'
     published = 'yes'
     chronological = 'yes'
-    summary = ("summary: |\n\tType your summary here. Do not change the "
+    summary = ("summary: |\n    Type your summary here.\n    Do not change the "
                "indentation"
-               "to the left\n\t...\n\nStart writing your post here!")
+               "to the left\n    ...\n\nStart writing your post here!")
 
     # make file name
     fname = os.path.join(os.getcwd(), 'content', kind['name_plural'],
@@ -459,7 +459,7 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
         npost.write('public: %s\n' % published)
         npost.write('chronological: %s\n' % chronological)
         npost.write('kind: %s\n' % kind['name'])
-        npost.write('summary: %s' % summary)
+        npost.write('%s' % summary)
 
     os.system('%s %s' % (CONFIG['editor'], fname))
 
