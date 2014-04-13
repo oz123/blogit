@@ -372,7 +372,7 @@ def build():
                 if fileName.endswith('md') or fileName.endswith('markdown'):
                     entry = Entry(os.path.join(root, fileName))
             except Exception, e:
-                print "Found some problem in: ", fileName
+                print "Found some problem in: ", entry.path
                 print e
                 print "Please correct this problem ..."
                 sys.exit()
