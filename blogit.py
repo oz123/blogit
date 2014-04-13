@@ -441,7 +441,7 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
     tags = '['+raw_input("Give the tags, separated by ', ':")+']'
     published = 'yes'
     chronological = 'yes'
-    summary = ("summary: |\n\tType your summary here\n\tDo not change the "
+    summary = ("summary: |\n\tType your summary here. Do not change the "
                "indentation"
                "to the left\n\t...\n\nStart writing your post here!")
 
