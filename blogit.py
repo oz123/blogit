@@ -54,10 +54,15 @@ except ImportError, e:
 
 try:
     import markdown2
+    renderer = 'md2'
 except ImportError, e:
-    print e
-    print "try: sudo pip install markdown2"
-    sys.exit(1)
+    try:
+        import markdown
+        renderer = 'md1'
+    except ImportError, e:
+        print e
+        print "try: sudo pip install markdown2"
+        sys.exit(1)
 
 CONFIG = {
     'content_root': 'content',  # where the markdown files are
@@ -189,7 +194,10 @@ class Entry(object):
 
     @property
     def body_html(self):
-        return markdown2.markdown(self.body, extras=['fenced-code-blocks'])
+        if renderer == 'md2':
+            return markdown2.markdown(self.body, extras=['fenced-code-blocks', 'hilite'])
+        if renderer == 'md1':
+            return markdown.markdown(self.body, extensions=['fenced_code', 'codehilite(linenums=False)'])
 
     @property
     def permalink(self):
@@ -250,8 +258,13 @@ class Entry(object):
         # this is redundant ! every time we render entry we get_template?
         # todo: make template class property !
         template = jinja_env.get_template("entry.html")
-
-        html = template.render(context)
+        try:
+            html = template.render(context)
+        except Exception, e:
+            print context
+            print self.path
+            print e
+            sys.exit()
         destination = codecs.open(
             self.destination, 'w', CONFIG['content_encoding'])
         destination.write(html)
