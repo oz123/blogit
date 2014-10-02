@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#============================================================================
+# ============================================================================
 # Blogit.py is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License, version 3
 # as published by the Free Software Foundation;
@@ -12,9 +12,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Blogit.py; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-#============================================================================
-# Copyright (C) 2013 Oz Nahum <nahumoz@gmail.com>
-#============================================================================
+# ============================================================================
+# Copyright (C) 2013 Oz Nahum Tiram <nahumoz@gmail.com>
+# ============================================================================
 
 # Note about Summary
 # has to be 1 line, no '\n' allowed!
@@ -43,6 +43,7 @@ from distutils import dir_util
 import shutil
 from StringIO import StringIO
 import codecs
+from config import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS
 try:
     import yaml  # in debian python-yaml
     from jinja2 import Environment, FileSystemLoader  # in debian python-jinja2
@@ -63,52 +64,6 @@ except ImportError, e:
         print e
         print "try: sudo pip install markdown2"
         sys.exit(1)
-
-CONFIG = {
-    'content_root': 'content',  # where the markdown files are
-    'output_to': 'oz123.github.com',
-    'templates': 'templates',
-    'date_format': '%Y-%m-%d',
-    'base_url': 'http://oz123.github.com',
-    'http_port': 3030,
-    'content_encoding': 'utf-8',
-    'author': 'Oz Nahum Tiram',
-    'editor': 'editor'
-}
-
-# EDIT THIS PARAMETER TO CHANGE ARCHIVE SIZE
-# 0 Means that all the entries will be in the archive
-# 10 meas that all the entries except the last 10
-ARCHIVE_SIZE = 0
-
-GLOBAL_TEMPLATE_CONTEXT = {
-    'media_base': '/media/',
-    'media_url': '../media/',
-    'site_url': 'http://oz123.github.com',
-    'last_build': datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
-    'twitter': 'https://twitter.com/#!/OzNTiram',
-    'stackoverflow': "http://stackoverflow.com/users/492620/oz123",
-    'github': "https://github.com/oz123",
-}
-
-KINDS = {
-    'writing': {
-        'name': 'writing', 'name_plural': 'writings',
-    },
-    'note': {
-        'name': 'note', 'name_plural': 'notes',
-    },
-    'link': {
-        'name': 'link', 'name_plural': 'links',
-    },
-    'photo': {
-        'name': 'photo', 'name_plural': 'photos',
-    },
-    'page': {
-        'name': 'page', 'name_plural': 'pages',
-    },
-
-}
 
 jinja_env = Environment(loader=FileSystemLoader(CONFIG['templates']))
 
@@ -195,9 +150,12 @@ class Entry(object):
     @property
     def body_html(self):
         if renderer == 'md2':
-            return markdown2.markdown(self.body, extras=['fenced-code-blocks', 'hilite'])
+            return markdown2.markdown(self.body, extras=['fenced-code-blocks',
+                                                         'hilite'])
         if renderer == 'md1':
-            return markdown.markdown(self.body, extensions=['fenced_code', 'codehilite(linenums=False)'])
+            return markdown.markdown(self.body,
+                                     extensions=['fenced_code',
+                                                 'codehilite(linenums=False)'])
 
     @property
     def permalink(self):
@@ -219,7 +177,9 @@ class Entry(object):
             if not line:
                 break
             header.append(line)
+
         self.header = yaml.load(StringIO('\n'.join(header)))
+
         for h in self.header.items():
             if h:
                 try:
@@ -230,6 +190,7 @@ class Entry(object):
         body = list()
         for line in file.readlines():
             body.append(line)
+
         self.body = ''.join(body)
         file.close()
 
@@ -480,6 +441,7 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
         npost.write('%s' % summary)
 
     os.system('%s %s' % (CONFIG['editor'], fname))
+
 
 def clean(GITDIRECTORY="oz123.github.com"):
     directoriestoclean = ["writings", "notes", "links", "tags", "archive"]
