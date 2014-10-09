@@ -43,7 +43,7 @@ from distutils import dir_util
 import shutil
 from StringIO import StringIO
 import codecs
-from config import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS
+from conf import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS
 try:
     import yaml  # in debian python-yaml
     from jinja2 import Environment, FileSystemLoader  # in debian python-jinja2
