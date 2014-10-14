@@ -45,6 +45,10 @@ from StringIO import StringIO
 import codecs
 from conf import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS
 import subprocess as sp
+import SimpleHTTPServer
+import BaseHTTPServer
+import socket
+import thread
 try:
     import yaml  # in debian python-yaml
     from jinja2 import Environment, FileSystemLoader  # in debian python-jinja2
@@ -381,24 +385,50 @@ def build():
     print "All done "
 
 
+class StoppableHTTPServer(BaseHTTPServer.HTTPServer):
+
+    def server_bind(self):
+        BaseHTTPServer.HTTPServer.server_bind(self)
+        self.socket.settimeout(1)
+        self.run = True
+
+    def get_request(self):
+        while self.run:
+            try:
+                sock, addr = self.socket.accept()
+                sock.settimeout(None)
+                return (sock, addr)
+            except socket.timeout:
+                pass
+
+    def stop(self):
+        self.run = False
+
+    def serve(self):
+        while self.run:
+            self.handle_request()
+
+
 def preview(PREVIEW_ADDR='127.0.1.1', PREVIEW_PORT=11000):
     """
     launch an HTTP to preview the website
     """
-    import SimpleHTTPServer
-    import SocketServer
-    Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
-    httpd = SocketServer.TCPServer(("", CONFIG['http_port']), Handler)
     os.chdir(CONFIG['output_to'])
     print "and ready to test at http://127.0.0.1:%d" % CONFIG['http_port']
     print "Hit Ctrl+C to exit"
     try:
-        httpd.serve_forever()
+        httpd = StoppableHTTPServer(("127.0.0.1", CONFIG['http_port']),
+                                    SimpleHTTPServer.SimpleHTTPRequestHandler)
+        thread.start_new_thread(httpd.serve, ())
+        sp.call('open http://127.0.0.1:%d' % CONFIG['http_port'], shell=True)
+        while True:
+            continue
+
     except KeyboardInterrupt:
         print
         print "Shutting Down... Bye!."
         print
-        httpd.server_close()
+        httpd.stop()
 
 
 def publish(GITDIRECTORY=CONFIG['output_to']):
