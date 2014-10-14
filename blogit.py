@@ -43,7 +43,6 @@ from distutils import dir_util
 import shutil
 from StringIO import StringIO
 import codecs
-from conf import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS
 import subprocess as sp
 import SimpleHTTPServer
 import BaseHTTPServer
@@ -70,7 +69,10 @@ except ImportError, e:
         print "try: sudo pip install markdown2"
         sys.exit(1)
 
+sys.path.insert(0, os.getcwdu())
+from conf import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS
 jinja_env = Environment(loader=FileSystemLoader(CONFIG['templates']))
+
 
 
 class Tag(object):
