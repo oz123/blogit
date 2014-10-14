@@ -402,7 +402,7 @@ def preview(PREVIEW_ADDR='127.0.1.1', PREVIEW_PORT=11000):
 
 
 def publish(GITDIRECTORY=CONFIG['output_to']):
-    sp.call('git push', cwd=GITDIRECTORY)
+    sp.call('git push', cwd=GITDIRECTORY, shell=True)
 
 
 def new_post(GITDIRECTORY=CONFIG['output_to'],
@@ -472,6 +472,8 @@ if __name__ == '__main__':
                         help='create new post')
     parser.add_argument('-d', '--dist', action="store_true",
                         help='sync raw files from SOURCE to DEST')
+    parser.add_argument('--publish', action="store_true",
+                        help='push built HTML to git upstream')
 
     args = parser.parse_args()
 
@@ -488,3 +490,5 @@ if __name__ == '__main__':
         preview()
     if args.new:
         new_post()
+    if args.publish:
+        publish()
