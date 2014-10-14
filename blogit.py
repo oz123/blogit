@@ -74,7 +74,6 @@ from conf import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS
 jinja_env = Environment(loader=FileSystemLoader(CONFIG['templates']))
 
 
-
 class Tag(object):
     def __init__(self, name):
         super(Tag, self).__init__()
@@ -175,8 +174,7 @@ class Entry(object):
             tags.append(Tag(t))
         return tags
 
-    def prepare(self):
-        file = codecs.open(self.abspath, 'r')
+    def _read_header(self, file):
         header = ['---']
         while True:
             line = file.readline()
@@ -184,8 +182,12 @@ class Entry(object):
             if not line:
                 break
             header.append(line)
+        header = yaml.load(StringIO('\n'.join(header)))
+        return header
 
-        self.header = yaml.load(StringIO('\n'.join(header)))
+    def prepare(self):
+        file = codecs.open(self.abspath, 'r')
+        self.header = self._read_header(file)
 
         for h in self.header.items():
             if h:
@@ -450,7 +452,7 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
 
     author = CONFIG['author']
     date = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d')
-    tags = '['+raw_input("Give the tags, separated by ', ':")+']'
+    tags = '[' + raw_input("Give the tags, separated by ', ':") + ']'
     published = 'yes'
     chronological = 'yes'
     summary = ("summary: |\n    Type your summary here.\n    Do not change the "
