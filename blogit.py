@@ -44,6 +44,7 @@ import shutil
 from StringIO import StringIO
 import codecs
 from conf import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS
+import subprocess as sp
 try:
     import yaml  # in debian python-yaml
     from jinja2 import Environment, FileSystemLoader  # in debian python-jinja2
@@ -401,7 +402,7 @@ def preview(PREVIEW_ADDR='127.0.1.1', PREVIEW_PORT=11000):
 
 
 def publish(GITDIRECTORY=CONFIG['output_to']):
-    pass
+    sp.call('git push', cwd=GITDIRECTORY)
 
 
 def new_post(GITDIRECTORY=CONFIG['output_to'],
@@ -443,7 +444,7 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
     os.system('%s %s' % (CONFIG['editor'], fname))
 
 
-def clean(GITDIRECTORY="oz123.github.com"):
+def clean(GITDIRECTORY=CONFIG['output_to']):
     directoriestoclean = ["writings", "notes", "links", "tags", "archive"]
     os.chdir(GITDIRECTORY)
     for directory in directoriestoclean:
@@ -451,11 +452,10 @@ def clean(GITDIRECTORY="oz123.github.com"):
 
 
 def dist(SOURCEDIR=os.getcwd()+"/content/",
-         DESTDIR="oz123.github.com/writings_raw/content/"):
+         DESTDIR=CONFIG['raw_content']):
     """
     sync raw files from SOURCE to DEST
     """
-    import subprocess as sp
     sp.call(["rsync", "-avP", SOURCEDIR, DESTDIR], shell=False,
             cwd=os.getcwd())
 
