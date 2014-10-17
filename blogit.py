@@ -158,7 +158,7 @@ class Entry(object):
         if renderer == 'md2':
             return markdown2.markdown(self.body, extras=['fenced-code-blocks',
                                                          'hilite',
-                                                         "wiki-tables"])
+                                                         "tables"])
         if renderer == 'md1':
             return markdown.markdown(self.body,
                                      extensions=['fenced_code',
