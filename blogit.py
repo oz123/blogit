@@ -157,11 +157,13 @@ class Entry(object):
     def body_html(self):
         if renderer == 'md2':
             return markdown2.markdown(self.body, extras=['fenced-code-blocks',
-                                                         'hilite'])
+                                                         'hilite',
+                                                         "wiki-tables"])
         if renderer == 'md1':
             return markdown.markdown(self.body,
                                      extensions=['fenced_code',
-                                                 'codehilite(linenums=False)'])
+                                                 'codehilite(linenums=False)',
+                                                 'tables'])
 
     @property
     def permalink(self):
