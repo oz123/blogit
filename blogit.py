@@ -352,25 +352,25 @@ def build():
     entries = list()
     tags = dict()
     for root, dirs, files in os.walk(CONFIG['content_root']):
-        for fileName in files:
+        for filename in files:
             try:
-                if fileName.endswith('md') or fileName.endswith('markdown'):
-                    entry = Entry(os.path.join(root, fileName))
+                if filename.endswith('md') or filename.endswith('markdown'):
+                    entry = Entry(os.path.join(root, filename))
+                    if entry.render():
+                        entries.append(entry)
+                        for tag in entry.tags:
+                            if tag.name not in tags:
+                                tags[tag.name] = {
+                                    'tag': tag,
+                                    'entries': list(),
+                                }
+                            tags[tag.name]['entries'].append(entry)
+                    print "     %s" % entry.path
             except Exception, e:
-                print "Found some problem in: ", entry.path
+                print "Found some problem in: ", filename
                 print e
                 print "Please correct this problem ..."
                 sys.exit()
-            if entry.render():
-                entries.append(entry)
-                for tag in entry.tags:
-                    if tag.name not in tags:
-                        tags[tag.name] = {
-                            'tag': tag,
-                            'entries': list(),
-                        }
-                    tags[tag.name]['entries'].append(entry)
-            print "     %s" % entry.path
     print " :done"
     print
     print " tag pages & their atom feeds:"
