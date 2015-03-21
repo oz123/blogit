@@ -92,6 +92,7 @@ class Entry(object):
         super(Entry, self).__init__()
         path = path.split('content/')[-1]
         self.path = path
+        self.entry_template = jinja_env.get_template("entry.html")
         self.prepare()
 
     def __str__(self):
@@ -227,12 +228,9 @@ class Entry(object):
 
         context['entry'] = self
 
-        # this is redundant ! every time we render entry we get_template?
-        # todo: make template class property !
-        template = jinja_env.get_template("entry.html")
         try:
-            html = template.render(context)
-        except Exception, e:
+            html = self.entry_template.render(context)
+        except Exception as e:
             print context
             print self.path
             print e
@@ -354,7 +352,7 @@ def build():
     for root, dirs, files in os.walk(CONFIG['content_root']):
         for filename in files:
             try:
-                if filename.endswith('md') or filename.endswith('markdown'):
+                if filename.endswith(('md', 'markdown')):
                     entry = Entry(os.path.join(root, filename))
                     if entry.render():
                         entries.append(entry)
@@ -366,7 +364,7 @@ def build():
                                 }
                             tags[tag.name]['entries'].append(entry)
                     print "     %s" % entry.path
-            except Exception, e:
+            except Exception as e:
                 print "Found some problem in: ", filename
                 print e
                 print "Please correct this problem ..."
@@ -426,7 +424,8 @@ def preview(PREVIEW_ADDR='127.0.1.1', PREVIEW_PORT=11000):
         httpd = StoppableHTTPServer(("127.0.0.1", CONFIG['http_port']),
                                     SimpleHTTPServer.SimpleHTTPRequestHandler)
         thread.start_new_thread(httpd.serve, ())
-        sp.call('open http://127.0.0.1:%d' % CONFIG['http_port'], shell=True)
+        sp.call('xdg-open http://127.0.0.1:%d' % CONFIG['http_port'],
+                shell=True)
         while True:
             continue
 
@@ -477,6 +476,7 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
         npost.write('kind: %s\n' % kind['name'])
         npost.write('%s' % summary)
 
+    print '%s %s' % (CONFIG['editor'], repr(fname))
     os.system('%s %s' % (CONFIG['editor'], fname))
 
 
