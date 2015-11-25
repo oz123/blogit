@@ -1,0 +1,31 @@
+single file json db -> using tinydb
+
+the following collections exists
+
+[ posts ]
+[ pages ]
+[ templates ]
+[ tags / categories ]
+
+- when adding a post only that page and the main page are compiled
+- when adding a post tags are extracted from it, and only these tags atom feeds
+are compiled
+
+# example post record, and page records
+[ {_id:1,  title: "this is a post title", "published": [true, false], tags: ["foo,
+bar"], author: "mr. blogger", date: 2014-01-11, source: "path/to/file.md",
+  output: "path/to/file.html", template:"template_name"}]
+
+# example template record
+[ {"template_name": "basic.html", path: "/path/to/template.html" } ]
+
+tag :
+# { tag_name : "foo", posts_id: [ 1, 2, 3, 4, 5 ] }
+
+----
+
+rendering should be done with a call to a rendering function, e.g jinja2
+or any other string manipulation function. This will make testing is easier!
+
+tinydb, does not have a unique id... when creating a new tag, first check
+it does not already exist. 
