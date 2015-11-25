@@ -6,6 +6,11 @@ ini, yaml, or what ever DSL for configuration.
 """
 
 import datetime
+import tinydb
+
+db = tinydb.TinyDB('blogit.db')
+
+
 
 CONFIG = {
     'content_root': 'content',  # where the markdown files are
@@ -19,6 +24,11 @@ CONFIG = {
     'author': 'Oz Nahum Tiram',
     'editor': 'editor'
 }
+
+
+DB = {'posts': db.table('posts'), 'tags': db.table('tags'), 
+      'pages': db.table('pages'), 'templates': db.table('templates') }
+
 
 # EDIT THIS PARAMETER TO CHANGE ARCHIVE SIZE
 # 0 Means that all the entries will be in the archive
