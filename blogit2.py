@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+    #!/usr/bin/env python
 # ============================================================================
 # Blogit.py is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License, version 3
@@ -81,6 +81,10 @@ class Tag(object):
         self.prepare()
         self.permalink = GLOBAL_TEMPLATE_CONTEXT["site_url"]
         self.table = DB['tags']
+        Tags = Query()
+        tag = self.table.get(Tags.name == self.name)
+        if not tag:
+            self.table.insert({'name': self.name, 'post_ids': []})
 
     def prepare(self):
         _slug = self.name.lower()
@@ -92,6 +96,7 @@ class Tag(object):
         """
         return a list of posts tagged with Tag
         """
+        #import pdb; pdb.set_trace()
         Tags = Query()
         tag = self.table.get(Tags.name == self.name)
         return tag['post_ids']
@@ -195,9 +200,6 @@ class Entry(object):
 
     @property
     def tags(self):
-        tags = list()
-        for t in self.header['tags']:
-            tags.append(Tag(t))
         return [Tag(t) for t in self.header['tags']]
 
     def _read_header(self, file):
@@ -354,9 +356,9 @@ def render_tag_pages(tag_tree):
                     'entries': [post1.md, post2.md, post3.md]}}
     """
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
-    for t in tag_tree.items():
-        context['tag'] = t[1]['tag']
-        context['entries'] = _sort_entries(t[1]['entries'])
+    for k, v in tag_tree.items():
+        context['tag'] = v['tag']
+        context['entries'] = _sort_entries(v['entries'])
         destination = "%s/tags/%s" % (CONFIG['output_to'], context['tag'].slug)
         try:
             os.makedirs(destination)
@@ -384,6 +386,14 @@ def find_new_posts(posts_table):
                     post_id = posts_table.insert({'filename': filename})
                     yield post_id, filename
 
+def update_tags(tags):
+    try:
+        tags['python']['tag'].posts
+    except KeyError:
+        pass
+    for t in tags:
+        pass
+
 
 def new_build():
     """
@@ -404,17 +414,29 @@ def new_build():
     print " entries:"
     entries = list()
     tags = dict()
+    root = CONFIG['content_root']
     for post_id, post in find_new_posts(DB['posts']):
         try:
             entry = Entry(os.path.join(root, post))
             if entry.render():
                 entries.append(entry)
+                for tag in entry.tags:
+                    if tag.name not in tags:
+                        tags[tag.name] = {
+                            'tag': tag,
+                            'entries': list(),
+                        }
+                    tags[tag.name]['entries'].append(entry)
+
             print "     %s" % entry.path
         except Exception as e:
-            print "Found some problem in: ", filename
+            print "Found some problem in: ", post
             print e
             print "Please correct this problem ..."
             sys.exit()
+
+    update_tags(tags)
+    render_tag_pages(tags)
 
 def build():
     print
