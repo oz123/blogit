@@ -1,8 +1,8 @@
 import os
 import shutil
 from tinydb import Query
-from blogit2 import find_new_posts, DB
-
+from blogit2 import find_new_posts, DB, Entry, Tag
+from blogit2 import CONFIG
 
 post_dummy = """title: Blog post {}
 author: Famous author
@@ -41,5 +41,13 @@ def test_find_new_posts():
     new =  list(find_new_posts(DB['posts']))
     assert len(DB['posts'])  == 4
     assert len(new) == 3
+
+
+def test_tags():
+    t = Tag('foo')
+    t.posts = [1]
+    assert t.posts == [1]
+    t.posts = [1,3,4,5]
+    assert t.posts == [1,3,4,5]
 
 os.unlink('blogit.db')

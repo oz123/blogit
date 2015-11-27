@@ -77,15 +77,37 @@ jinja_env = Environment(loader=FileSystemLoader(CONFIG['templates']))
 
 class Tag(object):
     def __init__(self, name):
-        super(Tag, self).__init__()
         self.name = name
         self.prepare()
         self.permalink = GLOBAL_TEMPLATE_CONTEXT["site_url"]
+        self.table = DB['tags']
 
     def prepare(self):
         _slug = self.name.lower()
         _slug = re.sub(r'[;;,. ]', '-', _slug)
         self.slug = _slug
+
+    @property
+    def posts(self):
+        """
+        return a list of posts tagged with Tag
+        """
+        Tags = Query()
+        tag = self.table.get(Tags.name == self.name)
+        return tag['post_ids']
+
+    @posts.setter
+    def posts(self, post_ids):
+        if not isinstance(post_ids, list):
+            raise ValueError("post_ids must be of type list")
+        Tags = Query()
+        tag = self.table.get(Tags.name == self.name)
+        if tag:
+            new = set(post_ids) - set(tag['post_ids'])
+            tag['post_ids'].extend(list(new))
+            self.table.update({'post_ids': tag['post_ids']}, eids=[tag.eid])
+        else:
+            self.table.insert({'name': self.name, 'post_ids': post_ids})
 
 
 class Entry(object):
@@ -176,7 +198,7 @@ class Entry(object):
         tags = list()
         for t in self.header['tags']:
             tags.append(Tag(t))
-        return tags
+        return [Tag(t) for t in self.header['tags']]
 
     def _read_header(self, file):
         header = ['---']
@@ -200,9 +222,7 @@ class Entry(object):
                 except:
                     pass
 
-        body = list()
-        for line in file.readlines():
-            body.append(line)
+        body = file.readlines()
 
         self.body = ''.join(body)
         file.close()
@@ -326,11 +346,11 @@ def render_atom_feed(entries, render_to=None):
 def render_tag_pages(tag_tree):
     """
     tag_tree is a dictionary witht the following structure:
-        {'python': {'tag': <__main__.Tag object at 0x7f0e56200ed0>, 
-                    'entries': [post1.md, post2.md, post3.md]}, 
-         'git': {'tag': <__main__.Tag object at 0x7f0e5623c2d0>, 
-                    'entries': [post1.md, post2.md, post3.md]}, 
-         'bash': {'tag': <__main__.Tag object at 0x7f0e5623c0d0>, 
+        {'python': {'tag': <__main__.Tag object at 0x7f0e56200ed0>,
+                    'entries': [post1.md, post2.md, post3.md]},
+         'git': {'tag': <__main__.Tag object at 0x7f0e5623c2d0>,
+                    'entries': [post1.md, post2.md, post3.md]},
+         'bash': {'tag': <__main__.Tag object at 0x7f0e5623c0d0>,
                     'entries': [post1.md, post2.md, post3.md]}}
     """
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
@@ -365,20 +385,6 @@ def find_new_posts(posts_table):
                     yield post_id, filename
 
 
-
-def get_entry_tags(tags_table, entry_tags, entry_id):
-    Tags = Query()
-    for t.name in entry_tags:
-        tag = tags_table.get(Tags.name == t.name)
-        if tag:
-            tag['post_ids'].append(entry_id)
-            tags_table.update({'post_ids': tag['post_ids']})
-            yield tag
-        else:
-            eid = tags_table.insert({'name': t, 'post_ids': [entry_id]})
-            yield tags_table.get(eid=eid)
-
-
 def new_build():
     """
 
@@ -403,9 +409,6 @@ def new_build():
             entry = Entry(os.path.join(root, post))
             if entry.render():
                 entries.append(entry)
-            for tag in get_entry_tags(DB['tags'], entry.tags, post_id):
-                pass
-
             print "     %s" % entry.path
         except Exception as e:
             print "Found some problem in: ", filename
@@ -423,7 +426,6 @@ def build():
     for root, dirs, files in os.walk(CONFIG['content_root']):
         for filename in files:
             try:
-                import pdb; pdb.set_trace()
                 if filename.endswith(('md', 'markdown')):
                     entry = Entry(os.path.join(root, filename))
                     if entry.render():
