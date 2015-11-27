@@ -76,6 +76,7 @@ jinja_env = Environment(loader=FileSystemLoader(CONFIG['templates']))
 
 
 class Tag(object):
+
     def __init__(self, name):
         self.name = name
         self.prepare()
@@ -96,7 +97,6 @@ class Tag(object):
         """
         return a list of posts tagged with Tag
         """
-        #import pdb; pdb.set_trace()
         Tags = Query()
         tag = self.table.get(Tags.name == self.name)
         return tag['post_ids']
@@ -114,8 +114,19 @@ class Tag(object):
         else:
             self.table.insert({'name': self.name, 'post_ids': post_ids})
 
+    @property
+    def entries(self):
+        _entries = []
+        Posts = Query()
+        for id in self.posts:
+            post = DB['posts'].get(eid=id)
+            entry = Entry(os.path.join(CONFIG['content_root'],
+                                       post['filename']))
+            _entries.append(entry)
+        return _entries
 
 class Entry(object):
+
     def __init__(self, path):
         super(Entry, self).__init__()
         path = path.split('content/')[-1]
@@ -345,6 +356,11 @@ def render_atom_feed(entries, render_to=None):
     destination.close()
 
 
+def render_tag_page(tag):
+    context = GLOBAL_TEMPLATE_CONTEXT.copy()
+    context['entries'] = _sort_entries(v['entries'])
+    destination = "%s/tags/%s" % (CONFIG['output_to'], context['tag'].slug)
+
 def render_tag_pages(tag_tree):
     """
     tag_tree is a dictionary witht the following structure:
@@ -398,7 +414,7 @@ def update_tags(tags):
 def new_build():
     """
 
-    a. For each new post:
+        a. For each new post:
         1. render html
         2. find post tags
         3. update atom feeds for old tags
@@ -427,14 +443,13 @@ def new_build():
                             'entries': list(),
                         }
                     tags[tag.name]['entries'].append(entry)
-
+                    tags[tag.name]['tag'].posts = [post_id]
             print "     %s" % entry.path
         except Exception as e:
             print "Found some problem in: ", post
             print e
             print "Please correct this problem ..."
             sys.exit()
-
     update_tags(tags)
     render_tag_pages(tags)
 

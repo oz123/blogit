@@ -48,17 +48,18 @@ def test_find_new_posts():
 
 
 def test_tags():
-    t = Tag('foo')
+    t = Tag('bar')
     t.posts = [1]
     assert t.posts == [1]
     t.posts = [1,3,4,5]
     assert t.posts == [1,3,4,5]
 
-db.purge_tables()
 
 def test_new_build():
+    db.purge_tables()
     clean_posts()
     create_posts()
+    import pdb; pdb.set_trace()
     new_build()
 
 post_dummy = """title: Blog post {}
@@ -81,6 +82,7 @@ def create_last_post():
     os.chdir('..')
 
 def test_new_build2():
+    import pdb; pdb.set_trace()
     create_last_post()
     new_build()
     # bug: creating a new post with existing tags
