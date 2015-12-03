@@ -1,4 +1,4 @@
-    #!/usr/bin/env python
+#!/usr/bin/env python
 # ============================================================================
 # Blogit.py is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License, version 3
@@ -82,6 +82,12 @@ class Tag(object):
         self.prepare()
         self.permalink = GLOBAL_TEMPLATE_CONTEXT["site_url"]
         self.table = DB['tags']
+
+        try:
+            os.makedirs(destination)
+        except:
+            pass
+
         Tags = Query()
         tag = self.table.get(Tags.name == self.name)
         if not tag:
@@ -124,6 +130,34 @@ class Tag(object):
                                        post['filename']))
             _entries.append(entry)
         return _entries
+
+    def render(self):
+        self.destination = "%s/tags/%s" % (CONFIG['output_to'],
+                self.slug)
+        template = jinja_env.get_template('tag_index.html')
+        try:
+            os.makedirs(os.path.dirname(self.destination))
+        except:
+            pass
+
+        context = GLOBAL_TEMPLATE_CONTEXT.copy()
+        context['tag'] = self.name
+        context['entries'] = _sort_entries(self.entries)
+        destination = "%s/tags/%s" % (CONFIG['output_to'], context['tag'].slug)
+        template = jinja_env.get_template('tag_index.html')
+        html = template.render(context)
+        file = codecs.open("%s/index.html" % destination,
+                           'w', CONFIG['content_encoding'])
+        file.write(html)
+        file.close()
+        render_atom_feed(context['entries'],
+                         render_to="%s/atom.xml" % destination)
+
+        # before returning write log to csv
+        # file name, date first seen, date rendered
+        # self.path , date-first-seen, if rendered datetime.now
+        return True
+
 
 class Entry(object):
 
