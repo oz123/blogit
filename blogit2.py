@@ -137,13 +137,14 @@ class Tag(object):
         template = jinja_env.get_template('tag_index.html')
         try:
             os.makedirs(os.path.dirname(self.destination))
-        except:
+        except OSError:
             pass
 
         context = GLOBAL_TEMPLATE_CONTEXT.copy()
         context['tag'] = self.name
+        context['entries'] = self.entries
         context['entries'] = _sort_entries(self.entries)
-        destination = "%s/tags/%s" % (CONFIG['output_to'], context['tag'].slug)
+        destination = "%s/tags/%s" % (CONFIG['output_to'], self.slug)
         template = jinja_env.get_template('tag_index.html')
         html = template.render(context)
         file = codecs.open("%s/index.html" % destination,
@@ -237,7 +238,7 @@ class Entry(object):
             return markdown.markdown(self.body,
                                      extensions=['fenced_code',
                                                  'codehilite(linenums=False)',
-                                                 'tables'])
+                                                  'tables'])
 
     @property
     def permalink(self):
@@ -256,11 +257,15 @@ class Entry(object):
                 break
             header.append(line)
         header = yaml.load(StringIO('\n'.join(header)))
+        # todo: dispatch header to attribute
+        # todo: parse date from string to a datetime object
         return header
 
     def prepare(self):
         file = codecs.open(self.abspath, 'r')
         self.header = self._read_header(file)
+        self.date = datetime.datetime.strptime(self.header['published'],
+                '%Y-%m-%d')
 
         for h in self.header.items():
             if h:
@@ -321,7 +326,6 @@ class Link(Entry):
     @property
     def permalink(self):
         print "self.url", self.url
-        raw_input()
         return self.url
 
 
@@ -330,19 +334,8 @@ def entry_factory():
 
 
 def _sort_entries(entries):
-    _entries = dict()
-    sorted_entries = list()
-
-    for entry in entries:
-        _published = entry.header['published'].isoformat()
-        _entries[_published] = entry
-
-    sorted_keys = sorted(_entries.keys())
-    sorted_keys.reverse()
-
-    for key in sorted_keys:
-        sorted_entries.append(_entries[key])
-    return sorted_entries
+    """Sort all entries by date and reverse the list"""
+        return reversed(sorted(entries, key=operator.attrgetter('date')))
 
 
 def render_index(entries):
