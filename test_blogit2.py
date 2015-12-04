@@ -8,8 +8,8 @@ from conf import db
 
 post_dummy = """title: Blog post {}
 author: Famous author
-published: 2015-01-16
-tags: [python, git, bash]
+published: 2015-01-1{}
+tags: [python, git, bash, linux]
 public: yes
 chronological: yes
 kind: writing
@@ -59,7 +59,6 @@ def test_new_build():
     db.purge_tables()
     clean_posts()
     create_posts()
-    import pdb; pdb.set_trace()
     new_build()
 
 post_dummy = """title: Blog post {}
@@ -82,10 +81,9 @@ def create_last_post():
     os.chdir('..')
 
 def test_new_build2():
-    import pdb; pdb.set_trace()
     create_last_post()
     new_build()
     # bug: creating a new post with existing tags
     # removes older tags ...
 
-#os.unlink('blogit.db')
+os.unlink('blogit.db')
