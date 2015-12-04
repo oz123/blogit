@@ -39,6 +39,7 @@ import re
 import datetime
 import argparse
 import sys
+import operator
 from distutils import dir_util
 import shutil
 from StringIO import StringIO
@@ -83,10 +84,11 @@ class Tag(object):
         self.permalink = GLOBAL_TEMPLATE_CONTEXT["site_url"]
         self.table = DB['tags']
 
-        try:
-            os.makedirs(destination)
-        except:
-            pass
+        # todo: fix this
+        #try:
+        #    os.makedirs(destination)
+        #except:
+        #    pass
 
         Tags = Query()
         tag = self.table.get(Tags.name == self.name)
@@ -136,7 +138,7 @@ class Tag(object):
                 self.slug)
         template = jinja_env.get_template('tag_index.html')
         try:
-            os.makedirs(os.path.dirname(self.destination))
+            os.makedirs(self.destination)
         except OSError:
             pass
 
@@ -151,13 +153,13 @@ class Tag(object):
                            'w', CONFIG['content_encoding'])
         file.write(html)
         file.close()
-        render_atom_feed(context['entries'],
-                         render_to="%s/atom.xml" % destination)
+        #render_atom_feed(context['entries'],
+        #                 render_to="%s/atom.xml" % destination)
 
         # before returning write log to csv
         # file name, date first seen, date rendered
         # self.path , date-first-seen, if rendered datetime.now
-        return True
+        #return True
 
 
 class Entry(object):
@@ -264,15 +266,12 @@ class Entry(object):
     def prepare(self):
         file = codecs.open(self.abspath, 'r')
         self.header = self._read_header(file)
-        self.date = datetime.datetime.strptime(self.header['published'],
-                '%Y-%m-%d')
-
-        for h in self.header.items():
-            if h:
-                try:
-                    setattr(self, h[0], h[1])
-                except:
-                    pass
+        self.date = self.header['published']
+        for k, v in self.header.items():
+            try:
+                setattr(self, k, v)
+            except:
+                pass
 
         body = file.readlines()
 
@@ -335,7 +334,7 @@ def entry_factory():
 
 def _sort_entries(entries):
     """Sort all entries by date and reverse the list"""
-        return reversed(sorted(entries, key=operator.attrgetter('date')))
+    return list(reversed(sorted(entries, key=operator.attrgetter('date'))))
 
 
 def render_index(entries):
@@ -372,16 +371,16 @@ def render_archive(entries, render_to=None):
 
 
 def render_atom_feed(entries, render_to=None):
-    context = GLOBAL_TEMPLATE_CONTEXT.copy()
-    context['entries'] = entries[:10]
-    template = jinja_env.get_template('atom.xml')
-    html = template.render(context)
-    if not render_to:
-        render_to = "%s/atom.xml" % CONFIG['output_to']
-    destination = codecs.open(render_to, 'w', CONFIG['content_encoding'])
-    destination.write(html)
-    destination.close()
-
+    #context = GLOBAL_TEMPLATE_CONTEXT.copy()
+    #context['entries'] = entries[:10]
+    #template = jinja_env.get_template('atom.xml')
+    #html = template.render(context)
+    #if not render_to:
+    #    render_to = "%s/atom.xml" % CONFIG['output_to']
+    #destination = codecs.open(render_to, 'w', CONFIG['content_encoding'])
+    #destination.write(html)
+    #destination.close()
+    pass
 
 def render_tag_page(tag):
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
