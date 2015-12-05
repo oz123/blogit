@@ -155,14 +155,10 @@ class Tag(object):
                            'w', CONFIG['content_encoding'])
         file.write(html)
         file.close()
-        #render_atom_feed(context['entries'],
-        #                 render_to="%s/atom.xml" % destination)
+        render_atom_feed(context['entries'],
+                         render_to="%s/atom.xml" % destination)
 
-        # before returning write log to csv
-        # file name, date first seen, date rendered
-        # self.path , date-first-seen, if rendered datetime.now
-        #return True
-
+        return True
 
 class Entry(object):
 
@@ -373,16 +369,16 @@ def render_archive(entries, render_to=None):
 
 
 def render_atom_feed(entries, render_to=None):
-    #context = GLOBAL_TEMPLATE_CONTEXT.copy()
-    #context['entries'] = entries[:10]
-    #template = jinja_env.get_template('atom.xml')
-    #html = template.render(context)
-    #if not render_to:
-    #    render_to = "%s/atom.xml" % CONFIG['output_to']
-    #destination = codecs.open(render_to, 'w', CONFIG['content_encoding'])
-    #destination.write(html)
-    #destination.close()
-    pass
+    context = GLOBAL_TEMPLATE_CONTEXT.copy()
+    context['entries'] = entries[:10]
+    template = jinja_env.get_template('atom.xml')
+    html = template.render(context)
+    if not render_to:
+        render_to = "%s/atom.xml" % CONFIG['output_to']
+    destination = codecs.open(render_to, 'w', CONFIG['content_encoding'])
+    destination.write(html)
+    destination.close()
+
 
 def render_tag_page(tag):
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
