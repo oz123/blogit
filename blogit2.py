@@ -48,7 +48,9 @@ import subprocess as sp
 import SimpleHTTPServer
 import BaseHTTPServer
 import socket
+import SocketServer
 import thread
+
 try:
     import yaml  # in debian python-yaml
     from jinja2 import Environment, FileSystemLoader  # in debian python-jinja2
@@ -550,27 +552,22 @@ class StoppableHTTPServer(BaseHTTPServer.HTTPServer):
             self.handle_request()
 
 
-def preview(PREVIEW_ADDR='127.0.1.1', PREVIEW_PORT=11000):
+def preview():
     """
     launch an HTTP to preview the website
     """
+    Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+    SocketServer.TCPServer.allow_reuse_address = True
+    port = CONFIG['http_port']
+    httpd = SocketServer.TCPServer(("", port), Handler)
     os.chdir(CONFIG['output_to'])
     print "and ready to test at http://127.0.0.1:%d" % CONFIG['http_port']
     print "Hit Ctrl+C to exit"
     try:
-        httpd = StoppableHTTPServer(("127.0.0.1", CONFIG['http_port']),
-                                    SimpleHTTPServer.SimpleHTTPRequestHandler)
-        thread.start_new_thread(httpd.serve, ())
-        sp.call('xdg-open http://127.0.0.1:%d' % CONFIG['http_port'],
-                shell=True)
-        while True:
-            continue
-
+        httpd.serve_forever()
     except KeyboardInterrupt:
-        print
-        print "Shutting Down... Bye!."
-        print
-        httpd.stop()
+        httpd.shutdown()
+
 
 
 def publish(GITDIRECTORY=CONFIG['output_to']):

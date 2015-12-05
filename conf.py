@@ -23,10 +23,10 @@ CONFIG = {
     'content_encoding': 'utf-8',
     'author': 'Oz Nahum Tiram',
     'editor': 'editor'
-}
+    }
 
 
-DB = {'posts': db.table('posts'), 'tags': db.table('tags'), 
+DB = {'posts': db.table('posts'), 'tags': db.table('tags'),
       'pages': db.table('pages'), 'templates': db.table('templates') }
 
 
