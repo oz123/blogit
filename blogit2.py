@@ -136,6 +136,7 @@ class Tag(object):
         return _entries
 
     def render(self):
+        """Render html page and atom feed"""
         self.destination = "%s/tags/%s" % (CONFIG['output_to'],
                 self.slug)
         template = jinja_env.get_template('tag_index.html')
@@ -145,7 +146,7 @@ class Tag(object):
             pass
 
         context = GLOBAL_TEMPLATE_CONTEXT.copy()
-        context['tag'] = self.name
+        context['tag'] = self
         context['entries'] = self.entries
         context['entries'] = _sort_entries(self.entries)
         destination = "%s/tags/%s" % (CONFIG['output_to'], self.slug)
@@ -326,10 +327,6 @@ class Link(Entry):
         return self.url
 
 
-def entry_factory():
-    pass
-
-
 def _sort_entries(entries):
     """Sort all entries by date and reverse the list"""
     return list(reversed(sorted(entries, key=operator.attrgetter('date'))))
@@ -380,40 +377,6 @@ def render_atom_feed(entries, render_to=None):
     destination.close()
 
 
-def render_tag_page(tag):
-    context = GLOBAL_TEMPLATE_CONTEXT.copy()
-    context['entries'] = _sort_entries(v['entries'])
-    destination = "%s/tags/%s" % (CONFIG['output_to'], context['tag'].slug)
-
-def render_tag_pages(tag_tree):
-    """
-    tag_tree is a dictionary witht the following structure:
-        {'python': {'tag': <__main__.Tag object at 0x7f0e56200ed0>,
-                    'entries': [post1.md, post2.md, post3.md]},
-         'git': {'tag': <__main__.Tag object at 0x7f0e5623c2d0>,
-                    'entries': [post1.md, post2.md, post3.md]},
-         'bash': {'tag': <__main__.Tag object at 0x7f0e5623c0d0>,
-                    'entries': [post1.md, post2.md, post3.md]}}
-    """
-    context = GLOBAL_TEMPLATE_CONTEXT.copy()
-    for k, v in tag_tree.items():
-        context['tag'] = v['tag']
-        context['entries'] = _sort_entries(v['entries'])
-        destination = "%s/tags/%s" % (CONFIG['output_to'], context['tag'].slug)
-        try:
-            os.makedirs(destination)
-        except:
-            pass
-        template = jinja_env.get_template('tag_index.html')
-        html = template.render(context)
-        file = codecs.open("%s/index.html" %
-                           destination, 'w', CONFIG['content_encoding'])
-        file.write(html)
-        file.close()
-        render_atom_feed(context[
-                         'entries'], render_to="%s/atom.xml" % destination)
-
-
 def find_new_posts(posts_table):
     """
     Walk content dir, put each post in the database
@@ -425,14 +388,6 @@ def find_new_posts(posts_table):
                 if not posts_table.contains(Posts.filename == filename):
                     post_id = posts_table.insert({'filename': filename})
                     yield post_id, filename
-
-def update_tags(tags):
-    try:
-        tags['python']['tag'].posts
-    except KeyError:
-        pass
-    for t in tags:
-        pass
 
 
 def new_build():
@@ -462,20 +417,19 @@ def new_build():
                 entries.append(entry)
                 for tag in entry.tags:
                     if tag.name not in tags:
-                        tags[tag.name] = {
-                            'tag': tag,
-                            'entries': list(),
-                        }
-                    tags[tag.name]['entries'].append(entry)
-                    tags[tag.name]['tag'].posts = [post_id]
+                        tags[tag.name] = tag
+                        tag.posts = [post_id]
             print "     %s" % entry.path
         except Exception as e:
             print "Found some problem in: ", post
             print e
             print "Please correct this problem ..."
-            sys.exit()
-    update_tags(tags)
-    render_tag_pages(tags)
+            sys.exit(1)
+
+    for name, to in tags.iteritems():
+        print "updating tag %s" % name
+        to.render()
+
 
 def build():
     print
@@ -649,7 +603,7 @@ if __name__ == '__main__':
     if args.clean:
         clean()
     if args.build:
-        build()
+        new_build()
     if args.dist:
         dist()
     if args.preview:
