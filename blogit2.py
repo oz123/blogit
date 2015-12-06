@@ -147,19 +147,28 @@ class Tag(object):
 
         context = GLOBAL_TEMPLATE_CONTEXT.copy()
         context['tag'] = self
-        context['entries'] = self.entries
         context['entries'] = _sort_entries(self.entries)
-        destination = "%s/tags/%s" % (CONFIG['output_to'], self.slug)
-        template = jinja_env.get_template('tag_index.html')
-        html = template.render(context)
-        file = codecs.open("%s/index.html" % destination,
-                           'w', CONFIG['content_encoding'])
-        file.write(html)
-        file.close()
-        render_atom_feed(context['entries'],
-                         render_to="%s/atom.xml" % destination)
+        sorted_entries = _sort_entries(self.entries)
+        encoding = CONFIG['content_encoding']
+        render_to = "%s/tags/%s" % (CONFIG['output_to'], self.slug)
+
+        jobs = [{'tname': 'tag_index.html',
+                'output': codecs.open("%s/index.html" % render_to, 'w', encoding),
+                'entries': sorted_entries},
+                {'tname': 'atom.xml',
+                 'output': codecs.open("%s/atom.xml" % render_to, 'w', encoding),
+                 'entries': sorted_entries[:10]}
+                ]
+
+        for j in jobs:
+            template = jinja_env.get_template(j['tname'])
+            context['entries'] = j['entries']
+            html = template.render(context)
+            j['output'].write(html)
+            j['output'].close()
 
         return True
+
 
 class Entry(object):
 
@@ -332,21 +341,6 @@ def _sort_entries(entries):
     return list(reversed(sorted(entries, key=operator.attrgetter('date'))))
 
 
-def render_index(entries):
-    """
-    this function renders the main page located at index.html
-    under oz123.github.com
-    """
-    context = GLOBAL_TEMPLATE_CONTEXT.copy()
-    context['entries'] = entries[:10]
-    template = jinja_env.get_template('entry_index.html')
-    html = template.render(context)
-    destination = codecs.open("%s/index.html" % CONFIG[
-                              'output_to'], 'w', CONFIG['content_encoding'])
-    destination.write(html)
-    destination.close()
-
-
 def render_archive(entries, render_to=None):
     """
     this function creates the archive page
@@ -361,18 +355,6 @@ def render_archive(entries, render_to=None):
 
     destination = codecs.open("%s/archive/index.html" % CONFIG[
                               'output_to'], 'w', CONFIG['content_encoding'])
-    destination.write(html)
-    destination.close()
-
-
-def render_atom_feed(entries, render_to=None):
-    context = GLOBAL_TEMPLATE_CONTEXT.copy()
-    context['entries'] = entries[:10]
-    template = jinja_env.get_template('atom.xml')
-    html = template.render(context)
-    if not render_to:
-        render_to = "%s/atom.xml" % CONFIG['output_to']
-    destination = codecs.open(render_to, 'w', CONFIG['content_encoding'])
     destination.write(html)
     destination.close()
 
@@ -400,16 +382,21 @@ def update_index():
     """find the last 10 entries in the database and create the main
     page.
     Each entry in has an eid, so we only get the last 10 eids.
+
+    This method also update the ATOM feed.
     """
     entries = _get_last_entries()
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
     context['entries'] = entries
-    template = jinja_env.get_template('entry_index.html')
-    html = template.render(context)
-    destination = codecs.open("%s/index.html" % CONFIG[
-                              'output_to'], 'w', CONFIG['content_encoding'])
-    destination.write(html)
-    destination.close()
+
+    for name, out in {'entry_index.html': 'index.html',
+                      'atom.xml': 'atom.xml'}.items():
+        template = jinja_env.get_template(name)
+        html = template.render(context)
+        destination = codecs.open("%s/%s" % (CONFIG['output_to'], out),
+                                  'w', CONFIG['content_encoding'])
+        destination.write(html)
+        destination.close()
 
 
 def new_build():
