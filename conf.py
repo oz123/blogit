@@ -26,6 +26,7 @@ CONFIG = {
     }
 
 
+# TODO replace this with a namedtuple for a more convinient access and safety
 DB = {'posts': db.table('posts'), 'tags': db.table('tags'),
       'pages': db.table('pages'), 'templates': db.table('templates') }
 
