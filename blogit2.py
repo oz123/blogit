@@ -390,6 +390,28 @@ def find_new_posts(posts_table):
                     yield post_id, filename
 
 
+def _get_last_entries():
+    eids = [post.eid for post in DB['posts'].all()]
+    eids = sorted(eids, reverse=True)[-10:]
+    entries = [Entry(DB['posts'].get(eid=eid)['filename']) for eid in eids]
+    return entries
+
+def update_index():
+    """find the last 10 entries in the database and create the main
+    page.
+    Each entry in has an eid, so we only get the last 10 eids.
+    """
+    entries = _get_last_entries()
+    context = GLOBAL_TEMPLATE_CONTEXT.copy()
+    context['entries'] = entries
+    template = jinja_env.get_template('entry_index.html')
+    html = template.render(context)
+    destination = codecs.open("%s/index.html" % CONFIG[
+                              'output_to'], 'w', CONFIG['content_encoding'])
+    destination.write(html)
+    destination.close()
+
+
 def new_build():
     """
 
@@ -428,6 +450,13 @@ def new_build():
     for name, to in tags.iteritems():
         print "updating tag %s" % name
         to.render()
+
+    # update index
+    print "updating index"
+    update_index()
+    # update archive
+
+    # TODO
 
 
 def build():
