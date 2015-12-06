@@ -416,9 +416,8 @@ def new_build():
             if entry.render():
                 entries.append(entry)
                 for tag in entry.tags:
-                    if tag.name not in tags:
-                        tags[tag.name] = tag
-                        tag.posts = [post_id]
+                    tag.posts = [post_id]
+                    tags[tag.name] = tag
             print "     %s" % entry.path
         except Exception as e:
             print "Found some problem in: ", post
