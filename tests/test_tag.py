@@ -3,7 +3,6 @@ import shutil
 from tinydb import Query
 from blogit2 import find_new_posts, DB, Entry, Tag
 from blogit2 import CONFIG, new_build
-from conf import db
 
 
 post_dummy = """title: Blog post {}
@@ -20,7 +19,6 @@ summary: |
 This is the body of post {}
 """
 
-
 def create_posts():
     os.mkdir('content')
     os.chdir('content')
@@ -31,7 +29,7 @@ def create_posts():
 
 
 def test_tag():
-    new =  list(find_new_posts(DB['posts']))
+    new =  list(find_new_posts(DB.posts))
     t = Tag('python')
     t.posts = [1,2,3]
     t.render()

@@ -1,9 +1,8 @@
 import os
 import shutil
 from tinydb import Query
-from blogit2 import find_new_posts, DB, Entry, Tag
+from blogit2 import find_new_posts, DataBase, Entry, Tag
 from blogit2 import CONFIG, new_build
-from conf import db
 
 
 post_dummy = """title: Blog post {}
@@ -19,10 +18,10 @@ summary: |
 
 This is the body of post {}
 """
-def insert_single():
+def insert_single(DB):
     Posts = Query()
-    if not DB['posts'].contains(Posts.filename == 'post4.md'):
-        DB['posts'].insert({'filename': 'post4.md'})
+    if not DB.posts.contains(Posts.filename == 'post4.md'):
+        DB.posts.insert({'filename': 'post4.md'})
 
 
 def create_posts():
@@ -38,12 +37,13 @@ def clean_posts():
         shutil.rmtree('content')
 
 def test_find_new_posts():
-    db.purge_tables()
-    insert_single()
     clean_posts()
     create_posts()
-    new =  list(find_new_posts(DB['posts']))
-    assert len(DB['posts'].all()) == 4
+    DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
+    DB._db.purge_tables()
+    insert_single(DB)
+    new =  list(find_new_posts(DB.posts))
+    assert len(DB.posts.all()) == 4
     assert len(new) == 3
 
 
@@ -56,7 +56,8 @@ def test_tags():
 
 
 def test_new_build():
-    db.purge_tables()
+    DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
+    DB._db.purge_tables()
     clean_posts()
     create_posts()
     new_build()
@@ -86,4 +87,7 @@ def test_new_build2():
     # bug: creating a new post with existing tags
     # removes older tags ...
 
-os.unlink('blogit.db')
+try:
+    os.unlink('blogit.db')
+except OSError:
+    pass

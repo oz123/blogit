@@ -72,11 +72,24 @@ except ImportError, e:
         print "try: sudo pip install markdown2"
         sys.exit(1)
 
+import tinydb
 from tinydb import Query
 sys.path.insert(0, os.getcwdu())
-from conf import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS, DB
+from conf import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS
 jinja_env = Environment(loader=FileSystemLoader(CONFIG['templates']))
 
+
+class DataBase(object):
+
+    def __init__(self, path):
+        _db = tinydb.TinyDB(path)
+        self.posts = _db.table('posts')
+        self.tags = _db.table('tags')
+        self.pages = _db.table('pages')
+        self.templates = _db.table('templates')
+        self._db = _db
+
+DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
 
 class Tag(object):
 
@@ -84,7 +97,7 @@ class Tag(object):
         self.name = name
         self.prepare()
         self.permalink = GLOBAL_TEMPLATE_CONTEXT["site_url"]
-        self.table = DB['tags']
+        self.table = DB.tags
 
         # todo: fix this
         #try:
@@ -129,7 +142,9 @@ class Tag(object):
         _entries = []
         Posts = Query()
         for id in self.posts:
-            post = DB['posts'].get(eid=id)
+            post = DB.posts.get(eid=id)
+            if not post:
+                raise ValueError("no post found for eid %s" % id)
             entry = Entry(os.path.join(CONFIG['content_root'],
                                        post['filename']))
             _entries.append(entry)
@@ -373,9 +388,9 @@ def find_new_posts(posts_table):
 
 
 def _get_last_entries():
-    eids = [post.eid for post in DB['posts'].all()]
+    eids = [post.eid for post in DB.posts.all()]
     eids = sorted(eids, reverse=True)[-10:]
-    entries = [Entry(DB['posts'].get(eid=eid)['filename']) for eid in eids]
+    entries = [Entry(DB.posts.get(eid=eid)['filename']) for eid in eids]
     return entries
 
 
@@ -420,7 +435,7 @@ def new_build():
     entries = list()
     tags = dict()
     root = CONFIG['content_root']
-    for post_id, post in find_new_posts(DB['posts']):
+    for post_id, post in find_new_posts(DB.posts):
         try:
             entry = Entry(os.path.join(root, post))
             if entry.render():

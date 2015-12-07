@@ -6,11 +6,9 @@ ini, yaml, or what ever DSL for configuration.
 """
 
 import datetime
+import os
+from collections import namedtuple
 import tinydb
-
-db = tinydb.TinyDB('blogit.db')
-
-
 
 CONFIG = {
     'content_root': 'content',  # where the markdown files are
@@ -25,11 +23,21 @@ CONFIG = {
     'editor': 'editor'
     }
 
+if not os.path.exists(os.path.join(CONFIG['content_root'])):
+    os.makedirs(os.path.join(CONFIG['content_root']))
+
+
+#_db = tinydb.TinyDB(os.path.join(CONFIG['content_root'], 'blogit.db'))
 
 # TODO replace this with a namedtuple for a more convinient access and safety
-DB = {'posts': db.table('posts'), 'tags': db.table('tags'),
-      'pages': db.table('pages'), 'templates': db.table('templates') }
+#_DB = {'posts': _db.table('posts'), 'tags': _db.table('tags'),
+#       'pages': _db.table('pages'), 'templates': _db.table('templates') }
 
+#BlogDB = namedtuple('BlogDB', 'posts tags pages templates db')
+
+#DB = BlogDB(posts=_db.table('posts'), tags=_db.table('tags'),
+#            pages=_db.table('pages'), templates=_db.table('templates'),
+#            db=_db)
 
 # EDIT THIS PARAMETER TO CHANGE ARCHIVE SIZE
 # 0 Means that all the entries will be in the archive
