@@ -31,7 +31,7 @@ with ":" it makes markdown break!
 """
 
 """
-The content directory can contain only mardown or txt files, no images
+The content directory can contain only markdown or txt files, no images
 allowed!
 """
 import os
@@ -378,6 +378,7 @@ def _get_last_entries():
     entries = [Entry(DB['posts'].get(eid=eid)['filename']) for eid in eids]
     return entries
 
+
 def update_index():
     """find the last 10 entries in the database and create the main
     page.
@@ -441,56 +442,12 @@ def new_build():
     # update index
     print "updating index"
     update_index()
-    # update archive
 
+    # update archive
+    print "updating archive"
     # TODO
 
 
-def build():
-    print
-    print "Rendering website now..."
-    print
-    print " entries:"
-    entries = list()
-    tags = dict()
-    for root, dirs, files in os.walk(CONFIG['content_root']):
-        for filename in files:
-            try:
-                if filename.endswith(('md', 'markdown')):
-                    entry = Entry(os.path.join(root, filename))
-                    if entry.render():
-                        entries.append(entry)
-                        for tag in entry.tags:
-                            if tag.name not in tags:
-                                tags[tag.name] = {
-                                    'tag': tag,
-                                    'entries': list(),
-                                }
-                            tags[tag.name]['entries'].append(entry)
-                    print "     %s" % entry.path
-            except Exception as e:
-                print "Found some problem in: ", filename
-                print e
-                print "Please correct this problem ..."
-                sys.exit()
-    print " :done"
-    print
-    print " tag pages & their atom feeds:"
-    render_tag_pages(tags)
-    print " :done"
-    print
-    print " site wide index"
-    entries = _sort_entries(entries)
-    render_index(entries)
-    print "................done"
-    print " archive index"
-    render_archive(entries)
-    print "................done"
-    print " site wide atom feeds"
-    render_atom_feed(entries)
-    print "...........done"
-    print
-    print "All done "
 
 
 class StoppableHTTPServer(BaseHTTPServer.HTTPServer):
