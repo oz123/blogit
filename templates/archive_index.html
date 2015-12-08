@@ -23,7 +23,7 @@ margin-right:800px;
 <h2 class=loc> This is an archive of everything posted here ...</h2>
 {% block content %}
   {% for entry in entries %}
-    <p class="margin">{{ entry.published_html }} <a title="{{ entrý.permalink }}" href="{{entry.permalink}}"> {{ entry.title }}</a> </p>
+    <p class="margin">{{ entry.published_html }} <a title="{{ entry.permalink }}" href="{{entry.permalink}}"> {{ entry.title }}</a> </p>
   {% endfor %}
 {% endblock %}
 {% include 'sidebar.html' %}
