@@ -54,7 +54,7 @@ import thread
 try:
     import yaml  # in debian python-yaml
     from jinja2 import Environment, FileSystemLoader  # in debian python-jinja2
-except ImportError, e:
+except ImportError, e:  # pragma: no coverage
     print e
     print "On Debian based system you can install the dependencies with: "
     print "apt-get install python-yaml python-jinja2"
@@ -63,7 +63,7 @@ except ImportError, e:
 try:
     import markdown2
     renderer = 'md2'
-except ImportError, e:
+except ImportError, e: # pragma: no coverage
     try:
         import markdown
         renderer = 'md1'
@@ -74,7 +74,7 @@ except ImportError, e:
 
 import tinydb
 from tinydb import Query
-sys.path.insert(0, os.getcwdu())
+sys.path.insert(0, os.getcwd())
 from conf import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS
 jinja_env = Environment(loader=FileSystemLoader(CONFIG['templates']))
 
@@ -98,12 +98,6 @@ class Tag(object):
         self.prepare()
         self.permalink = GLOBAL_TEMPLATE_CONTEXT["site_url"]
         self.table = DB.tags
-
-        # todo: fix this
-        #try:
-        #    os.makedirs(destination)
-        #except:
-        #    pass
 
         Tags = Query()
         tag = self.table.get(Tags.name == self.name)
@@ -130,12 +124,12 @@ class Tag(object):
             raise ValueError("post_ids must be of type list")
         Tags = Query()
         tag = self.table.get(Tags.name == self.name)
+        if not tag:  # pragma: no coverage
+            raise ValueError("Tag %s not found" % self.name)
         if tag:
             new = set(post_ids) - set(tag['post_ids'])
             tag['post_ids'].extend(list(new))
             self.table.update({'post_ids': tag['post_ids']}, eids=[tag.eid])
-        else:
-            self.table.insert({'name': self.name, 'post_ids': post_ids})
 
     @property
     def entries(self):
@@ -143,7 +137,7 @@ class Tag(object):
         Posts = Query()
         for id in self.posts:
             post = DB.posts.get(eid=id)
-            if not post:
+            if not post:  # pragma: no coverage
                 raise ValueError("no post found for eid %s" % id)
             entry = Entry(os.path.join(CONFIG['content_root'],
                                        post['filename']))
@@ -157,7 +151,7 @@ class Tag(object):
         template = jinja_env.get_template('tag_index.html')
         try:
             os.makedirs(self.destination)
-        except OSError:
+        except OSError:  # pragma: no coverage
             pass
 
         context = GLOBAL_TEMPLATE_CONTEXT.copy()
@@ -317,15 +311,15 @@ class Entry(object):
 
         try:
             os.makedirs(os.path.dirname(self.destination))
-        except:
+        except OSError:
             pass
-        context = GLOBAL_TEMPLATE_CONTEXT.copy()
 
+        context = GLOBAL_TEMPLATE_CONTEXT.copy()
         context['entry'] = self
 
         try:
             html = self.entry_template.render(context)
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             print context
             print self.path
             print e
@@ -341,7 +335,7 @@ class Entry(object):
         return True
 
 
-class Link(Entry):
+class Link(Entry):  # pragma: no coverage
     def __init__(self, path):
         super(Link, self).__init__(path)
 
@@ -358,7 +352,18 @@ def _sort_entries(entries):
 
 def render_archive(entries, render_to=None):
     """
-    this function creates the archive page
+    This function creates the archive page
+
+    To function it need to read:
+
+     - entry title
+     - entry publish date
+     - entry permalink
+
+    Until now, this was parsed from each entry YAML...
+    It would be more convinient to read this from the DB.
+
+    This requires changes for the database
     """
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
     context['entries'] = entries[ARCHIVE_SIZE:]
@@ -399,7 +404,7 @@ def update_index():
     page.
     Each entry in has an eid, so we only get the last 10 eids.
 
-    This method also update the ATOM feed.
+    This method also updates the ATOM feed.
     """
     entries = _get_last_entries()
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
@@ -465,7 +470,7 @@ def new_build():
 
 
 
-class StoppableHTTPServer(BaseHTTPServer.HTTPServer):
+class StoppableHTTPServer(BaseHTTPServer.HTTPServer):  # pragma: no coverage
 
     def server_bind(self):
         BaseHTTPServer.HTTPServer.server_bind(self)
@@ -489,10 +494,8 @@ class StoppableHTTPServer(BaseHTTPServer.HTTPServer):
             self.handle_request()
 
 
-def preview():
-    """
-    launch an HTTP to preview the website
-    """
+def preview():  # pragma: no coverage
+    """launch an HTTP to preview the website"""
     Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
     SocketServer.TCPServer.allow_reuse_address = True
     port = CONFIG['http_port']
@@ -506,13 +509,13 @@ def preview():
         httpd.shutdown()
 
 
-
-def publish(GITDIRECTORY=CONFIG['output_to']):
+def publish(GITDIRECTORY=CONFIG['output_to']):  # pragma: no coverage
     sp.call('git push', cwd=GITDIRECTORY, shell=True)
 
 
 def new_post(GITDIRECTORY=CONFIG['output_to'],
-             kind=KINDS['writing']):
+             kind=KINDS['writing']):  # pragma: no coverage
+
     """
     This function should create a template for a new post with a title
     read from the user input.
@@ -551,7 +554,7 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
     os.system('%s %s' % (CONFIG['editor'], fname))
 
 
-def clean(GITDIRECTORY=CONFIG['output_to']):
+def clean(GITDIRECTORY=CONFIG['output_to']):  # pragma: no coverage
     directoriestoclean = ["writings", "notes", "links", "tags", "archive"]
     os.chdir(GITDIRECTORY)
     for directory in directoriestoclean:
@@ -559,7 +562,7 @@ def clean(GITDIRECTORY=CONFIG['output_to']):
 
 
 def dist(SOURCEDIR=os.getcwd()+"/content/",
-         DESTDIR=CONFIG['raw_content']):
+         DESTDIR=CONFIG['raw_content']):  # pragma: no coverage
     """
     sync raw files from SOURCE to DEST
     """
@@ -567,7 +570,7 @@ def dist(SOURCEDIR=os.getcwd()+"/content/",
             cwd=os.getcwd())
 
 
-def main():
+def main():   # pragma: no coverage
     parser = argparse.ArgumentParser(
         description='blogit - a tool to blog on github.')
     parser.add_argument('-b', '--build', action="store_true",
@@ -601,5 +604,5 @@ def main():
     if args.publish:
         publish()
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no coverage
     main()
