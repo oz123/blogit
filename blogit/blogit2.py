@@ -40,7 +40,6 @@ import datetime
 import argparse
 import sys
 import operator
-from distutils import dir_util
 import shutil
 from StringIO import StringIO
 import codecs
@@ -181,9 +180,13 @@ class Tag(object):
 
 class Entry(object):
 
+    @classmethod
+    def entry_from_db(kls, filename):
+        f=os.path.join(os.path.join(CONFIG['content_root'], filename))
+        return kls(f)
+
     def __init__(self, path):
-        super(Entry, self).__init__()
-        path = path.split('content/')[-1]
+        path = os.path.basename(path)
         self.path = path
         self.entry_template = jinja_env.get_template("entry.html")
         self.prepare()
@@ -329,9 +332,6 @@ class Entry(object):
         destination.write(html)
         destination.close()
 
-        # before returning write log to csv
-        # file name, date first seen, date rendered
-        # self.path , date-first-seen, if rendered datetime.now
         return True
 
 
@@ -350,7 +350,7 @@ def _sort_entries(entries):
     return list(reversed(sorted(entries, key=operator.attrgetter('date'))))
 
 
-def render_archive(entries, render_to=None):
+def render_archive(entries):
     """
     This function creates the archive page
 
@@ -363,15 +363,16 @@ def render_archive(entries, render_to=None):
     Until now, this was parsed from each entry YAML...
     It would be more convinient to read this from the DB.
 
-    This requires changes for the database
+    This requires changes for the database.
     """
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
     context['entries'] = entries[ARCHIVE_SIZE:]
     template = jinja_env.get_template('archive_index.html')
     html = template.render(context)
-    if not render_to:
-        render_to = "%s/archive/index.html" % CONFIG['output_to']
-        dir_util.mkpath("%s/archive" % CONFIG['output_to'])
+    try:
+        os.makedirs(os.path.join(CONFIG['output_to'], 'archive'))
+    except OSError:
+        pass
 
     destination = codecs.open("%s/archive/index.html" % CONFIG[
                               'output_to'], 'w', CONFIG['content_encoding'])
@@ -465,7 +466,8 @@ def new_build():
 
     # update archive
     print "updating archive"
-    # TODO
+    render_archive(_sort_entries([Entry(p['filename'])
+                                  for p in DB.posts.all()]))
 
 
 
