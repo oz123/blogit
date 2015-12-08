@@ -15,15 +15,15 @@ margin-top:-20px;
 }
 h2.loc
 {
-margin-left:150px; 
-margin-right:800px;  
+margin-left:150px;
+margin-right:800px;
 }
 </style>
 <body class=loc>
 <h2 class=loc> This is an archive of everything posted here ...</h2>
 {% block content %}
   {% for entry in entries %}
-    <p class="margin">{{ entry.published_html }} <a title="{{ permalink }}" href="{{entry.permalink}}"> {{ entry.title }}</a> </p>
+    <p class="margin">{{ entry.published_html }} <a title="{{ entrý.permalink }}" href="{{entry.permalink}}"> {{ entry.title }}</a> </p>
   {% endfor %}
 {% endblock %}
 {% include 'sidebar.html' %}
