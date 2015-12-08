@@ -255,12 +255,12 @@ class Entry(object):
         if renderer == 'md2':
             return markdown2.markdown(self.body, extras=['fenced-code-blocks',
                                                          'hilite',
-                                                         "tables"])
+                                                         'tables'])
         if renderer == 'md1':
             return markdown.markdown(self.body,
                                      extensions=['fenced_code',
                                                  'codehilite(linenums=False)',
-                                                  'tables'])
+                                                 'tables'])
 
     @property
     def permalink(self):
