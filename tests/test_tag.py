@@ -34,5 +34,9 @@ def test_tag():
     t.posts = [1,2,3]
     t.render()
 
+import pytest
 
-
+def test_raises():
+    t = Tag('python')
+    with pytest.raises(ValueError):
+        t.posts = 1

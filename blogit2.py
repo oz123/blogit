@@ -566,7 +566,8 @@ def dist(SOURCEDIR=os.getcwd()+"/content/",
     sp.call(["rsync", "-avP", SOURCEDIR, DESTDIR], shell=False,
             cwd=os.getcwd())
 
-if __name__ == '__main__':
+
+def main():
     parser = argparse.ArgumentParser(
         description='blogit - a tool to blog on github.')
     parser.add_argument('-b', '--build', action="store_true",
@@ -599,3 +600,6 @@ if __name__ == '__main__':
         new_post()
     if args.publish:
         publish()
+
+if __name__ == '__main__':
+    main()
