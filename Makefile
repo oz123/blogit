@@ -45,7 +45,7 @@ test-all:
 	tox
 
 coverage-run:
-	py.test -vv --cov=blogit2.py tests
+	py.test -vv --cov=blogit tests
 	#coverage report -m
 	#@coverage html
 
