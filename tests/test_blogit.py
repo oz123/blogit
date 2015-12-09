@@ -1,8 +1,8 @@
 import os
 import shutil
 from tinydb import Query
-from blogit.blogit2 import find_new_posts, DataBase, Entry, Tag
-from blogit.blogit2 import CONFIG, new_build
+from blogit.blogit import find_new_posts, DataBase, Entry, Tag
+from blogit.blogit import CONFIG, new_build
 
 
 post_dummy = """title: Blog post {}
