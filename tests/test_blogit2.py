@@ -84,8 +84,6 @@ def create_last_post():
 def test_new_build2():
     create_last_post()
     new_build()
-    # bug: creating a new post with existing tags
-    # removes older tags ...
 
 try:
     os.unlink('blogit.db')

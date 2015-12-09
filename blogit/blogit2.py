@@ -138,15 +138,13 @@ class Tag(object):
             post = DB.posts.get(eid=id)
             if not post:  # pragma: no coverage
                 raise ValueError("no post found for eid %s" % id)
-            entry = Entry(os.path.join(CONFIG['content_root'],
-                                       post['filename']))
+            entry = Entry(post['filename'])
             _entries.append(entry)
         return _entries
 
     def render(self):
         """Render html page and atom feed"""
-        self.destination = "%s/tags/%s" % (CONFIG['output_to'],
-                self.slug)
+        self.destination = "%s/tags/%s" % (CONFIG['output_to'], self.slug)
         template = jinja_env.get_template('tag_index.html')
         try:
             os.makedirs(self.destination)
@@ -186,8 +184,8 @@ class Entry(object):
         return kls(f)
 
     def __init__(self, path):
-        path = os.path.basename(path)
-        self.path = path
+        self._path = path
+        self.path = path.split(CONFIG['content_root'])[-1]
         self.entry_template = jinja_env.get_template("entry.html")
         self.prepare()
 
@@ -203,7 +201,7 @@ class Entry(object):
 
     @property
     def abspath(self):
-        return os.path.abspath(os.path.join(CONFIG['content_root'], self.path))
+        return self._path
 
     @property
     def destination(self):
@@ -388,14 +386,15 @@ def find_new_posts(posts_table):
     for root, dirs, files in os.walk(CONFIG['content_root']):
         for filename in files:
             if filename.endswith(('md', 'markdown')):
-                if not posts_table.contains(Posts.filename == filename):
-                    post_id = posts_table.insert({'filename': filename})
-                    yield post_id, filename
+                fullpath = os.path.join(root, filename)
+                if not posts_table.contains(Posts.filename == fullpath):
+                    post_id = posts_table.insert({'filename': fullpath})
+                    yield post_id, fullpath
 
 
 def _get_last_entries():
     eids = [post.eid for post in DB.posts.all()]
-    eids = sorted(eids, reverse=True)[-10:]
+    eids = sorted(eids)[-10:][::-1]
     entries = [Entry(DB.posts.get(eid=eid)['filename']) for eid in eids]
     return entries
 
@@ -443,7 +442,7 @@ def new_build():
     root = CONFIG['content_root']
     for post_id, post in find_new_posts(DB.posts):
         try:
-            entry = Entry(os.path.join(root, post))
+            entry = Entry(post)
             if entry.render():
                 entries.append(entry)
                 for tag in entry.tags:
