@@ -11,6 +11,19 @@ img {
     margin:0 auto;
 }
 
+pre {
+font-size: 90%;
+background: inherit;
+color: #93a1a1;
+}
+
+pre code { 
+    font-size: 90%;
+    background: inherit;
+    
+}
+
+
 html>body {font-size:18px;
            /*line-height:28px;*/
 
@@ -68,39 +81,6 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover {
     border:none;
 }
 
-/*pre code, pre {
-    font-family: "Ubuntu Mono", "Inconsolata", "Consolas", "Monaco", "Droid Sans Mono", "Bitstream Vera Mono", monospace;
-    font-style:normal;
-    background: #ADD8E6;
-    width: 99%;
-    overflow: auto;
-}*/
-
-/*
-pre {
-    margin:0 !important;
-    padding:0 !important;
-    background: #002B36 url(../img/noise.png) repeat-x !important;
-}
-*/
-
-pre {
-font-size: 90%;
-}
-
-pre code {
-    font-size: 90%;
-    background:inherit;
-}
-
-/*
-code {
-    font-family: "Ubuntu Mono", "Inconsolata", "Consolas", "Monaco", "Droid Sans Mono", "Bitstream Vera Mono", monospace;
-    font-style:italic;
-    background: #ADD8E6;
-    padding: 0 2px;
-}
-*/
 
 li {
     margin-top:-6px;
