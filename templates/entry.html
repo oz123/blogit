@@ -1,18 +1,11 @@
 {% extends "base.html" %}
-{% block page_title %} {{ entry.title }} {% endblock %}
-{% block header %}
-<div class="published"><a href="{{site_url}}">{{ entry.author }}</a> &ndash; {{ entry.published_html }}</div>
-<h1>{{ entry.title }}</h1>
-{% endblock %}
+{% block title %} {{ entry.title }} {% endblock %}
 {% block content %}
-<div class="body">
+<div class="index">
+<div id="header" class="published"><a href="{{site_url}}">{{ entry.author }}</a> &ndash; {{ entry.published_html }}</div>
+<h1>{{ entry.title }}</h1>
   {{ entry.body_html }}
-</div>
-<div class="meta">
-  {% if entry.kind == 'link' %}
-  <div class="link-url"><a href="{{ entry.url }}">continue reading on {{ entry.domain_name }}</a></div>
-  {% endif %}
-</div>
+
 <div class="tags">
   <p>This entry was tagged
   {% for tag in entry.tags %}
@@ -22,8 +15,11 @@
 <div id="underpost">
   <h3>Discussions/Feedback.</h3>
 </div>
-<!--creadet by entry.html-->
+</div>
 {% include 'discuss.html' %}
-{% endblock %}
+{% endblock content %}
 
-
+{% block body %}
+{{ super() }}
+{% set static_prefix = "../../" %}
+{% endblock body %}

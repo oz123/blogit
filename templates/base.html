@@ -1,37 +1,74 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" 
+{% set static_prefix = static_prfeix | default("/") %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html>
-<head>
-  <title>{% block page_title %} Home {% endblock %} &raquo; oz123.github.com</title>
-  <link rel="stylesheet" type="text/css" href="/media/css/pygments_style.css" media="screen" /> 
-  <link rel="stylesheet" type="text/css" href="/media/css/site.css" media="screen" /> 
-  {% block css %}{% endblock %}
-  <link href="{% block head_feed_link %}/atom.xml{% endblock %}" type="application/atom+xml" rel="alternate" title="{% block head_feed_title %}Oz's github &raquo; Oz's Weblog{% endblock %}" /> 
-  <link rel="stylesheet" type="text/css" media="screen" href="http://www.devslide.com/public/labs/browser-detection/browser-detection.css" />
-    <script type="text/javascript">
-    <!--[if IE]>
-    window.location.href = "http://oz123.github.com/explorer.html";
-    <![endif]-->
-</script>
-</head>
-<body>
-<div id="page" class="loading">
-<!-- This block contains the header information of each post -->
-  <div id="header">
-    {% block header %}
-    {% endblock %}
-  </div>
+<html lang="en">
+  {% block head %}
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{{ site_url }}{% endblock %}</title>
+    {% block css %}
+    <link href="{{ static_prefix }}media/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ static_prefix }}media/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ static_prefix }}media/css/pygments_style.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="{{ static_prefix }}media/css/site.css" media="screen" />
+    {% endblock css %}
+  </head>
+  {% endblock head %}
+  {% block body %}
+  <body>
+    <div class="container-fluid">
+	<div class="row" style="padding-top: 10px">
+		<div class="col-lg-1 col-md-1">
+		</div>
+		<div class="col-lg-1 col-md-1 col-sm-2">
+		{% block navbar %}
+		<div class="sidebar-nav">
+			<div class="navbar navbar-default" role="navigation">
+			<div class="navbar-header">
+				<button type="button" class="navbar-left navbar-toggle" data-toggle="collapse" data-target=".sidebar-navbar-collapse">
+				<span class="sr-only">Toggle navigation</span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				</button>
+      <span class="visible-xs navbar-brand">menu</span>
+			</div>
 
-  <div id="content">
-    {% block content %}
-    {% endblock %}
+      <div id="menu">
+			<div class="navbar-collapse collapse sidebar-navbar-collapse">
+				{% block photo %}<div id="profile"><img src="{{ static_prefix }}media/img/me.png"></div>{% endblock %}
+				<a title="Home" href="/">home</a>
+				<a title="About" class="about" href="about.html">about</a>
+				<a title="Archive" class="archive" href="archive">archive</a>
+				<a title="Atom feeds" href="atom.xml">atom</a>
+				<a title="Twitter" href="https://twitter.com/#!/OzNTiram">twitter</a>
+				<a title="Stackoverflow" href="http://stackoverflow.com/users/492620/oz123">stackoverflow</a>
+				<a title="Github" href="https://github.com/oz123">github</a>
+			</div><!--/.nav-collapse -->
+			</div>
+      </div>
+		</div>
+		{% endblock navbar %}
+		</div> <!-- end of colum -->
+		<div class="col-lg-7 col-md-7 col-sm-10">
+			{% block content %}
+			{% endblock content %}
+		<div id="footer">
+			<p>&copy; Oz Nahum Tiram 2012. Some Rights Reserved</p>
+		</div>
+		</div><!-- end column-->
+		<div class="col-lg-3">
+		</div>
+	</div>
   </div>
-  <div id="footer">
-    <p>&copy; Oz Nahum Tiram 2012. Some Rights Reserved</p>
-  </div>
-</div>
-
-{% include 'sidebar.html' %}
-{% include 'google_analytics.html' %}
-</body>
+  {% block scripts %}
+    <script src="{{ static_prefix }}media/js/jquery.min.js"></script>
+    <script src="{{ static_prefix }}media/js/bootstrap.min.js"></script>
+    <script src="{{ static_prefix }}media/js/scripts.js"></script>
+  {% endblock scripts %}
+  </body>
+  {% endblock body %}
 </html>
+

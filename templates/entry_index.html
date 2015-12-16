@@ -1,35 +1,23 @@
 {% extends "base.html" %}
-{% block header %}
-{% endblock %}
 {% block content %}
-<div id="index">
+<div class="index">
   {% for entry in entries %}
-    <div class="clearfix entry kind-{{ entry.kind }}">
-      {% if entry.kind == 'link' %}
-        {% set permalink = entry.url %}
-      {% else %}
-        {% set permalink = entry.permalink %}
-      {% endif %}
-      <h2> <a title="Goes to &rarr; {{ permalink }}" href="{{ permalink }}"> {{ entry.title }}</a></h2>
-      <div class="clearfix">
-        <div class="published">{{ entry.published_html }} </div>
-        <div class="tags">
-          tagged:
-          {% for tag in entry.tags %}
-          <a class="tag" href="/tags/{{ tag.slug }}"><span>{{ tag.name }}</span></a>{% if not loop.last %}, {% endif %}
-          {% endfor %}
-        </div>
-      </div>
-      <div class="clearfix summary">{{ entry.summary_html }}</div>
-      <div class="meta">
-        {% if entry.kind == 'link' %}
-        <div class="link-url"><a href="{{ permalink }}">continue reading on {{ entry.domain_name }}&hellip;</a></div>
-        {% else %}
-        <div class="link-url"><a href="{{ permalink }}"> continue reading&hellip;</a></div>
-        {% endif %}
-        <div class="permalink"><a title="Permalink to: {{ entry.title }}" href="{{ entry.permalink }}"><span>&para;</span></a></div>
-      </div>
-    </div><!--/.entry-->
-  {% endfor %}
-</div><!--/#listing-->
+  <div class="clearfix entry">
+	 <h2><a title="Goes to &rarr; {{ entry.permalink }}" href="{{ entry.permalink }}">{{ entry.title }}</a></h2>
+	<div class="clearfix"> 
+    <div class="date-published">{{ entry.published_html }}</div>
+		<div class="tags">tagged:
+		  {% for tag in entry.tags %}
+		   <a class="tag" href="/tags/{{ tag.slug }}"><span>{{ tag.name }}</span></a>{% if not loop.last %}, {% endif %}
+		   {% endfor %}
+		</div>
+     </div>
+     <p>{{ entry.summary }}</p>
+
+	<div class="link-url"><p><a href="{{ entry.permalink }}">continue reading ...</a></p></div>
+	<div class="permalink"><a title="Permalink to: {{ entry.title }}" href="{{ entry.permalink }}"><span>&para;</span></a></div>
+			
+   </div>
+   {% endfor %}
+</div>
 {% endblock %}
