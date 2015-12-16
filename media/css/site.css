@@ -1,42 +1,24 @@
-.wf-loading { 
-  /*visibility: hidden; */
-}
-.wf-active, .wf-inactive {
-  visibility: visible; 
-}
-
-.clearfix:before,
-.clearfix:after {
-    content:"";
-    display:table;
-}
-
-.clearfix:after {
-    clear:both;
-}
-
-/* For IE 6/7 (trigger hasLayout) */
-.cf {
-    zoom:1;
-}
-
 body {
     font: normal 18px/28px "Gentium Basic", Gentium, Palatino, Georgia, serif;
-    font-family:    
+    font-family:
     color:#444;
     padding:0;margin:0;
-    background: #fff; 
+    background: #fff;
+		font-size: 90%
 }
 img {
     max-width:680px;
     margin:0 auto;
 }
 
-html>body {font-size:18px; line-height:28px;}
+html>body {font-size:18px;
+           /*line-height:28px;*/
+
+		}
 
 a {
     text-decoration:none;
-    color:#2760BF; 
+    color:#2760BF;
 }
 
 a:hover {
@@ -86,186 +68,90 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover {
     border:none;
 }
 
-pre code, pre {
+/*pre code, pre {
     font-family: "Ubuntu Mono", "Inconsolata", "Consolas", "Monaco", "Droid Sans Mono", "Bitstream Vera Mono", monospace;
     font-style:normal;
-}
+    background: #ADD8E6;
+    width: 99%;
+    overflow: auto;
+}*/
 
+/*
 pre {
     margin:0 !important;
     padding:0 !important;
     background: #002B36 url(../img/noise.png) repeat-x !important;
 }
+*/
 
-pre code { 
-    font-size: inherit;
-       /* background:inherit;*/
+pre {
+font-size: 90%;
 }
 
+pre code {
+    font-size: 90%;
+    background:inherit;
+}
+
+/*
 code {
     font-family: "Ubuntu Mono", "Inconsolata", "Consolas", "Monaco", "Droid Sans Mono", "Bitstream Vera Mono", monospace;
     font-style:italic;
-    background: #eee;
-        padding: 0 0px;
+    background: #ADD8E6;
+    padding: 0 2px;
 }
+*/
 
 li {
     margin-top:-6px;
 }
 
 
-table
-{
-    font-family: Ubuntu, Helvetica, Arial, sans-serif;
-    font-size: 14px;
-    background: #fff;
-    min-width: 380px;
-    border-collapse: collapse;
-    border: 1px solid #ddd;
-    text-align: left;
-    overflow:auto;
-}
-table th
-{
-    font-size: 16px;
-    font-weight:normal;
-    padding: 10px 8px 6px;
-    border: 1px solid #ddd;
-    background: #eee;
-    
-}
-table td
-{
-    border: 1px solid #ccc;
-    padding: 6px 8px;
-}
-table tbody tr:hover 
-{
-    background:#eee;
-}
-
-blockquote {
-    margin: 1em 2em;
-    border-left: 2px solid #999;
-    font-style:oblique;
-    padding-left: 1em;
-}
-blockquote p:first-letter {
-    float: left;
-    margin: .2em .1em .1em 0;
+h1, h2, h3, h4 {
     font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;
-    font-size: 260%;
-    font-weight: bold; 
 }
-blockquote p:first-line {
-    font-weight:bold;
-}
-
-
-#page {
-    width:712px;
-    margin-left: 128px;
+h2, h3, h4 {
+    border-bottom: 1px solid #eee;
+    color: #444;
+    font-weight: bold;
 }
 
-.in_progress {
-    background:#fff url(../img/in_progress.png);
+h1 {
+    font-size:45px;
+    line-height:50px;
 }
 
-
-#archive {
-    margin-left: 3.5cm
+h2 {
+    font-size:32px;
+    line-height:50px;
 }
 
-#nav {
-    margin:0;
-    margin-right: 70px
-    text-align:left;
-    position:fixed;
-    left: 0;
-    top: 6px;
-    font-family: Ubuntu, Helvetica, Arial, sans-serif;
-    opacity: 0.5;
-    height: 100%;
-    -moz-transition: opacity 0.5s ease-in;
-    -webkit-transition: opacity 0.5s ease-in;
-    -o-transition: opacity 0.5s ease-in;
-    transition: opacity 0.5s ease-in;
+h3 {
+    font-size:23px
+    line-height:25px;
 }
 
-#nav:hover {
-    opacity:1.0;
+h4 {
+    font-size:18px;
+    line-height:25px;
 }
 
-#nav a {
-    text-align:left;
-    display:block;
-    border:none;
-    font-size: 13px;
-    line-height:22px;
-    background: #f0f0f5;
-    color:#333;
-    padding:0 6px 0 8px;
-    margin:2px 0px;
-}
-#nav img { margin:3px;border-radius:5px; }
-#nav .spacer {
-}
-#nav a:hover {
-    background-color:#333;
-    color:#fff;
-}
-
-
-
-#header {
-    text-align:left;
-    font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;
+h1 a, h2 a, h3 a, h4 a {
     color:#444;
 }
 
-#header  a{
-    color:#40a2ff;
-}
-#header  a:hover {
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover {
+    color:#4183c4;
     text-decoration:none;
-}
-#header h1 {
-}
-#sitename h1{
-    margin:0px;
-    padding:0;
-    font-size: 32px;
-}
-#sitename h1 a{
-    color:#ddd;
     border:none;
 }
 
-#sidebar {
-    position:absolute;
+.entry {
+		font-size: 90%;
+    line-height: 1.44;
 }
 
-#content {
-    font-family: "Gentium Basic", Gentium, Palatino, Georgia, serif;
-    padding-left:13px;
-}
-
-#index {
-    margin:20px 0;
-}
-
-
-
-#index .entry {
-    margin-bottom:24px;
-}
-
-#index .entry h3 {
-    margin:0;
-    color:#555;
-}
-
-#index .entry h2 {
+.entry h2 {
     border-bottom:1px solid #e1d1c1;
     margin:0;
     font-weight:bold;
@@ -273,37 +159,150 @@ blockquote p:first-line {
     line-height:42px;
 }
 
-#index .entry .summary {
-    margin:0px;
+
+div.popup .content .image img {
+    max-width:100%;
 }
 
-#index .entry p {
+
+
+@media (min-width: 768px) {
+  .sidebar-nav .navbar .navbar-collapse {
+	padding: 0;
+	max-height: none;
+	font-size: 13px;
+    width: 105px;
+	border-radius:5px;
+  }
+  .sidebar-nav .navbar ul {
+	float: none;
+  }
+  .sidebar-nav .navbar ul:not {
+	display: block;
+
+  }
+  .sidebar-nav .navbar li {
+	float: none;
+	display: block;
+  }
+  .sidebar-nav .navbar li a {
+	padding-top: 12px;
+	padding-bottom: 12px;
+  }
 }
 
-#index .entry .published {
-    font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;
-    padding-right:23px;
-    font-size:14px;
-    float:left;
+
+@media (max-width: 768px) {
+
+ #profile {
+    display: none;
+  }
+
+ .index {margin-left: 0px;}
+
 }
 
-#index .entry .meta {
+
+@media (max-width: 992px) {
+
+
+ .index {margin-left: 0px;}
+
+  #menu {
+    margin-right: -50px;
+    float: right}
+}
+
+
+@media (min-width: 768px) {
+  /* uncomment if you would like the menu to be fixed */
+	.navbar {
+	position: fixed;
+	width: 104px;
+	z-index: 2;
+  }
+
+  .navbar-default {
+	background: white;
+    border: white}
+
+  .index {margin-left: 20px;}
+}
+
+
+
+@media (min-width: 992px) {
+  .navbar {
+	width: 104px;
+  }
+
+  .index {margin-left: 2em;}
+}
+
+@media (min-width: 1200px) {
+  .navbar {
+		width: 104px;
+  }
+
+ .index {margin-left: 30px;}
+
+
+}
+
+.sidebar-nav .navbar-header{ float: none; }
+
+
+.navbar-toggle.navbar-left {
+  float: left;
+  margin-left: 10px;
+}
+
+.sidebar-nav a {
+	text-align:left;
+	display:block;
+	border:none;
+	font-size: 13px;
+	line-height:22px;
+	background: #f0f0f5;
+	color:#333;
+	padding:0 6px 0 8px;
+	margin:2px 0px;
+	border-radius:5px;
+
+}
+
+.sidebar-nav img { margin-top: 3px;
+	margin-bottom: 3px;
+	border-radius:5px; }
+
+.clearfix:before,
+.clearfix:after {
+    content:"";
+    display:table;
+}
+
+.clearfix:after {
     clear:both;
-    height:35px;
 }
 
-#index .entry .meta .link-url{
-    font-style:italic;
-    float:left;
+.link-url {
+	font-style:italic;
+	float:left;
+	padding-left: 0px;
 }
 
-#index .entry .meta .permalink{
+.link-url a{
+	font-size: 90%;
+}
+
+.permalink{
     font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;
     font-size: 14px;
     text-align:center;
     float:right;
 }
-#index .entry .meta .permalink a{
+
+.entry .meta .permalink a{
     text-decoration:none;
     display:block;
     margin:5px 10px;
@@ -311,35 +310,17 @@ blockquote p:first-line {
     border-radius:5px;
 }
 
-#index .entry .meta .permalink a:hover {
-    background-color:#222;
-    color:#fff;
-}
-
-.entry-full .meta .source,
-#index .entry .meta .source{
-}
-
-.entry-full .tags,
-#index .entry .tags{
-    font-style:italic;
-    float:right;
-}
-
-#header .published {
+.date-published {
     font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;
-    font-weight:700;
-    text-align:left;
-    margin-top:18px;
-    margin-bottom:-22px;
-    border-bottom:1px solid #444;
+    padding-right:23px;
+		float:left;
+		font-size: 80%;
 }
 
-#header .published a { color:#444;}
-
-.tags {
-    text-align:right;
-    font-style:italic;
+.tags{
+  font-style:italic;
+  float:right;
+	margin-bottom: 10px;
 }
 
 #footer {
@@ -350,68 +331,18 @@ blockquote p:first-line {
     color:#444;
 }
 
-#comments {
-    font-size:16px;
-    font-style:italic;
-    padding: 0px 20px;
-    margin-top:30px;
+#underpost {
+    font-size: 0.85em;
+    margin-top: 120px;
 }
 
-h1.tag_name img {
-    margin:0;
-}
-
-a.tag_feed_icon {
-    margin-top:25px;
-}
-
-
-div.popup .content .image img {
-    max-width:100%;
-}
-
-#about {
-    display:none;
-}
-
-#about_me {
-    width:621px;
-}
-#about_me p {
-    margin-top: 0px;
-}
-#about_me img.me {
-    border: 3px solid #aaa;
-    margin:8px 0 0;
-}
-
-#about_me label{
-background: none repeat scroll 0 0 #AAAAAA;
-color: #444444 !important;
-font-family: "Yanone Kaffeesatz",Ubuntu,Helvetica,Arial,sans-serif;
-font-size: 14px;
-font-weight: bold;
-padding: 2px 6px;
-position: relative;
-top: -270px;
-}
-
-
-.codehilite {
-    background: #002B36 url(../img/code_top_bg.png) repeat-x !important;
-    padding:40px 10px 20px 20px;
-    border-radius: 0 0 5px 5px;
-    line-height:0.78em;
-    overflow:auto;
-    font-size:0.3em !important;
-    border-radius: 5px;
-    max-width: 99%;
-    margin: -15px auto auto;
-}
-
-.tipsy {
-    font-family:Ubuntu, Helvetica, Arial, sans-serif;
-    font-weight: bold;
+.published {
+    font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;
+    font-weight:700;
+    text-align:left;
+    margin-top:18px;
+    margin-bottom:-22px;
+    border-bottom:1px solid #444;
 }
 
 .published a {
@@ -419,10 +350,5 @@ top: -270px;
 }
 
 .published a:hover {
-    color:#2760BF; 
-}
-
-#underpost {
-    font-size: 0.85em;
-    margin-top: 120px;
+    color:#444;;
 }
