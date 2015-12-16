@@ -211,11 +211,11 @@ div.popup .content .image img {
   #menu {
     margin-right: -50px;
     float: right}
+
 }
 
 
 @media (min-width: 768px) {
-  /* uncomment if you would like the menu to be fixed */
 	.navbar {
 	position: fixed;
 	width: 104px;
@@ -227,6 +227,7 @@ div.popup .content .image img {
     border: white}
 
   .index {margin-left: 20px;}
+
 }
 
 
@@ -237,6 +238,8 @@ div.popup .content .image img {
   }
 
   .index {margin-left: 2em;}
+  
+
 }
 
 @media (min-width: 1200px) {
@@ -245,7 +248,6 @@ div.popup .content .image img {
   }
 
  .index {margin-left: 30px;}
-
 
 }
 
@@ -331,10 +333,6 @@ div.popup .content .image img {
     color:#444;
 }
 
-#underpost {
-    font-size: 0.85em;
-    margin-top: 120px;
-}
 
 .published {
     font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;
@@ -351,4 +349,9 @@ div.popup .content .image img {
 
 .published a:hover {
     color:#444;;
+}
+
+#underpost {
+	font-size: 0.85em;
+	margin-top: 120px;
 }
