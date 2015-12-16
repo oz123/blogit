@@ -335,3 +335,11 @@ div.popup .content .image img {
 	font-size: 0.85em;
 	margin-top: 120px;
 }
+
+.archive h2 {
+	margin-bottom: 25px;
+}
+.archive p {
+	margin-top:-20px;
+}
+

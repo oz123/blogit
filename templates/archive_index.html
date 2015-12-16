@@ -1,35 +1,14 @@
-<html>
-<head>
-  <title> Archive &raquo; oz123.github.com</title>
-  <link rel="stylesheet" type="text/css" href="../media/css/pygments_style.css" media="screen" />
-  <link rel="stylesheet" type="text/css" href="../media/css/site.css" media="screen" />
-<style>
-body.loc
-{
-margin-top:50px;
-}
-p.margin
-{
-margin-left:150px;
-margin-top:-20px;
-}
-h2.loc
-{
-margin-left:150px;
-margin-right:800px;
-}
-</style>
-<body class=loc>
-<h2 class=loc> This is an archive of everything posted here ...</h2>
+{% extends "base.html" %}
+{% block title %} Archive &raquo; oz123.github.com {% endblock %}
 {% block content %}
+<div class="archive index">
+<h2>This is an archive of everything posted here ...</h2>
   {% for entry in entries %}
-    <p class="margin">{{ entry.published_html }} <a title="{{ entry.permalink }}" href="{{entry.permalink}}"> {{ entry.title }}</a> </p>
+    <p>{{ entry.published_html }}<a title="{{ entry.permalink }}" href="{{entry.permalink}}"> {{ entry.title }}</a></p>
   {% endfor %}
-{% endblock %}
-{% include 'sidebar.html' %}
-
-{{google_analytics}}
-
-
-</body>
-</html>
+</div>
+{% endblock content %}
+{% block body %}
+{{ super() }}
+{% set static_prefix = "../../" %}
+{% endblock body %}
