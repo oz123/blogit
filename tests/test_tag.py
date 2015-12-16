@@ -13,10 +13,33 @@ public: yes
 chronological: yes
 kind: writing
 summary: |
-    This is a summry of post {}
-     ...
+    This is a summry of post {}. Donec id elit non mi porta gravida at eget metus. Fusce dapibus
+    ...
 
-This is the body of post {}
+This is the body of post {}. Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. 
+
+This is a snippet in bash
+
+```bash
+$ for i in `seq 1 10`; do
+   echo $i
+done
+
+VAR="variable"
+echo ${VAR}
+```
+
+This is a snippet in python
+
+```
+def yay(top):
+    for i in range(1, top+1):
+		yield i
+```
+
+for i in yay:
+    print(i)
+```
 """
 
 def create_posts():
