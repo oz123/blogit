@@ -189,8 +189,8 @@ div.popup .content .image img {
  .index {margin-left: 0px;}
 
   #menu {
-    margin-right: -50px;
-    float: right}
+    margin-left: 10px;
+    float: center;}
 
 }
 
@@ -218,7 +218,11 @@ div.popup .content .image img {
   }
 
   .index {margin-left: 2em;}
-  
+
+   #profile {
+    margin-left: 20px;
+  }
+
 
 }
 
@@ -342,4 +346,3 @@ div.popup .content .image img {
 .archive p {
 	margin-top:-20px;
 }
-
