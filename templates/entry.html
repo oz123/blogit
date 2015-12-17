@@ -7,9 +7,15 @@
   {{ entry.body_html }}
 <div class="tags">
   <p>This entry was tagged
-  {% for tag in entry.tags %}
-  <a class="tag" href="/tags/{{ tag.slug }}"><span>{{ tag.name }}</span></a>{% if not loop.last %}, {% endif %}
-  {% endfor %}
+  {% for tag in entry.tags %}<a class="tag" href="/tags/{{ tag.slug }}"><span>{{ tag.name }}</span></a>{% if not loop.last %}, {% endif %}{% endfor %}
+</div>
+<div id="social-btns" style="margin-top: 50px; margin-bottom: 0px">
+	<h4>Share this post:</h4> 
+	<i class="fa fa-linkedin-square fa-2x"></i>
+	<i class="fa fa-facebook-square fa-2x"></i>
+	<i class="fa fa-twitter-square fa-2x"></i>
+	<i class="fa fa-google-plus-square fa-2x"></i>
+	<i class="fa fa-envelope-square fa-2x"></i>
 </div>
 <div id="underpost">
   <h3>Discussions/Feedback.</h3>
