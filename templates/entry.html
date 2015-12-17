@@ -6,7 +6,7 @@
 <h1>{{ entry.title }}</h1>
   {{ entry.body_html }}
 <div class="tags">
-  <p>This entry was tagged
+  <p>This entry was tagged:
   {% for tag in entry.tags %}<a class="tag" href="/tags/{{ tag.slug }}"><span>{{ tag.name }}</span></a>{% if not loop.last %}, {% endif %}{% endfor %}
 </div>
 <div id="social-btns" style="margin-top: 50px; margin-bottom: 0px">
