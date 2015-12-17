@@ -75,7 +75,8 @@ import tinydb
 from tinydb import Query
 sys.path.insert(0, os.getcwd())
 from conf import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS
-jinja_env = Environment(loader=FileSystemLoader(CONFIG['templates']))
+jinja_env = Environment(lstrip_blocks=True, trim_blocks=True,
+                        loader=FileSystemLoader(CONFIG['templates']))
 
 
 class DataBase(object):
