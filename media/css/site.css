@@ -299,16 +299,20 @@ div.popup .content .image img {
 .date-published {
     font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;
     padding-right:23px;
-		float:left;
-		font-size: 80%;
+	float:left;
+	font-size: 80%;
 }
 
-.tags{
+.tag {
   font-style:italic;
-  float:right;
-	margin-bottom: 10px;
+  float:right; 
+  margin-bottom: 10px;
+  font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;
 }
 
+.tag a{
+  font-weight: bold;
+}
 #footer {
     text-align:center;
     margin-top: 10px;
