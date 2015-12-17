@@ -108,6 +108,7 @@ done
 
 VAR="variable"
 echo $VAR
+# This is a very long long long long long long long long long long comment
 ```
 
 This is a snippet in python
