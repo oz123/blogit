@@ -2,7 +2,7 @@
 {% block title %} {{ entry.title }} {% endblock %}
 {% block content %}
 <div class="index">
-<div id="header" class="published"><a href="{{site_url}}">{{ entry.author }}</a> &ndash; {{ entry.published_html }}</div>
+<div id="header" class="published"><a href="{{site_url}}">{{ entry.author }}</a> &ndash; {{ entry.publish_date }}</div>
 <h1>{{ entry.title }}</h1>
   {{ entry.body_html }}
 <div class="tags">

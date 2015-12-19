@@ -231,9 +231,7 @@ class Entry(object):
         return summarya+more
 
     @property
-    def published_html(self):
-        if self.kind in ['link', 'note', 'photo']:
-            return self.header['published'].strftime("%B %d, %Y %I:%M %p")
+    def publish_date(self):
         return self.header['published'].strftime("%B %d, %Y")
 
     @property
@@ -285,7 +283,7 @@ class Entry(object):
     def prepare(self):
         file = codecs.open(self.abspath, 'r')
         self.header = self._read_header(file)
-        self.date = self.header['published']
+        self.date = self.header.get('published', datetime.date.today())
         for k, v in self.header.items():
             try:
                 setattr(self, k, v)
@@ -297,15 +295,6 @@ class Entry(object):
         self.body = ''.join(body)
         file.close()
 
-        if self.kind == 'link':
-            from urlparse import urlparse
-            self.domain_name = urlparse(self.url).netloc
-        elif self.kind == 'photo':
-            pass
-        elif self.kind == 'note':
-            pass
-        elif self.kind == 'writing':
-            pass
 
     def render(self):
         if not self.header['public']:
@@ -332,16 +321,6 @@ class Entry(object):
         destination.close()
 
         return True
-
-
-class Link(Entry):  # pragma: no coverage
-    def __init__(self, path):
-        super(Link, self).__init__(path)
-
-    @property
-    def permalink(self):
-        print "self.url", self.url
-        return self.url
 
 
 def _sort_entries(entries):
