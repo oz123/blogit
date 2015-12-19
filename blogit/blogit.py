@@ -405,8 +405,52 @@ def update_index():
 
 
 def new_build():
-find_new_items
+    """
 
+        a. For each new post:
+        1. render html
+        2. find post tags
+        3. update atom feeds for old tags
+        4. create new atom feeds for new tags
+
+    b. update index page
+    c. update archive page
+
+    """
+    print
+    print "Rendering website now..."
+    print
+    print " entries:"
+    entries = list()
+    tags = dict()
+    root = CONFIG['content_root']
+    for post_id, post in find_new_posts(DB.posts):
+        try:
+            entry = Entry(post)
+            if entry.render():
+                entries.append(entry)
+                for tag in entry.tags:
+                    tag.posts = [post_id]
+                    tags[tag.name] = tag
+            print "     %s" % entry.path
+        except Exception as e:
+            print "Found some problem in: ", post
+            print e
+            print "Please correct this problem ..."
+            sys.exit(1)
+
+    for name, to in tags.iteritems():
+        print "updating tag %s" % name
+        to.render()
+
+    # update index
+    print "updating index"
+    update_index()
+
+    # update archive
+    print "updating archive"
+    render_archive(_sort_entries([Entry(p['filename'])
+                                  for p in DB.posts.all()]))
 
 
 
