@@ -1,7 +1,7 @@
 import os
 import shutil
 from tinydb import Query
-from blogit.blogit import find_new_posts, DB, Entry, Tag
+from blogit.blogit import find_new_items, DB, Entry, Tag
 from blogit.blogit import CONFIG, new_build
 
 
@@ -16,7 +16,7 @@ summary: |
     This is a summry of post {}. Donec id elit non mi porta gravida at eget metus. Fusce dapibus
     ...
 
-This is the body of post {}. Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. 
+This is the body of post {}. Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
 
 This is a snippet in bash
 
@@ -52,10 +52,7 @@ def create_posts():
 
 
 def test_tag():
-    new =  list(find_new_posts(DB.posts))
-    t = Tag('python')
-    t.posts = [1,2,3]
-    t.render()
+find_new_items
 
 import pytest
 

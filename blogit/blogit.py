@@ -217,7 +217,7 @@ class Entry(object):
 
     @property
     def summary_html(self):
-        return "%s" % markdown2.markdown(self.header['summary'].strip())
+        return "%s" % markdown2.markdown(self.header.get('summary', "").strip())
 
     @property
     def credits_html(self):
@@ -225,14 +225,15 @@ class Entry(object):
 
     @property
     def summary_atom(self):
-        summarya = markdown2.markdown(self.header['summary'].strip())
+        summarya = markdown2.markdown(self.header.get('summary', "").strip())
         summarya = re.sub("<p>|</p>", "", summarya)
         more = '<a href="%s"> continue reading...</a>' % (self.permalink)
         return summarya+more
 
     @property
     def publish_date(self):
-        return self.header['published'].strftime("%B %d, %Y")
+        d = self.header.get('published', datetime.date.today())
+        return d.strftime("%B %d, %Y")
 
     @property
     def published_atom(self):
@@ -265,7 +266,10 @@ class Entry(object):
 
     @property
     def tags(self):
-        return [Tag(t) for t in self.header['tags']]
+        try:
+            return [Tag(t) for t in self.header['tags']]
+        except KeyError:
+            return []
 
     def _read_header(self, file):
         header = ['---']
@@ -358,7 +362,7 @@ def render_archive(entries):
     destination.close()
 
 
-def find_new_posts(posts_table):
+def find_new_items(posts_table):
     """
     Walk content dir, put each post in the database
     """
@@ -401,52 +405,7 @@ def update_index():
 
 
 def new_build():
-    """
-
-        a. For each new post:
-        1. render html
-        2. find post tags
-        3. update atom feeds for old tags
-        4. create new atom feeds for new tags
-
-    b. update index page
-    c. update archive page
-
-    """
-    print
-    print "Rendering website now..."
-    print
-    print " entries:"
-    entries = list()
-    tags = dict()
-    root = CONFIG['content_root']
-    for post_id, post in find_new_posts(DB.posts):
-        try:
-            entry = Entry(post)
-            if entry.render():
-                entries.append(entry)
-                for tag in entry.tags:
-                    tag.posts = [post_id]
-                    tags[tag.name] = tag
-            print "     %s" % entry.path
-        except Exception as e:
-            print "Found some problem in: ", post
-            print e
-            print "Please correct this problem ..."
-            sys.exit(1)
-
-    for name, to in tags.iteritems():
-        print "updating tag %s" % name
-        to.render()
-
-    # update index
-    print "updating index"
-    update_index()
-
-    # update archive
-    print "updating archive"
-    render_archive(_sort_entries([Entry(p['filename'])
-                                  for p in DB.posts.all()]))
+find_new_items
 
 
 

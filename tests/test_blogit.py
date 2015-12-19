@@ -1,7 +1,7 @@
 import os
 import shutil
 from tinydb import Query
-from blogit.blogit import find_new_posts, DataBase, Entry, Tag
+from blogit.blogit import find_new_items, DataBase, Entry, Tag
 from blogit.blogit import CONFIG, new_build
 
 
@@ -66,7 +66,7 @@ def test_find_new_posts():
     DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
     DB._db.purge_tables()
     insert_single(DB)
-    new =  list(find_new_posts(DB.posts))
+    new =  list(find_new_items(DB.posts))
     assert len(DB.posts.all()) == 4
     assert len(new) == 3
 
