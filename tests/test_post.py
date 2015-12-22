@@ -51,9 +51,6 @@ def create_posts():
     os.chdir('..')
 
 
-def test_tag():
-find_new_items
-
 import pytest
 
 def test_raises():

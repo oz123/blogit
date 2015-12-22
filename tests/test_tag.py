@@ -52,7 +52,11 @@ def create_posts():
 
 
 def test_tag():
-find_new_items
+    new =  list(find_new_items(DB.posts))
+    t = Tag('python')
+    t.posts = [1,2,3]
+    t.render()
+
 
 import pytest
 

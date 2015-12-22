@@ -3,6 +3,7 @@ import shutil
 from tinydb import Query
 from blogit.blogit import find_new_items, DataBase, Entry, Tag
 from blogit.blogit import CONFIG, new_build
+from blogit.blogit import find_new_posts_and_pages
 
 
 post_dummy = """title: Blog post{}
@@ -85,6 +86,18 @@ def test_new_build():
     clean_posts()
     create_posts()
     new_build()
+
+
+def test_find_posts_and_pages():
+    import shutil
+    shutil.copy('tests/page.md', 'content/page.md')
+    DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit2.db'))
+    DB._db.purge_tables()
+    pp = list(find_new_posts_and_pages(DB))
+    pp2 = list(find_new_posts_and_pages(DB))
+    assert len(pp) != len(pp2)
+    assert len(pp2) == 0
+
 
 post_dummy = """title: Blog post {}
 author: Famous author
