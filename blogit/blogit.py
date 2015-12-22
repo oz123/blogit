@@ -376,6 +376,24 @@ def find_new_items(posts_table):
                     yield post_id, fullpath
 
 
+def find_new_posts_and_pages(DB):
+    """Walk content dir, put each post and page in the database"""
+    Q = Query()
+    for root, dirs, files in os.walk(CONFIG['content_root']):
+        for filename in files:
+            if filename.endswith(('md', 'markdown')):
+                fullpath = os.path.join(root, filename)
+                if not DB.posts.contains(Q.filename == fullpath) and \
+                        not DB.pages.contains(Q.filename == fullpath):
+                    e = Entry(fullpath)
+                    if e.header['kind'] == 'writing':
+                        post_id = DB.posts.insert({'filename': fullpath})
+                        yield post_id, e
+                    if e.header['kind'] == 'page':
+                        page_id = DB.pages.insert({'filename': fullpath})
+                        yield page_id, e
+
+
 def _get_last_entries():
     eids = [post.eid for post in DB.posts.all()]
     eids = sorted(eids)[-10:][::-1]
@@ -424,7 +442,7 @@ def new_build():
     entries = list()
     tags = dict()
     root = CONFIG['content_root']
-    for post_id, post in find_new_posts(DB.posts):
+    for post_id, post in find_new_items(DB.posts):
         try:
             entry = Entry(post)
             if entry.render():
