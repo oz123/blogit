@@ -47,31 +47,12 @@ import SimpleHTTPServer
 import BaseHTTPServer
 import socket
 import SocketServer
-import thread
-
-try:
-    import yaml  # in debian python-yaml
-    from jinja2 import Environment, FileSystemLoader  # in debian python-jinja2
-except ImportError, e:  # pragma: no coverage
-    print e
-    print "On Debian based system you can install the dependencies with: "
-    print "apt-get install python-yaml python-jinja2"
-    sys.exit(1)
-
-try:
-    import markdown2
-    renderer = 'md2'
-except ImportError, e: # pragma: no coverage
-    try:
-        import markdown
-        renderer = 'md1'
-    except ImportError, e:
-        print e
-        print "try: sudo pip install markdown2"
-        sys.exit(1)
-
+import yaml
+from jinja2 import Environment, FileSystemLoader
+import markdown2
 import tinydb
 from tinydb import Query
+
 sys.path.insert(0, os.getcwd())
 from conf import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS
 jinja_env = Environment(lstrip_blocks=True, trim_blocks=True,
