@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # ============================================================================
 # Blogit.py is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License, version 3
@@ -435,27 +434,21 @@ def new_build():
     c. update archive page
 
     """
+    # TODO: slug each page to it's unique location
     print
     print "Rendering website now..."
     print
     print " entries:"
-    entries = list()
     tags = dict()
     root = CONFIG['content_root']
-    for post_id, post in find_new_items(DB.posts):
-        try:
-            entry = Entry(post)
-            if entry.render():
-                entries.append(entry)
+    for post_id, post in find_new_posts_and_pages(DB):
+        entry = post
+        if post.render():
+            if post.header['kind'] in ['writing', 'link']:
                 for tag in entry.tags:
                     tag.posts = [post_id]
                     tags[tag.name] = tag
-            print "     %s" % entry.path
-        except Exception as e:
-            print "Found some problem in: ", post
-            print e
-            print "Please correct this problem ..."
-            sys.exit(1)
+        print "     %s" % entry.path
 
     for name, to in tags.iteritems():
         print "updating tag %s" % name
