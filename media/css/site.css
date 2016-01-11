@@ -122,8 +122,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover {
 }
 
 .entry {
-	font-size: 95%;
-    line-height: 1.44;
+  line-height: 1.44;
 }
 
 .entry h2 {
@@ -234,6 +233,12 @@ div.popup .content .image img {
  .index {margin-left: 30px;}
 
 }
+.index {
+		font-size: 110%;
+}
+
+.index a {font-size: 110%;
+          font-weight:bold;}
 
 .sidebar-nav .navbar-header{ float: none; }
 
@@ -276,6 +281,10 @@ div.popup .content .image img {
 	font-style:italic;
 	float:left;
 	padding-left: 0px;
+}
+
+.link-url a{
+	font-size: 110%;
 }
 
 .permalink{
