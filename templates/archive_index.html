@@ -1,10 +1,10 @@
 {% extends "base.html" %}
-{% block title %} Archive &raquo; oz123.github.com {% endblock %}
+{% block title %} Archive &raquo; {{ site_url }} {% endblock %}
 {% block content %}
 <div class="archive index">
 <h2>This is an archive of everything posted here ...</h2>
   {% for entry in entries %}
-    <p>{{ entry.published_html }}<a title="{{ entry.permalink }}" href="{{entry.permalink}}"> {{ entry.title }}</a></p>
+    <p><a title="../{{ entry.permalink }}" href="../{{entry.permalink}}">{{entry.title }}</a></p>
   {% endfor %}
 </div>
 {% endblock content %}
