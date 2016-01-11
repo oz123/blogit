@@ -186,14 +186,7 @@ class Entry(object):
 
     @property
     def destination(self):
-        # pages are rendered to the top level
-        if self.kind == 'page':
-            dest = '%s.html' % self.title.replace('/', "-")
-        else:
-            dest = "%s/%s/index.html" % (KINDS[self.kind]['name_plural'], self.name)
-            dest = dest.lstrip('/')
-        print dest
-        return os.path.join(CONFIG['output_to'], dest)
+        return os.path.join(CONFIG['output_to'], self.permalink)
 
     @property
     def title(self):
@@ -237,6 +230,17 @@ class Entry(object):
         return markdown2.markdown(self.body, extras=['fenced-code-blocks',
                                                      'hilite',
                                                      'tables'])
+
+    @property
+    def permalink(self):
+        if self.kind == 'page':
+            dest = '%s.html' % self.title.replace('/', "-")
+        else:
+            dest = "%s/%s/index.html" % (KINDS[self.kind]['name_plural'], self.name)
+            dest = dest.lstrip('/')
+
+        return dest
+
     @property
     def tags(self):
         try:
