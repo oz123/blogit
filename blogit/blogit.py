@@ -186,8 +186,12 @@ class Entry(object):
 
     @property
     def destination(self):
-        dest = "%s/%s/index.html" % (KINDS[
-                                     self.kind]['name_plural'], self.name)
+        # pages are rendered to the top level
+        if self.kind == 'page':
+            dest = '%s.html' % self.title.replace('/', "-")
+        else:
+            dest = "%s/%s/index.html" % (KINDS[self.kind]['name_plural'], self.name)
+            dest = dest.lstrip('/')
         print dest
         return os.path.join(CONFIG['output_to'], dest)
 
@@ -230,20 +234,9 @@ class Entry(object):
 
     @property
     def body_html(self):
-        if renderer == 'md2':
-            return markdown2.markdown(self.body, extras=['fenced-code-blocks',
-                                                         'hilite',
-                                                         'tables'])
-        if renderer == 'md1':
-            return markdown.markdown(self.body,
-                                     extensions=['fenced_code',
-                                                 'codehilite(linenums=False)',
-                                                 'tables'])
-
-    @property
-    def permalink(self):
-        return "/%s/%s" % (KINDS[self.kind]['name_plural'], self.name)
-
+        return markdown2.markdown(self.body, extras=['fenced-code-blocks',
+                                                     'hilite',
+                                                     'tables'])
     @property
     def tags(self):
         try:
@@ -299,8 +292,9 @@ class Entry(object):
             print self.path
             print e
             sys.exit()
-        destination = codecs.open(
-            self.destination, 'w', CONFIG['content_encoding'])
+
+        destination = codecs.open(self.destination, 'w',
+                                  CONFIG['content_encoding'])
         destination.write(html)
         destination.close()
 
@@ -415,7 +409,6 @@ def new_build():
     c. update archive page
 
     """
-    # TODO: slug each page to it's unique location
     print
     print "Rendering website now..."
     print

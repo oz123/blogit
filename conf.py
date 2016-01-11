@@ -54,6 +54,8 @@ GLOBAL_TEMPLATE_CONTEXT = {
     'github': "https://github.com/oz123",
 }
 
+
+# with this config, pages are rendered to the location of their title
 KINDS = {
     'writing': {
         'name': 'writing', 'name_plural': 'writings',
@@ -67,8 +69,4 @@ KINDS = {
     'photo': {
         'name': 'photo', 'name_plural': 'photos',
     },
-    'page': {
-        'name': 'page', 'name_plural': 'pages',
-    },
-
 }
