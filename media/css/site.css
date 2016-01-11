@@ -12,17 +12,12 @@ img {
 }
 
 pre {
-font-size: 90%;
-background: inherit;
-color: #93a1a1;
+	font-size: 90%;
 }
 
 pre code {
-    font-size: 90%;
-    background: inherit;
-
+  font-size: 90%;
 }
-
 
 html>body {font-size:18px;
            /*line-height:28px;*/
