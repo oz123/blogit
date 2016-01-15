@@ -158,6 +158,43 @@ class Tag(object):
 
 
 class Entry(object):
+    """This is the base class for creating an HTML page from a Markdown
+    based page.
+
+    The file has the following structure for a page:
+
+    .. code:
+
+        title: example page
+        public: yes
+        kind: page
+        template: about.html
+
+        # some heading
+
+        content paragraph
+
+        ## heading 2
+
+        some more content
+
+    The file has the following structure for a blog entry:
+
+    .. code:
+
+            title: Blog post 1
+            author: Famous author
+            published: 2015-01-11
+            tags: [python, git, bash, linux]
+            public: yes
+            chronological: yes
+            kind: writing
+            summary: |
+                This is a summry of post 1. Donec id elit non mi porta
+                ...
+
+            This is the body of post 1. Donec id elit non mi porta gravida
+    """
 
     @classmethod
     def entry_from_db(kls, filename):
