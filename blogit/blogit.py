@@ -167,7 +167,6 @@ class Entry(object):
     def __init__(self, path):
         self._path = path
         self.path = path.split(CONFIG['content_root'])[-1]
-        self.entry_template = jinja_env.get_template("entry.html")
         self.prepare()
 
     def __str__(self):
@@ -276,6 +275,10 @@ class Entry(object):
         self.body = ''.join(body)
         file.close()
 
+    @property
+    def entry_template(self):
+        template_name = self.header.get('template', 'entry.html')
+        return jinja_env.get_template(template_name)
 
     def render(self):
         if not self.header['public']:
