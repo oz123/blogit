@@ -182,18 +182,18 @@ class Entry(object):
 
     .. code:
 
-            title: Blog post 1
-            author: Famous author
-            published: 2015-01-11
-            tags: [python, git, bash, linux]
-            public: yes
-            chronological: yes
-            kind: writing
-            summary: |
-                This is a summry of post 1. Donec id elit non mi porta
-                ...
+        title: Blog post 1
+        author: Famous author
+        published: 2015-01-11
+        tags: [python, git, bash, linux]
+        public: yes
+        chronological: yes
+        kind: writing
+        summary: |
+            This is a summry of post 1. Donec id elit non mi porta
+            ...
 
-            This is the body of post 1. Donec id elit non mi porta gravida
+        This is the body of post 1. Donec id elit non mi porta gravida
     """
 
     @classmethod
