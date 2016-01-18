@@ -12,7 +12,7 @@
 # along with Blogit.py; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 # ============================================================================
-# Copyright (C) 2013 Oz Nahum Tiram <nahumoz@gmail.com>
+# Copyright (C) 2013-2016 Oz Nahum Tiram <nahumoz@gmail.com>
 # ============================================================================
 
 # Note about Summary
@@ -47,7 +47,6 @@ import SimpleHTTPServer
 import BaseHTTPServer
 import socket
 import SocketServer
-import yaml
 from jinja2 import Environment, FileSystemLoader
 import markdown2
 import tinydb
@@ -262,12 +261,6 @@ class Entry(object):
             )
 
     @property
-    def body_html(self):
-        return markdown2.markdown(self.body, extras=['fenced-code-blocks',
-                                                     'hilite',
-                                                     'tables'])
-
-    @property
     def permalink(self):
         if self.kind == 'page':
             dest = '%s.html' % self.title.replace('/', "-")
@@ -284,33 +277,20 @@ class Entry(object):
         except KeyError:
             return []
 
-    def _read_header(self, file):
-        header = ['---']
-        while True:
-            line = file.readline()
-            line = line.rstrip()
-            if not line:
-                break
-            header.append(line)
-        header = yaml.load(StringIO('\n'.join(header)))
-        # todo: dispatch header to attribute
-        # todo: parse date from string to a datetime object
-        return header
-
     def prepare(self):
-        file = codecs.open(self.abspath, 'r')
-        self.header = self._read_header(file)
+
+        self.body_html = markdown2.markdown(codecs.open(self.abspath, 'r').read(),
+                                            extras=['fenced-code-blocks',
+                                                    'hilite',
+                                                    'tables', 'metadata'])
+        self.header = self.body_html.metadata
+        self.header['tags'] = self.header['tags'].split(',')
         self.date = self.header.get('published', datetime.date.today())
         for k, v in self.header.items():
             try:
                 setattr(self, k, v)
             except:
                 pass
-
-        body = file.readlines()
-
-        self.body = ''.join(body)
-        file.close()
 
     @property
     def entry_template(self):
@@ -616,6 +596,7 @@ def main():   # pragma: no coverage
         new_post()
     if args.publish:
         publish()
+
 
 if __name__ == '__main__':  # pragma: no coverage
     main()
