@@ -55,11 +55,11 @@ class DataBase(object):
 
 DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
 
+
 class Tag(object):
 
     def __init__(self, name):
         self.name = name
-        self.prepare()
         self.permalink = GLOBAL_TEMPLATE_CONTEXT["site_url"]
         self.table = DB.tags
 
@@ -68,10 +68,11 @@ class Tag(object):
         if not tag:
             self.table.insert({'name': self.name, 'post_ids': []})
 
-    def prepare(self):
+    @property
+    def slug(self):
         _slug = self.name.lower()
         _slug = re.sub(r'[;;,. ]', '-', _slug)
-        self.slug = _slug
+        return _slug
 
     @property
     def posts(self):
