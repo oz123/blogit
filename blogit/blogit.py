@@ -133,11 +133,12 @@ class Entry(object):
 
     .. code:
 
+        ---
         title: example page
         public: yes
         kind: page
         template: about.html
-
+        ---
         # some heading
 
         content paragraph
@@ -150,6 +151,7 @@ class Entry(object):
 
     .. code:
 
+        ---
         title: Blog post 1
         author: Famous author
         published: 2015-01-11
@@ -157,9 +159,8 @@ class Entry(object):
         public: yes
         chronological: yes
         kind: writing
-        summary: |
-            This is a summry of post 1. Donec id elit non mi porta
-            ...
+        summary: This is a summry of post 1. Donec id elit non mi porta
+        ---
 
         This is the body of post 1. Donec id elit non mi porta gravida
     """
@@ -333,44 +334,26 @@ def _get_last_entries():
     return entries
 
 
-def update_index():
+def update_index(entries):
     """find the last 10 entries in the database and create the main
     page.
     Each entry in has an eid, so we only get the last 10 eids.
 
     This method also updates the ATOM feed.
     """
-    entries = _get_last_entries()
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
     context['entries'] = entries
 
-    for name, out in {'entry_index.html': 'index.html',
-                      'atom.xml': 'atom.xml'}.items():
-        template = jinja_env.get_template(name)
-        html = template.render(context)
-        destination = codecs.open("%s/%s" % (CONFIG['output_to'], out),
-                                  'w', CONFIG['content_encoding'])
-        destination.write(html)
-        destination.close()
+    map(lambda x: _render(
+        context, x[0], os.path.join(CONFIG['output_to'], x[1])),
+        (('entry_index.html', 'index.html'), ('atom.xml', 'atom.xml')))
 
 
-def new_build():
-    """
+def build():
+    """Incremental build of the website"""
 
-        a. For each new post:
-        1. render html
-        2. find post tags
-        3. update atom feeds for old tags
-        4. create new atom feeds for new tags
-
-    b. update index page
-    c. update archive page
-
-    """
-    print
-    print "Rendering website now..."
-    print
-    print " entries:"
+    print("\nRendering website now...\n")
+    print(entries:")
     tags = dict()
     root = CONFIG['content_root']
     for post_id, post in find_new_posts_and_pages(DB):
@@ -386,9 +369,9 @@ def new_build():
         print "updating tag %s" % name
         to.render()
 
-    # update index
+        # update index
     print "updating index"
-    update_index()
+    update_index(_get_last_entries)
 
     # update archive
     print "updating archive"
@@ -447,6 +430,7 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
     This function should create a template for a new post with a title
     read from the user input.
     Most other fields should be defaults.
+    TODO: update this function
     """
     title = raw_input("Give the title of the post: ")
     while ':' in title:
@@ -521,7 +505,7 @@ def main():   # pragma: no coverage
     if args.clean:
         clean()
     if args.build:
-        new_build()
+        build()
     if args.dist:
         dist()
     if args.preview:
