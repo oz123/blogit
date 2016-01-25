@@ -110,35 +110,18 @@ class Tag(object):
 
     def render(self):
         """Render html page and atom feed"""
-        self.destination = "%s/tags/%s" % (CONFIG['output_to'], self.slug)
-        template = jinja_env.get_template('tag_index.html')
-        try:
-            os.makedirs(self.destination)
-        except OSError:  # pragma: no coverage
-            pass
 
         context = GLOBAL_TEMPLATE_CONTEXT.copy()
         context['tag'] = self
         context['entries'] = _sort_entries(self.entries)
-        sorted_entries = _sort_entries(self.entries)
         encoding = CONFIG['content_encoding']
         render_to = "%s/tags/%s" % (CONFIG['output_to'], self.slug)
 
-        jobs = [{'tname': 'tag_index.html',
-                'output': codecs.open("%s/index.html" % render_to, 'w', encoding),
-                'entries': sorted_entries},
-                {'tname': 'atom.xml',
-                 'output': codecs.open("%s/atom.xml" % render_to, 'w', encoding),
-                 'entries': sorted_entries[:10]}
-                ]
-
-        for j in jobs:
-            template = jinja_env.get_template(j['tname'])
-            context['entries'] = j['entries']
-            html = template.render(context)
-            j['output'].write(html)
-            j['output'].close()
-
+        # render html page
+        _render(context, 'tag_index.html', os.path.join(render_to, 'index.html'))
+        # render atom.xml
+        context['entries'] = context['entries'][:10]
+        _render(context, 'atom.xml', os.path.join(render_to, 'atom.xml'))
         return True
 
 
@@ -278,35 +261,21 @@ class Entry(object):
             except:
                 pass
 
-    @property
-    def entry_template(self):
-        template_name = self.header.get('template', 'entry.html')
-        return jinja_env.get_template(template_name)
-
     def render(self):
         if not self.header['public']:
             return False
-
-        try:
-            os.makedirs(os.path.dirname(self.destination))
-        except OSError:
-            pass
 
         context = GLOBAL_TEMPLATE_CONTEXT.copy()
         context['entry'] = self
 
         try:
-            html = self.entry_template.render(context)
+            _render(context, self.header.get('template', 'entry.html'),
+                    self.destination)
         except Exception as e:  # pragma: no cover
             print context
             print self.path
             print e
             sys.exit()
-
-        destination = codecs.open(self.destination, 'w',
-                                  CONFIG['content_encoding'])
-        destination.write(html)
-        destination.close()
 
         return True
 
@@ -316,48 +285,27 @@ def _sort_entries(entries):
     return list(reversed(sorted(entries, key=operator.attrgetter('date'))))
 
 
-def render_archive(entries):
-    """
-    This function creates the archive page
-
-    To function it need to read:
-
-     - entry title
-     - entry publish date
-     - entry permalink
-
-    Until now, this was parsed from each entry YAML...
-    It would be more convinient to read this from the DB.
-
-    This requires changes for the database.
-    """
-    context = GLOBAL_TEMPLATE_CONTEXT.copy()
-    context['entries'] = entries[ARCHIVE_SIZE:]
-    template = jinja_env.get_template('archive_index.html')
+def _render(context, template_path, output_path, encoding='utf-8'):
+    template = jinja_env.get_template(template_path)
+    rendered = template.render(context)
     html = template.render(context)
     try:
-        os.makedirs(os.path.join(CONFIG['output_to'], 'archive'))
+        os.makedirs(os.path.dirname(output_path))
     except OSError:
         pass
-
-    destination = codecs.open("%s/archive/index.html" % CONFIG[
-                              'output_to'], 'w', CONFIG['content_encoding'])
+    destination = codecs.open(output_path, 'w', encoding)
     destination.write(html)
     destination.close()
 
 
-def find_new_items(posts_table):
+def render_archive(entries):
     """
-    Walk content dir, put each post in the database
+    This function creates the archive page
     """
-    Posts = Query()
-    for root, dirs, files in os.walk(CONFIG['content_root']):
-        for filename in files:
-            if filename.endswith(('md', 'markdown')):
-                fullpath = os.path.join(root, filename)
-                if not posts_table.contains(Posts.filename == fullpath):
-                    post_id = posts_table.insert({'filename': fullpath})
-                    yield post_id, fullpath
+    _render(entries[ARCHIVE_SIZE:10], 'archive_index.html',
+            os.path.join(CONFIG['output_to'], 'archive'),
+            "{}/archive/index.html".format(CONFIG['output_to']),
+            )
 
 
 def find_new_posts_and_pages(DB):
