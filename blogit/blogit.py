@@ -15,24 +15,7 @@
 # Copyright (C) 2013-2016 Oz Nahum Tiram <nahumoz@gmail.com>
 # ============================================================================
 
-# Note about Summary
-# has to be 1 line, no '\n' allowed!
-"""
-Summary: |
-   some summary ...
-
-Your post
-"""
-
-"""
-Everything the Header can't have ":" or "..." in it, you can't have title
-with ":" it makes markdown break!
-"""
-
-"""
-The content directory can contain only markdown or txt files, no images
-allowed!
-"""
+from __future__ import print_function
 import os
 import re
 import datetime
@@ -47,6 +30,7 @@ import SimpleHTTPServer
 import BaseHTTPServer
 import socket
 import SocketServer
+
 from jinja2 import Environment, FileSystemLoader
 import markdown2
 import tinydb
@@ -54,6 +38,7 @@ from tinydb import Query
 
 sys.path.insert(0, os.getcwd())
 from conf import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS
+
 jinja_env = Environment(lstrip_blocks=True, trim_blocks=True,
                         loader=FileSystemLoader(CONFIG['templates']))
 
