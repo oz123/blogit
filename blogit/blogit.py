@@ -428,12 +428,10 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
 
     author = CONFIG['author']
     date = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d')
-    tags = '[' + raw_input("Give the tags, separated by ', ':") + ']'
+    tags = raw_input("Give the tags, separated by ', ':")
     published = 'yes'
     chronological = 'yes'
-    summary = ("summary: |\n    Type your summary here.\n    Do not change the "
-               "indentation"
-               "to the left\n    ...\n\nStart writing your post here!")
+    summary = ("summary: Type your summary here.")
 
     # make file name
     fname = os.path.join(os.getcwd(), 'content', kind['name_plural'],
@@ -442,6 +440,7 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
                          date+'-'+title.replace(' ', '-')+'.markdown')
 
     with open(fname, 'w') as npost:
+        npost.write('---\n')
         npost.write('title: %s\n' % title)
         npost.write('author: %s\n' % author)
         npost.write('published: %s\n' % date)
@@ -450,6 +449,7 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
         npost.write('chronological: %s\n' % chronological)
         npost.write('kind: %s\n' % kind['name'])
         npost.write('%s' % summary)
+        npost.write('---\n')
 
     print('%s %s' % (CONFIG['editor'], repr(fname)))
     os.system('%s %s' % (CONFIG['editor'], fname))
