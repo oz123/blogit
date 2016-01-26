@@ -53,6 +53,7 @@ class DataBase(object):
         self.templates = _db.table('templates')
         self._db = _db
 
+
 DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
 
 
@@ -202,10 +203,6 @@ class Entry(object):
         return "%s" % markdown2.markdown(self.header.get('summary', "").strip())
 
     @property
-    def credits_html(self):
-        return "%s" % markdown2.markdown(self.header['credits'].strip())
-
-    @property
     def summary_atom(self):
         summarya = markdown2.markdown(self.header.get('summary', "").strip())
         summarya = re.sub("<p>|</p>", "", summarya)
@@ -214,20 +211,8 @@ class Entry(object):
 
     @property
     def publish_date(self):
-        return self.header.get('published', datetime.date.today())
-
-    @property
-    def published_atom(self):
-        return self.published.strftime("%Y-%m-%dT%H:%M:%SZ")
-
-    @property
-    def atom_id(self):
-        return "tag:%s,%s:%s" % \
-            (
-                self.published.strftime("%Y-%m-%d"),
-                self.permalink,
-                GLOBAL_TEMPLATE_CONTEXT["site_url"]
-            )
+        return self.header.get('published',
+                               datetime.date.today().strftime("%Y-%m-%d"))
 
     @property
     def permalink(self):
