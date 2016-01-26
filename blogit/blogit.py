@@ -254,7 +254,11 @@ class Entry(object):
                                                     'hilite',
                                                     'tables', 'metadata'])
         self.header = self.body_html.metadata
-        self.header['tags'] = self.header['tags'].split(',')
+        try:
+            self.header['tags'] = self.header['tags'].split(',')
+        except KeyError:  # pages can lack tags
+            pass
+
         self.date = self.header.get('published', datetime.date.today())
         for k, v in self.header.items():
             try:
@@ -273,9 +277,9 @@ class Entry(object):
             _render(context, self.header.get('template', 'entry.html'),
                     self.destination)
         except Exception as e:  # pragma: no cover
-            print context
-            print self.path
-            print e
+            print(context)
+            print(self.path)
+            print(e)
             sys.exit()
 
         return True
@@ -303,10 +307,12 @@ def render_archive(entries):
     """
     This function creates the archive page
     """
-    _render(entries[ARCHIVE_SIZE:10], 'archive_index.html',
-            os.path.join(CONFIG['output_to'], 'archive'),
-            "{}/archive/index.html".format(CONFIG['output_to']),
-            )
+    context = GLOBAL_TEMPLATE_CONTEXT.copy()
+    context['entries'] = entries[ARCHIVE_SIZE:10]
+
+    _render(context, 'archive_index.html',
+            os.path.join(CONFIG['output_to'],'archive/index.html')),
+
 
 
 def find_new_posts_and_pages(DB):
@@ -353,7 +359,7 @@ def build():
     """Incremental build of the website"""
 
     print("\nRendering website now...\n")
-    print(entries:")
+    print("entries:")
     tags = dict()
     root = CONFIG['content_root']
     for post_id, post in find_new_posts_and_pages(DB):
@@ -363,18 +369,18 @@ def build():
                 for tag in entry.tags:
                     tag.posts = [post_id]
                     tags[tag.name] = tag
-        print "     %s" % entry.path
+        print("     %s" % entry.path)
 
     for name, to in tags.iteritems():
-        print "updating tag %s" % name
+        print("updating tag %s" % name)
         to.render()
 
-        # update index
-    print "updating index"
-    update_index(_get_last_entries)
+    # update index
+    print("updating index")
+    update_index(_get_last_entries())
 
     # update archive
-    print "updating archive"
+    print("updating archive")
     render_archive(_sort_entries([Entry(p['filename'])
                                   for p in DB.posts.all()]))
 
@@ -411,8 +417,8 @@ def preview():  # pragma: no coverage
     port = CONFIG['http_port']
     httpd = SocketServer.TCPServer(("", port), Handler)
     os.chdir(CONFIG['output_to'])
-    print "and ready to test at http://127.0.0.1:%d" % CONFIG['http_port']
-    print "Hit Ctrl+C to exit"
+    print("and ready to test at http://127.0.0.1:%d" % CONFIG['http_port'])
+    print("Hit Ctrl+C to exit")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
@@ -461,7 +467,7 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
         npost.write('kind: %s\n' % kind['name'])
         npost.write('%s' % summary)
 
-    print '%s %s' % (CONFIG['editor'], repr(fname))
+    print('%s %s' % (CONFIG['editor'], repr(fname)))
     os.system('%s %s' % (CONFIG['editor'], fname))
 
 
