@@ -264,7 +264,7 @@ class Entry(object):
             print(context)
             print(self.path)
             print(e)
-            sys.exit()
+            sys.exit(1)
 
         return True
 
