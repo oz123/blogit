@@ -214,8 +214,7 @@ class Entry(object):
 
     @property
     def publish_date(self):
-        d = self.header.get('published', datetime.date.today())
-        return d.strftime("%B %d, %Y")
+        return self.header.get('published', datetime.date.today())
 
     @property
     def published_atom(self):
