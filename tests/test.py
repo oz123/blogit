@@ -54,9 +54,10 @@ except OSError:
 shift_factors = map(lambda x: (x - 1) / 5 +1,   range(1,21))
 
 
-for i in range(1,21):
-    f = open((os.path.join(CONFIG['content_root'], 'post' + str(i) + '.md')),
-             'w')
-    d = {'number': i,
-         'tags': shift(tags, shift_factors[i-1])[:-1] }
-    f.write(post.format(**d))
+def write_file(i):
+    f = open((os.path.join(CONFIG['content_root'],
+                           'post{}.md'.format(i))), 'w')
+    f.write(post.format(**{'number': i,
+                           'tags': shift(tags, shift_factors[i-1])[:-1]}))
+
+[write_file(i) for i in range(1, 21)]
