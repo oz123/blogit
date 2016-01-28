@@ -43,7 +43,8 @@ jinja_env = Environment(lstrip_blocks=True, trim_blocks=True,
                         loader=FileSystemLoader(CONFIG['templates']))
 
 
-class DataBase(object):
+class DataBase(object): # pragma: no cover
+    """A thin wrapper around TinyDB instance"""
 
     def __init__(self, path):
         _db = tinydb.TinyDB(path)
@@ -115,11 +116,11 @@ class Tag(object):
         context = GLOBAL_TEMPLATE_CONTEXT.copy()
         context['tag'] = self
         context['entries'] = _sort_entries(self.entries)
-        encoding = CONFIG['content_encoding']
-        render_to = "%s/tags/%s" % (CONFIG['output_to'], self.slug)
 
         # render html page
-        _render(context, 'tag_index.html', os.path.join(render_to, 'index.html'))
+        _render(context, 'tag_index.html',
+                os.path.join(CONFIG['output_to'], 'tags', self.slug, render_to,
+                                 'index.html'))
         # render atom.xml
         context['entries'] = context['entries'][:10]
         _render(context, 'atom.xml', os.path.join(render_to, 'atom.xml'))
@@ -168,7 +169,7 @@ class Entry(object):
 
     @classmethod
     def entry_from_db(kls, filename):
-        f=os.path.join(os.path.join(CONFIG['content_root'], filename))
+        f = os.path.join(CONFIG['content_root'], filename)
         return kls(f)
 
     def __init__(self, path):
@@ -226,9 +227,11 @@ class Entry(object):
 
     @property
     def tags(self):
-        try:
+        """this property is always called after prepare"""
+
+        if 'tags' in self.header:
             return [Tag(t) for t in self.header['tags']]
-        except KeyError:
+        else:
             return []
 
     def prepare(self):
@@ -238,35 +241,34 @@ class Entry(object):
                                                     'hilite',
                                                     'tables', 'metadata'])
         self.header = self.body_html.metadata
-        try:
+
+        if 'tags' in self.header:  # pages can lack tags
             self.header['tags'] = self.header['tags'].split(',')
-        except KeyError:  # pages can lack tags
-            pass
 
         self.date = self.header.get('published', datetime.date.today())
+
         for k, v in self.header.items():
             try:
                 setattr(self, k, v)
-            except:
+            except AttributeError:
                 pass
 
     def render(self):
         if not self.header['public']:
             return False
 
-        context = GLOBAL_TEMPLATE_CONTEXT.copy()
-        context['entry'] = self
-
         try:
+            context = GLOBAL_TEMPLATE_CONTEXT.copy()
+            context['entry'] = self
             _render(context, self.header.get('template', 'entry.html'),
                     self.destination)
+            return True
         except Exception as e:  # pragma: no cover
             print(context)
             print(self.path)
             print(e)
             sys.exit(1)
 
-        return True
 
 
 def _sort_entries(entries):
@@ -301,6 +303,7 @@ def render_archive(entries):
 
 def find_new_posts_and_pages(DB):
     """Walk content dir, put each post and page in the database"""
+
     Q = Query()
     for root, dirs, files in os.walk(CONFIG['content_root']):
         for filename in files:
