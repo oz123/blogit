@@ -169,7 +169,7 @@ class Entry(object):
 
     @classmethod
     def entry_from_db(kls, filename):
-        f = os.path.join(CONFIG['content_root'], filename)
+        f = os.path.join(filename)
         return kls(f)
 
     def __init__(self, path):
@@ -350,13 +350,15 @@ def build():
     tags = dict()
     root = CONFIG['content_root']
     for post_id, post in find_new_posts_and_pages(DB):
-        entry = post
+        # entry = post
+        # this method will also parse the post's tags and
+        # update the DB collection containing the tags.
         if post.render():
             if post.header['kind'] in ['writing', 'link']:
-                for tag in entry.tags:
+                for tag in post.tags:
                     tag.posts = [post_id]
                     tags[tag.name] = tag
-        print("     %s" % entry.path)
+        print("%s" % post.path)
 
     for name, to in tags.iteritems():
         print("updating tag %s" % name)

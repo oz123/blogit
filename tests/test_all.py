@@ -1,8 +1,10 @@
 import os
-from blogit.blogit import DB, CONFIG, find_new_posts_and_pages
-
+from blogit.blogit import CONFIG, find_new_posts_and_pages, DataBase
+from blogit.blogit import Entry
 
 CONFIG['content_root'] = 'test_root'
+
+DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
 
 tags = ['foo', 'bar', 'baz', 'bug', 'buf']
 
@@ -88,7 +90,13 @@ def test_find_new_posts_and_pages():
 
     entries = [e for e in find_new_posts_and_pages(DB)]
     pages = [e[1] for e in entries if str(e[1]).endswith('page.md')]
-    assert page is not None
+    assert pages is not None
 
-os.unlink(DB._db._storage._handle.name)
+    assert len(DB.posts.all()) == 20
+
+
+def test_tags():
+    entries = map(Entry.entry_from_db, [e.get('filename') for e in DB.posts.all()])
+
+#os.unlink(DB._db._storage._handle.name)
 
