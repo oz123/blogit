@@ -8,7 +8,7 @@ setup(name='blogit',
       license="GNU GPL",
       packages=find_packages(exclude=['tests']),
       install_requires=['Jinja2', 'markdown2', 'tinydb'],
-      test_requires=['pytest', 'beautifulsoup4']
+      test_requires=['pytest', 'beautifulsoup4'],
       entry_points={
               'console_scripts': ['blogit = blogit.blogit:main']
           }
