@@ -27,18 +27,6 @@ if not os.path.exists(os.path.join(CONFIG['content_root'])):
     os.makedirs(os.path.join(CONFIG['content_root']))
 
 
-#_db = tinydb.TinyDB(os.path.join(CONFIG['content_root'], 'blogit.db'))
-
-# TODO replace this with a namedtuple for a more convinient access and safety
-#_DB = {'posts': _db.table('posts'), 'tags': _db.table('tags'),
-#       'pages': _db.table('pages'), 'templates': _db.table('templates') }
-
-#BlogDB = namedtuple('BlogDB', 'posts tags pages templates db')
-
-#DB = BlogDB(posts=_db.table('posts'), tags=_db.table('tags'),
-#            pages=_db.table('pages'), templates=_db.table('templates'),
-#            db=_db)
-
 # EDIT THIS PARAMETER TO CHANGE ARCHIVE SIZE
 # 0 Means that all the entries will be in the archive
 # 10 meas that all the entries except the last 10
