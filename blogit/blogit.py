@@ -60,10 +60,11 @@ DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
 
 class Tag(object):
 
+    table = DB.tags
+
     def __init__(self, name):
-        self.name = name
+        self .name = name
         self.permalink = GLOBAL_TEMPLATE_CONTEXT["site_url"]
-        self.table = DB.tags
 
         Tags = Query()
         tag = self.table.get(Tags.name == self.name)
@@ -228,7 +229,6 @@ class Entry(object):
     @property
     def tags(self):
         """this property is always called after prepare"""
-
         if 'tags' in self.header:
             return [Tag(t) for t in self.header['tags']]
         else:
