@@ -1,10 +1,13 @@
 import os
 from blogit.blogit import CONFIG, find_new_posts_and_pages, DataBase
-from blogit.blogit import Entry
+from blogit.blogit import Entry, Tag
 
 CONFIG['content_root'] = 'test_root'
 
 DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
+
+Tag.table = DB.tags  # monkey patch Tag
+
 
 tags = ['foo', 'bar', 'baz', 'bug', 'buf']
 
@@ -81,7 +84,7 @@ def write_file(i):
     f = open((os.path.join(CONFIG['content_root'],
                            'post{}.md'.format(i))), 'w')
     f.write(post.format(**{'number': i,
-                           'tags': shift(tags, shift_factors[i-1])[:-1]}))
+                           'tags': ','.join(shift(tags, shift_factors[i-1])[:-1])}))
 
 [write_file(i) for i in range(1, 21)]
 
@@ -97,6 +100,9 @@ def test_find_new_posts_and_pages():
 
 def test_tags():
     entries = map(Entry.entry_from_db, [e.get('filename') for e in DB.posts.all()])
+    tags = DB.tags.all()
+
+    t = entries[0].tags
 
 #os.unlink(DB._db._storage._handle.name)
 
