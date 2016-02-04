@@ -1,4 +1,7 @@
 import os
+
+import pytest
+
 from blogit.blogit import CONFIG, find_new_posts_and_pages, DataBase
 from blogit.blogit import Entry, Tag
 
@@ -99,10 +102,21 @@ def test_find_new_posts_and_pages():
 
 
 def test_tags():
-    entries = map(Entry.entry_from_db, [e.get('filename') for e in DB.posts.all()])
+    entries = map(Entry.entry_from_db, [e.get('filename') for e in
+                  DB.posts.all()])
     tags = DB.tags.all()
 
     t = entries[0].tags
+
+    assert len(t) == 4
+    assert t[0].name == u'buf'
+
+    new_tag = Tag('bug')
+    new_tag.posts = [100,100]
+    with pytest.raises(ValueError):
+        new_tag.posts = "This should not work"
+    with pytest.raises(ValueError):
+        new_tag.posts = 1  # This should not either
 
 #os.unlink(DB._db._storage._handle.name)
 
