@@ -74,7 +74,7 @@ class Tag(object):
     @property
     def slug(self):
         _slug = self.name.lower()
-        _slug = re.sub(r'[;;,. ]', '-', _slug)
+        _slug = re.sub(r'[;:,. ]+', '-', _slug)
         return _slug
 
     @property
