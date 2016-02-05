@@ -111,12 +111,19 @@ def test_tags():
     assert len(t) == 4
     assert t[0].name == u'buf'
 
-    new_tag = Tag('bug')
+    new_tag = Tag('buggg')
     new_tag.posts = [100,100]
     with pytest.raises(ValueError):
         new_tag.posts = "This should not work"
     with pytest.raises(ValueError):
         new_tag.posts = 1  # This should not either
 
-#os.unlink(DB._db._storage._handle.name)
+def test_slug():
+
+    t = Tag('foo:bar')
+    assert t.slug == "foo-bar"
+    t = Tag('foo:;bar,.,baz')
+    assert t.slug == "foo-bar-baz"
+
+os.unlink(DB._db._storage._handle.name)
 
