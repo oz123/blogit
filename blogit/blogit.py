@@ -92,12 +92,13 @@ class Tag(object):
             raise ValueError("post_ids must be of type list")
         Tags = Query()
         tag = self.table.get(Tags.name == self.name)
-        if not tag:  # pragma: no coverage
-            raise ValueError("Tag %s not found" % self.name)
-        if tag:
-            new = set(post_ids) - set(tag['post_ids'])
-            tag['post_ids'].extend(list(new))
-            self.table.update({'post_ids': tag['post_ids']}, eids=[tag.eid])
+
+        # if not tag:  # pragma: no coverage
+        #     raise ValueError("Tag %s not found" % self.name)
+        # else:
+        new = set(post_ids) - set(tag['post_ids'])
+        tag['post_ids'].extend(list(new))
+        self.table.update({'post_ids': tag['post_ids']}, eids=[tag.eid])
 
     @property
     def entries(self):

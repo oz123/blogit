@@ -4,7 +4,7 @@ import pytest
 
 from blogit.blogit import CONFIG, find_new_posts_and_pages, DataBase
 from blogit.blogit import Entry, Tag
-
+from tinydb import Query
 CONFIG['content_root'] = 'test_root'
 
 DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
@@ -124,6 +124,17 @@ def test_slug():
     assert t.slug == "foo-bar"
     t = Tag('foo:;bar,.,baz')
     assert t.slug == "foo-bar-baz"
+
+def test_tag_posts():
+
+    example = Tag('example')
+
+    example.posts = [1,2,3]
+    assert [1,2,3] == example.posts
+
+    Filter = Query()
+    t = DB.tags.get(Filter.post_ids == [1, 2, 3])
+    assert t['post_ids'] == [1, 2, 3]
 
 os.unlink(DB._db._storage._handle.name)
 
