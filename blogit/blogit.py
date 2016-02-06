@@ -102,15 +102,13 @@ class Tag(object):
 
     @property
     def entries(self):
-        _entries = []
+        """return the actual lists of entries tagged with"""
         Posts = Query()
         for id in self.posts:
             post = DB.posts.get(eid=id)
             if not post:  # pragma: no coverage
-                raise ValueError("no post found for eid %s" % id)
-            entry = Entry(post['filename'])
-            _entries.append(entry)
-        return _entries
+                 raise ValueError("no post found for eid %s" % id)
+            yield Entry(post['filename'])
 
     def render(self):
         """Render html page and atom feed"""
