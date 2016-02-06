@@ -6,11 +6,16 @@ from blogit.blogit import CONFIG, find_new_posts_and_pages, DataBase
 from blogit.blogit import Entry, Tag
 from tinydb import Query
 CONFIG['content_root'] = 'test_root'
-
+import blogit.blogit as m
+db_name = os.path.join(CONFIG['content_root'], 'blogit.db')
+if os.path.exists(db_name):
+    os.unlink(db_name)
 DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
 
-Tag.table = DB.tags  # monkey patch Tag
-
+# monkey patch to local DB
+m.DB = DB
+Tag.table = DB.tags
+Tag.db = DB
 
 tags = ['foo', 'bar', 'baz', 'bug', 'buf']
 
@@ -93,10 +98,10 @@ def write_file(i):
 
 
 def test_find_new_posts_and_pages():
-
     entries = [e for e in find_new_posts_and_pages(DB)]
+    assert len(entries)
     pages = [e[1] for e in entries if str(e[1]).endswith('page.md')]
-    assert pages is not None
+    assert len(pages)
 
     assert len(DB.posts.all()) == 20
 
@@ -136,5 +141,16 @@ def test_tag_posts():
     t = DB.tags.get(Filter.post_ids == [1, 2, 3])
     assert t['post_ids'] == [1, 2, 3]
 
-os.unlink(DB._db._storage._handle.name)
+
+def test_tag_entries():
+    t = Tag('breaks')
+    t.posts = [10000]
+    with pytest.raises(ValueError):
+        list(t.entries)
+
+    tf = Tag(u'example')
+    entries = list(tf.entries)
+    assert len(entries)
+
+
 
