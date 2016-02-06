@@ -1,21 +1,31 @@
 import os
 
 import pytest
+from tinydb import Query
 
 from blogit.blogit import CONFIG, find_new_posts_and_pages, DataBase
 from blogit.blogit import Entry, Tag
-from tinydb import Query
-CONFIG['content_root'] = 'test_root'
 import blogit.blogit as m
+
+
+CONFIG['content_root'] = 'test_root'
 db_name = os.path.join(CONFIG['content_root'], 'blogit.db')
+
+
 if os.path.exists(db_name):
-    os.unlink(db_name)
+    import shutil
+    shutil.rmtree(CONFIG['content_root'])
+
+if not os.path.exists(CONFIG['content_root']):
+    os.mkdir(CONFIG['content_root'])
+
 DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
 
 # monkey patch to local DB
 m.DB = DB
 Tag.table = DB.tags
 Tag.db = DB
+Entry.db = DB
 
 tags = ['foo', 'bar', 'baz', 'bug', 'buf']
 
@@ -100,14 +110,14 @@ def write_file(i):
 def test_find_new_posts_and_pages():
     entries = [e for e in find_new_posts_and_pages(DB)]
     assert len(entries)
-    pages = [e[1] for e in entries if str(e[1]).endswith('page.md')]
+    pages = [e[1] for e in entries if str(e[0]).endswith('page.md')]
     assert len(pages)
 
     assert len(DB.posts.all()) == 20
 
 
 def test_tags():
-    entries = map(Entry.entry_from_db, [e.get('filename') for e in
+    entries = map(Entry.entry_from_db, [os.path.join(CONFIG['content_root'], e.get('filename')) for e in
                   DB.posts.all()])
     tags = DB.tags.all()
 
@@ -152,5 +162,12 @@ def test_tag_entries():
     entries = list(tf.entries)
     assert len(entries)
 
+def test_tag_render():
 
+    p = DB.posts.get(eid=1)
+    entry = Entry.entry_from_db(os.path.join(CONFIG['content_root'], p.get('filename')))
+    tags = entry.tags
+    assert map(str, tags) == ['buf', 'foo', 'bar', 'baz']
+    assert tags[0].render()
+    assert len(list(tags[0].entries))
 

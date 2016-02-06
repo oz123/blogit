@@ -72,6 +72,12 @@ class Tag(object):
         if not tag:
             self.table.insert({'name': self.name, 'post_ids': []})
 
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return self.name
+
     @property
     def slug(self):
         _slug = self.name.lower()
@@ -109,19 +115,19 @@ class Tag(object):
             post = self.db.posts.get(eid=id)
             if not post:
                  raise ValueError("no post found for eid %s" % id)
-            yield Entry(post['filename'])
+            yield Entry(os.path.join(CONFIG['content_root'], post['filename']))
 
     def render(self):
         """Render html page and atom feed"""
-
         context = GLOBAL_TEMPLATE_CONTEXT.copy()
         context['tag'] = self
         context['entries'] = _sort_entries(self.entries)
 
         # render html page
-        _render(context, 'tag_index.html',
-                os.path.join(CONFIG['output_to'], 'tags', self.slug, render_to,
-                                 'index.html'))
+        render_to = os.path.join(CONFIG['output_to'], 'tags', self.slug)
+        if not os.path.exists(render_to):
+            os.makedirs(render_to)
+        _render(context, 'tag_index.html', os.path.join(render_to, 'index.html'))
         # render atom.xml
         context['entries'] = context['entries'][:10]
         _render(context, 'atom.xml', os.path.join(render_to, 'atom.xml'))
@@ -129,6 +135,7 @@ class Tag(object):
 
 
 class Entry(object):
+
     """This is the base class for creating an HTML page from a Markdown
     based page.
 
@@ -168,6 +175,8 @@ class Entry(object):
         This is the body of post 1. Donec id elit non mi porta gravida
     """
 
+    db = DB
+
     @classmethod
     def entry_from_db(kls, filename):
         f = os.path.join(filename)
@@ -175,7 +184,8 @@ class Entry(object):
 
     def __init__(self, path):
         self._path = path
-        self.path = path.split(CONFIG['content_root'])[-1]
+        self.path = path.split(CONFIG['content_root'])[-1].lstrip('/')
+        self.id = None  # this is set inside prepare()
         self.prepare()
 
     def __str__(self):
@@ -230,7 +240,9 @@ class Entry(object):
     def tags(self):
         """this property is always called after prepare"""
         if 'tags' in self.header:
-            return [Tag(t) for t in self.header['tags']]
+            tags = [Tag(t) for t in self.header['tags']]
+            map(lambda t: setattr(t, 'posts', [self.id]), tags)
+            return tags
         else:
             return []
 
@@ -252,6 +264,12 @@ class Entry(object):
                 setattr(self, k, v)
             except AttributeError:
                 pass
+
+        if self.header['kind'] == 'writing':
+            _id = Entry.db.posts.insert({'filename': self.path})
+        elif self.header['kind'] == 'page':
+            _id = Entry.db.pages.insert({'filename': self.path})
+        self.id = _id
 
     def render(self):
         if not self.header['public']:
@@ -312,12 +330,7 @@ def find_new_posts_and_pages(db):
                 if not db.posts.contains(Q.filename == fullpath) and \
                         not db.pages.contains(Q.filename == fullpath):
                     e = Entry(fullpath)
-                    if e.header['kind'] == 'writing':
-                        post_id = db.posts.insert({'filename': fullpath})
-                        yield post_id, e
-                    if e.header['kind'] == 'page':
-                        page_id = db.pages.insert({'filename': fullpath})
-                        yield page_id, e
+                    yield e, e.id
 
 
 def _get_last_entries():
