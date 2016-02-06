@@ -61,6 +61,7 @@ DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
 class Tag(object):
 
     table = DB.tags
+    db = DB
 
     def __init__(self, name):
         self .name = name
@@ -80,7 +81,7 @@ class Tag(object):
     @property
     def posts(self):
         """
-        return a list of posts tagged with Tag
+        return a list of post ids tagged with Tag
         """
         Tags = Query()
         tag = self.table.get(Tags.name == self.name)
@@ -105,8 +106,8 @@ class Tag(object):
         """return the actual lists of entries tagged with"""
         Posts = Query()
         for id in self.posts:
-            post = DB.posts.get(eid=id)
-            if not post:  # pragma: no coverage
+            post = self.db.posts.get(eid=id)
+            if not post:
                  raise ValueError("no post found for eid %s" % id)
             yield Entry(post['filename'])
 
@@ -300,7 +301,7 @@ def render_archive(entries):
 
 
 
-def find_new_posts_and_pages(DB):
+def find_new_posts_and_pages(db):
     """Walk content dir, put each post and page in the database"""
 
     Q = Query()
@@ -308,21 +309,21 @@ def find_new_posts_and_pages(DB):
         for filename in files:
             if filename.endswith(('md', 'markdown')):
                 fullpath = os.path.join(root, filename)
-                if not DB.posts.contains(Q.filename == fullpath) and \
-                        not DB.pages.contains(Q.filename == fullpath):
+                if not db.posts.contains(Q.filename == fullpath) and \
+                        not db.pages.contains(Q.filename == fullpath):
                     e = Entry(fullpath)
                     if e.header['kind'] == 'writing':
-                        post_id = DB.posts.insert({'filename': fullpath})
+                        post_id = db.posts.insert({'filename': fullpath})
                         yield post_id, e
                     if e.header['kind'] == 'page':
-                        page_id = DB.pages.insert({'filename': fullpath})
+                        page_id = db.pages.insert({'filename': fullpath})
                         yield page_id, e
 
 
 def _get_last_entries():
-    eids = [post.eid for post in DB.posts.all()]
+    eids = [post.eid for post in db.posts.all()]
     eids = sorted(eids)[-10:][::-1]
-    entries = [Entry(DB.posts.get(eid=eid)['filename']) for eid in eids]
+    entries = [Entry(db.posts.get(eid=eid)['filename']) for eid in eids]
     return entries
 
 
@@ -351,7 +352,7 @@ def build():
     for post_id, post in find_new_posts_and_pages(DB):
         # entry = post
         # this method will also parse the post's tags and
-        # update the DB collection containing the tags.
+        # update the db collection containing the tags.
         if post.render():
             if post.header['kind'] in ['writing', 'link']:
                 for tag in post.tags:
@@ -370,7 +371,7 @@ def build():
     # update archive
     print("updating archive")
     render_archive(_sort_entries([Entry(p['filename'])
-                                  for p in DB.posts.all()]))
+                                  for p in db.posts.all()]))
 
 
 
