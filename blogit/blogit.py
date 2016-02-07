@@ -345,10 +345,11 @@ def find_new_posts_and_pages(db):
                     yield e, e.id
 
 
-def _get_last_entries():
+def _get_last_entries(db):
     eids = [post.eid for post in db.posts.all()]
     eids = sorted(eids)[-10:][::-1]
-    entries = [Entry(db.posts.get(eid=eid)['filename']) for eid in eids]
+    entries = [Entry(os.path.join(CONFIG['content_root'],
+                     db.posts.get(eid=eid)['filename'])) for eid in eids]
     return entries
 
 
@@ -391,7 +392,7 @@ def build():
 
     # update index
     print("updating index")
-    update_index(_get_last_entries())
+    update_index(_get_last_entries(DB))
 
     # update archive
     print("updating archive")

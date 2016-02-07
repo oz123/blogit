@@ -4,7 +4,7 @@ import pytest
 from tinydb import Query, where
 
 from blogit.blogit import CONFIG, find_new_posts_and_pages, DataBase
-from blogit.blogit import Entry, Tag, _sort_entries
+from blogit.blogit import Entry, Tag, _sort_entries, _get_last_entries
 
 import blogit.blogit as m
 
@@ -226,3 +226,9 @@ def test_tag_render():
     # the entries are wrongly sorted, need to look at that
     assert tags[0].render()
     assert len(list(tags[0].entries))
+
+
+def test_get_last_entries():
+
+    le = _get_last_entries(DB)
+    assert [e.id for e in le] == range(22, 12, -1)
