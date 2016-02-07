@@ -34,7 +34,7 @@ import SocketServer
 from jinja2 import Environment, FileSystemLoader
 import markdown2
 import tinydb
-from tinydb import Query
+from tinydb import Query, where
 
 sys.path.insert(0, os.getcwd())
 from conf import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS
@@ -104,6 +104,7 @@ class Tag(object):
         #     raise ValueError("Tag %s not found" % self.name)
         # else:
         new = set(post_ids) - set(tag['post_ids'])
+
         tag['post_ids'].extend(list(new))
         self.table.update({'post_ids': tag['post_ids']}, eids=[tag.eid])
 
@@ -266,9 +267,19 @@ class Entry(object):
                 pass
 
         if self.header['kind'] == 'writing':
-            _id = Entry.db.posts.insert({'filename': self.path})
+            rv = Entry.db.posts.search(where('filename') == self.path)
+            if not rv:
+                _id = Entry.db.posts.insert({'filename': self.path})
+            else:
+                _id = rv[0].eid
+
         elif self.header['kind'] == 'page':
-            _id = Entry.db.pages.insert({'filename': self.path})
+            rv = Entry.db.pages.search(where('filename') == self.path)
+            if not rv:
+                _id = Entry.db.pages.insert({'filename': self.path})
+            else:
+                _id = rv[0].eid
+
         self.id = _id
 
     def render(self):

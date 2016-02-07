@@ -1,7 +1,7 @@
 import os
 
 import pytest
-from tinydb import Query
+from tinydb import Query, where
 
 from blogit.blogit import CONFIG, find_new_posts_and_pages, DataBase
 from blogit.blogit import Entry, Tag
@@ -102,7 +102,8 @@ def write_file(i):
     f = open((os.path.join(CONFIG['content_root'],
                            'post{}.md'.format(i))), 'w')
     f.write(post.format(**{'number': i,
-                           'tags': ','.join(shift(tags, shift_factors[i-1])[:-1])}))
+                           'tags':
+                           ','.join(shift(tags, shift_factors[i-1])[:-1])}))
 
 [write_file(i) for i in range(1, 21)]
 
@@ -115,10 +116,18 @@ def test_find_new_posts_and_pages():
 
     assert len(DB.posts.all()) == 20
 
+    entries = [e for e in find_new_posts_and_pages(DB)]
+    # no new posts sould be found
+    assert len(DB.posts.all()) == 20
+
+    [e[0].tags for e in entries]
+    foo = DB.tags.search(where('name')=='foo')
+    assert foo[0]['post_ids'] == range(1, 16)
 
 def test_tags():
-    entries = map(Entry.entry_from_db, [os.path.join(CONFIG['content_root'], e.get('filename')) for e in
-                  DB.posts.all()])
+    entries = map(Entry.entry_from_db,
+                  [os.path.join(CONFIG['content_root'], e.get('filename'))
+                      for e in DB.posts.all()])
     tags = DB.tags.all()
 
     t = entries[0].tags
@@ -133,12 +142,14 @@ def test_tags():
     with pytest.raises(ValueError):
         new_tag.posts = 1  # This should not either
 
+
 def test_slug():
 
     t = Tag('foo:bar')
     assert t.slug == "foo-bar"
     t = Tag('foo:;bar,.,baz')
     assert t.slug == "foo-bar-baz"
+
 
 def test_tag_posts():
 
@@ -151,6 +162,12 @@ def test_tag_posts():
     t = DB.tags.get(Filter.post_ids == [1, 2, 3])
     assert t['post_ids'] == [1, 2, 3]
 
+    example = Tag('example')
+    example.posts = [4,5,6]
+
+    rv = DB.tags.search(where('name') == 'example')
+    assert rv[0]['post_ids'] == range(1, 7)
+
 
 def test_tag_entries():
     t = Tag('breaks')
@@ -162,12 +179,46 @@ def test_tag_entries():
     entries = list(tf.entries)
     assert len(entries)
 
+
+def test_tag_post_ids():
+    m ="""\
+---
+title: Blog post
+author: Famous author
+published: 2015-01-12
+tags: tag1, tag2
+public: yes
+chronological: yes
+kind: writing
+summary: This is a summry
+---
+"""
+    with open(os.path.join(CONFIG['content_root'], 'e.md'), 'w') as f:
+        f.write(m)
+    with open(os.path.join(CONFIG['content_root'], 'f.md'), 'w') as f:
+        f.write(m)
+
+    e1 = Entry(os.path.join(CONFIG['content_root'], 'e.md'))
+    e1.tags
+
+    e2 = Entry(os.path.join(CONFIG['content_root'], 'f.md'))
+    e2.tags
+
+    assert e1.tags[0].posts == e2.tags[0].posts
+    e1.render()
+    [t.render() for t in e1.tags]
+
+
 def test_tag_render():
 
     p = DB.posts.get(eid=1)
-    entry = Entry.entry_from_db(os.path.join(CONFIG['content_root'], p.get('filename')))
+    entry = Entry.entry_from_db(
+        os.path.join(CONFIG['content_root'], p.get('filename')))
+
+    #entry = Entry(os.path.join(CONFIG['content_root'], 'post1.md'))
     tags = entry.tags
+
     assert map(str, tags) == ['buf', 'foo', 'bar', 'baz']
+    # the entries are wrongly sorted, need to look at that
     assert tags[0].render()
     assert len(list(tags[0].entries))
-
