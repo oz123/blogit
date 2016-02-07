@@ -249,15 +249,14 @@ class Entry(object):
 
     def prepare(self):
 
-        self.body_html = markdown2.markdown(codecs.open(self.abspath, 'r').read(),
-                                            extras=['fenced-code-blocks',
-                                                    'hilite',
-                                                    'tables', 'metadata'])
+        self.body_html = markdown2.markdown(
+                codecs.open(self.abspath, 'r').read(),
+                extras=['fenced-code-blocks', 'hilite', 'tables', 'metadata'])
+
         self.header = self.body_html.metadata
 
         if 'tags' in self.header:  # pages can lack tags
             self.header['tags'] = self.header['tags'].split(',')
-
 
         self.date = self.header.get('published', datetime.date.today())
 
@@ -330,7 +329,6 @@ def render_archive(entries):
 
     _render(context, 'archive_index.html',
             os.path.join(CONFIG['output_to'],'archive/index.html')),
-
 
 
 def find_new_posts_and_pages(db):
