@@ -4,7 +4,8 @@ import pytest
 from tinydb import Query, where
 
 from blogit.blogit import CONFIG, find_new_posts_and_pages, DataBase
-from blogit.blogit import Entry, Tag
+from blogit.blogit import Entry, Tag, _sort_entries
+
 import blogit.blogit as m
 
 
@@ -185,7 +186,7 @@ def test_tag_post_ids():
 ---
 title: Blog post
 author: Famous author
-published: 2015-01-12
+published: 2015-01-{}
 tags: tag1, tag2
 public: yes
 chronological: yes
@@ -194,9 +195,9 @@ summary: This is a summry
 ---
 """
     with open(os.path.join(CONFIG['content_root'], 'e.md'), 'w') as f:
-        f.write(m)
+        f.write(m.format(9))
     with open(os.path.join(CONFIG['content_root'], 'f.md'), 'w') as f:
-        f.write(m)
+        f.write(m.format(11))
 
     e1 = Entry(os.path.join(CONFIG['content_root'], 'e.md'))
     e1.tags
@@ -207,6 +208,9 @@ summary: This is a summry
     assert e1.tags[0].posts == e2.tags[0].posts
     e1.render()
     [t.render() for t in e1.tags]
+
+    l = _sort_entries([e2, e1])
+    assert l == [e2, e1]
 
 
 def test_tag_render():

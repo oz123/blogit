@@ -258,8 +258,11 @@ class Entry(object):
         if 'tags' in self.header:  # pages can lack tags
             self.header['tags'] = self.header['tags'].split(',')
 
+
         self.date = self.header.get('published', datetime.date.today())
 
+        if isinstance(self.date, unicode):
+            self.date = datetime.datetime.strptime(self.date, "%Y-%m-%d")
         for k, v in self.header.items():
             try:
                 setattr(self, k, v)
