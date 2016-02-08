@@ -322,8 +322,7 @@ def render_archive(entries):
     This function creates the archive page
     """
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
-    context['entries'] = entries[ARCHIVE_SIZE:10]
-
+    context['entries'] = entries
     _render(context, 'archive_index.html',
             os.path.join(CONFIG['output_to'],'archive/index.html')),
 
@@ -394,7 +393,7 @@ def build():
     # update archive
     print("updating archive")
     render_archive(_sort_entries([Entry(p['filename'])
-                                  for p in db.posts.all()]))
+                   for p in db.posts.all()])[ARCHIVE_SIZE:10])
 
 
 

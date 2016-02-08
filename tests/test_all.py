@@ -3,13 +3,15 @@ import os
 import pytest
 from tinydb import Query, where
 
-from blogit.blogit import CONFIG, find_new_posts_and_pages, DataBase
-from blogit.blogit import Entry, Tag, _sort_entries, _get_last_entries
+from blogit.blogit import (CONFIG, find_new_posts_and_pages, DataBase,
+                           Entry, Tag, _sort_entries, _get_last_entries,
+                           render_archive)
 
 import blogit.blogit as m
 
 
 CONFIG['content_root'] = 'test_root'
+ARCHIVE_SIZE = 10
 db_name = os.path.join(CONFIG['content_root'], 'blogit.db')
 
 
@@ -184,10 +186,10 @@ def test_tag_entries():
 def test_tag_post_ids():
     m ="""\
 ---
-title: Blog post
+title: Blog post {}
 author: Famous author
 published: 2015-01-{}
-tags: tag1, tag2
+    tags: tag1, tag2
 public: yes
 chronological: yes
 kind: writing
@@ -195,9 +197,9 @@ summary: This is a summry
 ---
 """
     with open(os.path.join(CONFIG['content_root'], 'e.md'), 'w') as f:
-        f.write(m.format(9))
+        f.write(m.format(25, 25))
     with open(os.path.join(CONFIG['content_root'], 'f.md'), 'w') as f:
-        f.write(m.format(11))
+        f.write(m.format(27, 27))
 
     e1 = Entry(os.path.join(CONFIG['content_root'], 'e.md'))
     e1.tags
@@ -232,3 +234,11 @@ def test_get_last_entries():
 
     le = _get_last_entries(DB)
     assert [e.id for e in le] == range(22, 12, -1)
+
+def test_render_archive():
+
+    entries = [Entry.entry_from_db(
+        os.path.join(CONFIG['content_root'], e.get('filename'))) for e in
+        DB.posts.all()]
+
+    render_archive(_sort_entries(entries, reversed=True)[ARCHIVE_SIZE:])
