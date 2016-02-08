@@ -43,7 +43,7 @@ jinja_env = Environment(lstrip_blocks=True, trim_blocks=True,
                         loader=FileSystemLoader(CONFIG['templates']))
 
 
-class DataBase(object): # pragma: no cover
+class DataBase(object): # pragma: no coverage
     """A thin wrapper around TinyDB instance"""
 
     def __init__(self, path):
@@ -75,7 +75,7 @@ class Tag(object):
     def __str__(self):
         return self.name
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no coverage
         return self.name
 
     @property
@@ -126,7 +126,7 @@ class Tag(object):
 
         # render html page
         render_to = os.path.join(CONFIG['output_to'], 'tags', self.slug)
-        if not os.path.exists(render_to):
+        if not os.path.exists(render_to):  # pragma: no coverage
             os.makedirs(render_to)
         _render(context, 'tag_index.html', os.path.join(render_to, 'index.html'))
         # render atom.xml
@@ -192,7 +192,7 @@ class Entry(object):
     def __str__(self):
         return self.path
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no coverage
         return self.path
 
     @property
@@ -285,26 +285,23 @@ class Entry(object):
         self.id = _id
 
     def render(self):
-        if not self.header['public']:
-            return False
-
-        try:
-            context = GLOBAL_TEMPLATE_CONTEXT.copy()
-            context['entry'] = self
-            _render(context, self.header.get('template', 'entry.html'),
-                    self.destination)
-            return True
-        except Exception as e:  # pragma: no cover
-            print(context)
-            print(self.path)
-            print(e)
-            sys.exit(1)
+        if self.header.get('public', '').lower() in ['true', 'yes']:
+            try:
+                context = GLOBAL_TEMPLATE_CONTEXT.copy()
+                context['entry'] = self
+                _render(context, self.header.get('template', 'entry.html'),
+                        self.destination)
+                return True
+            except Exception as e:  # pragma: no cover
+                print(context)
+                print(self.path)
+                print(e)
+                sys.exit(1)
 
 
-
-def _sort_entries(entries):
+def _sort_entries(entries, reversed=True):
     """Sort all entries by date and reverse the list"""
-    return list(reversed(sorted(entries, key=operator.attrgetter('date'))))
+    return list(sorted(entries, key=operator.attrgetter('date'), reverse=reversed))
 
 
 def _render(context, template_path, output_path, encoding='utf-8'):
