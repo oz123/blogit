@@ -37,7 +37,23 @@ import tinydb
 from tinydb import Query, where
 
 sys.path.insert(0, os.getcwd())
-from conf import CONFIG, ARCHIVE_SIZE, GLOBAL_TEMPLATE_CONTEXT, KINDS
+from conf import CONFIG, GLOBAL_TEMPLATE_CONTEXT
+
+# with this config, pages are rendered to the location of their title
+KINDS = {
+    'writing': {
+        'name': 'writing', 'name_plural': 'writings',
+    },
+    'note': {
+        'name': 'note', 'name_plural': 'notes',
+    },
+    'link': {
+        'name': 'link', 'name_plural': 'links',
+    },
+    'photo': {
+        'name': 'photo', 'name_plural': 'photos',
+    },
+}
 
 jinja_env = Environment(lstrip_blocks=True, trim_blocks=True,
                         loader=FileSystemLoader(CONFIG['templates']))
@@ -131,6 +147,8 @@ class Tag(object):
         _render(context, 'tag_index.html', os.path.join(render_to, 'index.html'))
         # render atom.xml
         context['entries'] = context['entries'][:10]
+        context['last_build'] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+
         _render(context, 'atom.xml', os.path.join(render_to, 'atom.xml'))
         return True
 
@@ -359,13 +377,14 @@ def update_index(entries):
     """
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
     context['entries'] = entries
+    context['last_build'] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
     map(lambda x: _render(
         context, x[0], os.path.join(CONFIG['output_to'], x[1])),
         (('entry_index.html', 'index.html'), ('atom.xml', 'atom.xml')))
 
 
-def build():
+def build(config):
     """Incremental build of the website"""
 
     print("\nRendering website now...\n")
@@ -399,7 +418,7 @@ def build():
     #    os.path.join(CONFIG['content_root'], e.get('filename'))) for e in
     #    DB.posts.all()]
 
-    render_archive(_sort_entries(entries, reversed=True)[ARCHIVE_SIZE:])
+    render_archive(_sort_entries(entries, reversed=True)[config['ARCHIVE_SIZE']:])
 
 
 
@@ -522,13 +541,16 @@ def main():   # pragma: no coverage
 
     args = parser.parse_args()
 
+    if not os.path.exists(os.path.join(CONFIG['content_root'])):
+        os.makedirs(os.path.join(CONFIG['content_root']))
+
     if len(sys.argv) < 2:
         parser.print_help()
         sys.exit()
     if args.clean:
         clean()
     if args.build:
-        build()
+        build(CONFIG)
     if args.dist:
         dist()
     if args.preview:

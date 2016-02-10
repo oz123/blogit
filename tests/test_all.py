@@ -258,13 +258,13 @@ def test_render_index():
 
 
 def test_build():
-    build()
+    build(CONFIG)
     # check that the index really contains the last 10 entries
     with open(os.path.join(CONFIG['output_to'], 'index.html')) as html_index:
         soup = BeautifulSoup(html_index.read(), 'html.parser')
         assert len(soup.find_all(class_='clearfix entry')) == 10
 
-    # pages should not be in the archive, but archive size here is different
+    # pages should not be in the archive
     with open(os.path.join(CONFIG['output_to'], 'archive', 'index.html')) as html_index:
         soup = BeautifulSoup(html_index.read(), 'html.parser')
-        assert len(soup.find_all(class_='post')) == 22
+        assert len(soup.find_all(class_='post')) == 12

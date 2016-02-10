@@ -5,10 +5,9 @@ python code as a configuration language instead of choosing the
 ini, yaml, or what ever DSL for configuration.
 """
 
-import datetime
-import os
-from collections import namedtuple
-import tinydb
+# ARCHIVE SIZE
+# 0 Means that all the entries will be in the archive
+# 10 meas that all the entries except the last 10
 
 CONFIG = {
     'content_root': 'content',  # where the markdown files are
@@ -20,41 +19,17 @@ CONFIG = {
     'http_port': 3030,
     'content_encoding': 'utf-8',
     'author': 'Oz Nahum Tiram',
-    'editor': 'editor'
+    'editor': 'editor',
+    'ARCHIVE_SIZE': 10
     }
-
-if not os.path.exists(os.path.join(CONFIG['content_root'])):
-    os.makedirs(os.path.join(CONFIG['content_root']))
-
-
-# EDIT THIS PARAMETER TO CHANGE ARCHIVE SIZE
-# 0 Means that all the entries will be in the archive
-# 10 meas that all the entries except the last 10
-ARCHIVE_SIZE = 0
 
 GLOBAL_TEMPLATE_CONTEXT = {
     'media_base': '/media/',
     'media_url': '../media/',
     'site_url': 'http://oz123.github.com',
-    'last_build': datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"),
     'twitter': 'https://twitter.com/#!/OzNTiram',
     'stackoverflow': "http://stackoverflow.com/users/492620/oz123",
     'github': "https://github.com/oz123",
 }
 
 
-# with this config, pages are rendered to the location of their title
-KINDS = {
-    'writing': {
-        'name': 'writing', 'name_plural': 'writings',
-    },
-    'note': {
-        'name': 'note', 'name_plural': 'notes',
-    },
-    'link': {
-        'name': 'link', 'name_plural': 'links',
-    },
-    'photo': {
-        'name': 'photo', 'name_plural': 'photos',
-    },
-}
