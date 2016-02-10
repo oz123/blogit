@@ -268,3 +268,6 @@ def test_build():
     with open(os.path.join(CONFIG['output_to'], 'archive', 'index.html')) as html_index:
         soup = BeautifulSoup(html_index.read(), 'html.parser')
         assert len(soup.find_all(class_='post')) == 12
+
+    # todo, check tag pages
+    # tag pages are not built properly

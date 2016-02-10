@@ -99,7 +99,7 @@ class Tag(object):
     def slug(self):
         _slug = self.name.lower()
         _slug = re.sub(r'[;:,. ]+', '-', _slug.lstrip(',.;:-'))
-        return _slug
+        return _slug.lstrip('-')
 
     @property
     def posts(self):
