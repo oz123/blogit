@@ -1,6 +1,7 @@
 import os
 
 import pytest
+from bs4 import BeautifulSoup
 from tinydb import Query, where
 
 from blogit.blogit import (CONFIG, find_new_posts_and_pages, DataBase,
@@ -243,13 +244,27 @@ def test_render_archive():
         DB.posts.all()]
 
     render_archive(_sort_entries(entries, reversed=True)[ARCHIVE_SIZE:])
-    # TODO: assertions here
+    # pages should not be in the archive
+    with open(os.path.join(CONFIG['output_to'], 'archive', 'index.html')) as html_index:
+        soup = BeautifulSoup(html_index.read(), 'html.parser')
+        assert len(soup.find_all(class_='post')) == 12
 
 
-def test_render_archive():
+def test_render_index():
     update_index(_get_last_entries(DB))
-    # TODO: assertions here
+    with open(os.path.join(CONFIG['output_to'], 'index.html')) as html_index:
+        soup = BeautifulSoup(html_index.read(), 'html.parser')
+        assert len(soup.find_all(class_='clearfix entry')) == 10
 
 
 def test_build():
     build()
+    # check that the index really contains the last 10 entries
+    with open(os.path.join(CONFIG['output_to'], 'index.html')) as html_index:
+        soup = BeautifulSoup(html_index.read(), 'html.parser')
+        assert len(soup.find_all(class_='clearfix entry')) == 10
+
+    # pages should not be in the archive, but archive size here is different
+    with open(os.path.join(CONFIG['output_to'], 'archive', 'index.html')) as html_index:
+        soup = BeautifulSoup(html_index.read(), 'html.parser')
+        assert len(soup.find_all(class_='post')) == 22

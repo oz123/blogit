@@ -4,7 +4,7 @@
 <div class="archive index">
 <h2>This is an archive of everything posted here ...</h2>
   {% for entry in entries %}
-    <p>{{ entry.publish_date}} <a title="../{{ entry.permalink }}" href="../{{entry.permalink}}">{{entry.title }}</a></p>
+    <p class="post">{{ entry.publish_date}} <a title="../{{ entry.permalink }}" href="../{{entry.permalink}}">{{entry.title }}</a></p>
   {% endfor %}
 </div>
 {% endblock content %}

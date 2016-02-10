@@ -381,7 +381,7 @@ def build():
                 for tag in post.tags:
                     tag.posts = [post_id]
                     tags[tag.name] = tag
-        entries.append(post)
+                entries.append(post)
         print("%s" % post.path)
 
     for name, to in tags.iteritems():
