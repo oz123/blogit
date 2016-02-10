@@ -211,9 +211,9 @@ class Entry(object):
     def title(self):
         return self.header['title']
 
-    @property
-    def summary_html(self):
-        return "%s" % markdown2.markdown(self.header.get('summary', "").strip())
+    #@property
+    #def summary_html(self):
+    #    return "%s" % markdown2.markdown(self.header.get('summary', "").strip())
 
     @property
     def summary_atom(self):
@@ -258,10 +258,11 @@ class Entry(object):
         if 'tags' in self.header:  # pages can lack tags
             self.header['tags'] = self.header['tags'].split(',')
 
-        self.date = self.header.get('published', datetime.date.today())
+        self.date = self.header.get('published', datetime.datetime.now())
 
         if isinstance(self.date, unicode):
             self.date = datetime.datetime.strptime(self.date, "%Y-%m-%d")
+
         for k, v in self.header.items():
             try:
                 setattr(self, k, v)
@@ -370,9 +371,9 @@ def build():
     print("\nRendering website now...\n")
     print("entries:")
     tags = dict()
+    entries = list()
     root = CONFIG['content_root']
-    for post_id, post in find_new_posts_and_pages(DB):
-        # entry = post
+    for post, post_id in find_new_posts_and_pages(DB):
         # this method will also parse the post's tags and
         # update the db collection containing the tags.
         if post.render():
@@ -380,6 +381,7 @@ def build():
                 for tag in post.tags:
                     tag.posts = [post_id]
                     tags[tag.name] = tag
+        entries.append(post)
         print("%s" % post.path)
 
     for name, to in tags.iteritems():
@@ -392,8 +394,12 @@ def build():
 
     # update archive
     print("updating archive")
-    render_archive(_sort_entries([Entry(p['filename'])
-                   for p in db.posts.all()])[ARCHIVE_SIZE:10])
+
+    #entries = [Entry.entry_from_db(
+    #    os.path.join(CONFIG['content_root'], e.get('filename'))) for e in
+    #    DB.posts.all()]
+
+    render_archive(_sort_entries(entries, reversed=True)[ARCHIVE_SIZE:])
 
 
 

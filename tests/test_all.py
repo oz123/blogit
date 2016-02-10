@@ -5,7 +5,7 @@ from tinydb import Query, where
 
 from blogit.blogit import (CONFIG, find_new_posts_and_pages, DataBase,
                            Entry, Tag, _sort_entries, _get_last_entries,
-                           render_archive)
+                           render_archive, update_index, build)
 
 import blogit.blogit as m
 
@@ -235,6 +235,7 @@ def test_get_last_entries():
     le = _get_last_entries(DB)
     assert [e.id for e in le] == range(22, 12, -1)
 
+
 def test_render_archive():
 
     entries = [Entry.entry_from_db(
@@ -242,3 +243,13 @@ def test_render_archive():
         DB.posts.all()]
 
     render_archive(_sort_entries(entries, reversed=True)[ARCHIVE_SIZE:])
+    # TODO: assertions here
+
+
+def test_render_archive():
+    update_index(_get_last_entries(DB))
+    # TODO: assertions here
+
+
+def test_build():
+    build()
