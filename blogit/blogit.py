@@ -37,6 +37,7 @@ import tinydb
 from tinydb import Query, where
 
 sys.path.insert(0, os.getcwd())
+
 from conf import CONFIG, GLOBAL_TEMPLATE_CONTEXT
 
 # with this config, pages are rendered to the location of their title
@@ -97,7 +98,7 @@ class Tag(object):
     @property
     def slug(self):
         _slug = self.name.lower()
-        _slug = re.sub(r'[;:,. ]+', '-', _slug)
+        _slug = re.sub(r'[;:,. ]+', '-', _slug.lstrip(',.;:-'))
         return _slug
 
     @property
@@ -205,7 +206,10 @@ class Entry(object):
         self._path = path
         self.path = path.split(CONFIG['content_root'])[-1].lstrip('/')
         self.id = None  # this is set inside prepare()
-        self.prepare()
+        try:
+            self.prepare()
+        except KeyError as E:
+            import pdb; pdb.set_trace()
 
     def __str__(self):
         return self.path
