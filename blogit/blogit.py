@@ -407,7 +407,7 @@ def build(config):
     # to the index using BeautifulSoup
     # update index
     print("updating index")
-    update_index(_get_last_entries(DB))
+    update_index(_sort_entries(_get_last_entries(DB)))
 
     # update archive
     print("updating archive")
