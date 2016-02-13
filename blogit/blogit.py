@@ -209,7 +209,7 @@ class Entry(object):
         try:
             self.prepare()
         except KeyError as E:
-            pass
+            import pdb; pdb.set_trace()
 
     def __str__(self):
         return self.path
@@ -356,12 +356,12 @@ def find_new_posts_and_pages(db):
                     yield e, e.id
 
 
-def _get_last_entries(db):
+def _get_last_entries(db, qty):
     eids = [post.eid for post in db.posts.all()]
-    eids = sorted(eids)[-10:][::-1]
+    eids = sorted(eids, reverse=True)
     entries = [Entry(os.path.join(CONFIG['content_root'],
                      db.posts.get(eid=eid)['filename']), eid) for eid in eids]
-    return entries
+    return entries[:qty]
 
 
 def update_index(entries):
@@ -407,7 +407,7 @@ def build(config):
     # to the index using BeautifulSoup
     # update index
     print("updating index")
-    update_index(_sort_entries(_get_last_entries(DB)))
+    update_index(_sort_entries(_get_last_entries(DB, config['INDEX_SIZE'])))
 
     # update archive
     print("updating archive")

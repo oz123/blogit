@@ -20,7 +20,8 @@ CONFIG = {
     'content_encoding': 'utf-8',
     'author': 'Oz Nahum Tiram',
     'editor': 'editor',
-    'ARCHIVE_SIZE': 10
+    'ARCHIVE_SIZE': 10,
+    'INDEX_SIZE': 10, # How many entries shoud be in the INDEX
     }
 
 GLOBAL_TEMPLATE_CONTEXT = {

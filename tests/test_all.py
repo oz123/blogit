@@ -238,7 +238,7 @@ def test_tag_render():
 def test_get_last_entries():
 
     assert len(DB.posts.all()) == 22
-    le = _get_last_entries(DB)
+    le = _get_last_entries(DB, 10)
     assert [e.id for e in le] == range(22, 12, -1)
 
 
@@ -256,7 +256,7 @@ def test_render_archive():
 
 
 def test_render_index():
-    update_index(_get_last_entries(DB))
+    update_index(_get_last_entries(DB, 10))
     with open(os.path.join(CONFIG['output_to'], 'index.html')) as html_index:
         soup = BeautifulSoup(html_index.read(), 'html.parser')
         assert len(soup.find_all(class_='clearfix entry')) == 10
