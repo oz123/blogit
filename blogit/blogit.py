@@ -358,8 +358,9 @@ def find_new_posts_and_pages(db):
         for filename in files:
             if filename.endswith(('md', 'markdown')):
                 fullpath = os.path.join(root, filename)
-                if not db.posts.contains(Q.filename == fullpath) and \
-                        not db.pages.contains(Q.filename == fullpath):
+                _p = fullpath.split(CONFIG['content_root'])[-1].lstrip('/')
+                if not db.posts.contains(Q.filename == _p) and \
+                        not db.pages.contains(Q.filename == _p):
                     e = Entry(fullpath)
                     yield e, e.id
 
@@ -418,9 +419,12 @@ def build(config):
     # update archive
     print("updating archive")
 
-    #entries = [Entry.entry_from_db(
-    #    os.path.join(CONFIG['content_root'], e.get('filename'))) for e in
-    #    DB.posts.all()]
+    # This is expensive, we should insert only the recent entries
+    # to the archive using BeautifulSoup
+
+    entries = [Entry.entry_from_db(
+        os.path.join(CONFIG['content_root'], e.get('filename'))) for e in
+        DB.posts.all()]
 
     render_archive(_sort_entries(entries, reversed=True)[config['ARCHIVE_SIZE']:])
 
