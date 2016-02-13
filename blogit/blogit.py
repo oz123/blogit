@@ -544,8 +544,6 @@ def main():   # pragma: no coverage
         clean()
     if args.build:
         build(CONFIG)
-    if args.dist:
-        dist()
     if args.preview:
         preview()
     if args.new:
