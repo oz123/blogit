@@ -120,9 +120,11 @@ def test_find_new_posts_and_pages():
 
     assert len(DB.posts.all()) == 20
 
-    entries = [e for e in find_new_posts_and_pages(DB)]
+    new_entries = [e for e in find_new_posts_and_pages(DB)]
+
     # no new posts sould be found
     assert len(DB.posts.all()) == 20
+    assert len(new_entries) == 0
 
     [e[0].tags for e in entries]
     foo = DB.tags.search(where('name')=='foo')
