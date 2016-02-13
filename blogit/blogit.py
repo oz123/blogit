@@ -361,7 +361,7 @@ def _get_last_entries(db, qty):
     eids = sorted(eids, reverse=True)
     entries = [Entry(os.path.join(CONFIG['content_root'],
                      db.posts.get(eid=eid)['filename']), eid) for eid in eids]
-    return entries[:qty]
+    return _sort_entries(entries)[:qty]
 
 
 def update_index(entries):
@@ -407,7 +407,7 @@ def build(config):
     # to the index using BeautifulSoup
     # update index
     print("updating index")
-    update_index(_sort_entries(_get_last_entries(DB, config['INDEX_SIZE'])))
+    update_index(_get_last_entries(DB, config['INDEX_SIZE']))
 
     # update archive
     print("updating archive")
