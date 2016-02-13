@@ -131,9 +131,10 @@ class Tag(object):
         Posts = Query()
         for id in self.posts:
             post = self.db.posts.get(eid=id)
-            if not post:
-                 raise ValueError("no post found for eid %s" % id)
-            yield Entry(os.path.join(CONFIG['content_root'], post['filename']), id)
+            if post:  # pragma: no coverage
+                yield Entry(os.path.join(CONFIG['content_root'], post['filename']), id)
+            else:
+                raise ValueError("No post found for eid %s" % id)
 
     def render(self):
         """Render html page and atom feed"""
@@ -208,7 +209,7 @@ class Entry(object):
         self.id = eid  # this is set inside prepare()
         try:
             self.prepare()
-        except KeyError as E:
+        except KeyError as E:  # pragma: no coverage
             import pdb; pdb.set_trace()
 
     def __str__(self):

@@ -148,6 +148,11 @@ def test_tags():
     with pytest.raises(ValueError):
         new_tag.posts = 1  # This should not either
 
+    new_tag.posts = [100]
+    with pytest.raises(ValueError):
+        list(new_tag.entries)
+
+
 
 def test_slug():
 
@@ -263,6 +268,7 @@ def test_render_index():
 
 
 def test_build():
+    DB._db.purge_tables()
     build(CONFIG)
     # check that the index really contains the last 10 entries
     with open(os.path.join(CONFIG['output_to'], 'index.html')) as html_index:
