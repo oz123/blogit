@@ -209,7 +209,7 @@ class Entry(object):
         try:
             self.prepare()
         except KeyError as E:
-            import pdb; pdb.set_trace()
+            pass
 
     def __str__(self):
         return self.path

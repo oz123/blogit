@@ -44,7 +44,7 @@ tags: {tags}
 public: yes
 chronological: yes
 kind: writing
-summary: This is a summry of post {number}. Donec id elit non mi porta gravida at eget metus. Fusce dapibus
+summary: This is a summray of post {number}. Donec id elit non mi porta gravida at eget metus. Fusce dapibus
 ---
 
 This is the body of post {number}. Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui.
@@ -194,7 +194,7 @@ published: 2015-01-{}
 public: yes
 chronological: yes
 kind: writing
-summary: This is a summry
+summary: This is a summary
 ---
 """
     with open(os.path.join(CONFIG['content_root'], 'e.md'), 'w') as f:
@@ -269,5 +269,12 @@ def test_build():
         soup = BeautifulSoup(html_index.read(), 'html.parser')
         assert len(soup.find_all(class_='post')) == 12
 
-    # todo, check tag pages
-    # tag pages are not built properly
+    with open(os.path.join(CONFIG['output_to'], 'tags', 'foo', 'index.html')) as tag_foo:
+        soup = BeautifulSoup(tag_foo.read(), 'html.parser')
+        titles = [c.a.string for c in
+                  soup.find_all(class_="clearfix entry")]
+        for title, idx in zip(titles, range(15, 0, -1)):
+            assert title.split()[-1] == str(idx)
+
+
+
