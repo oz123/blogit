@@ -518,15 +518,6 @@ def clean(GITDIRECTORY=CONFIG['output_to']):  # pragma: no coverage
         shutil.rmtree(directory)
 
 
-def dist(SOURCEDIR=os.getcwd()+"/content/",
-         DESTDIR=CONFIG['raw_content']):  # pragma: no coverage
-    """
-    sync raw files from SOURCE to DEST
-    """
-    sp.call(["rsync", "-avP", SOURCEDIR, DESTDIR], shell=False,
-            cwd=os.getcwd())
-
-
 def main():   # pragma: no coverage
     parser = argparse.ArgumentParser(
         description='blogit - a tool to blog on github.')
@@ -538,8 +529,6 @@ def main():   # pragma: no coverage
                         help='clean output files')
     parser.add_argument('-n', '--new', action="store_true",
                         help='create new post')
-    parser.add_argument('-d', '--dist', action="store_true",
-                        help='sync raw files from SOURCE to DEST')
     parser.add_argument('--publish', action="store_true",
                         help='push built HTML to git upstream')
 
