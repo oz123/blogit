@@ -131,10 +131,9 @@ class Tag(object):
         Posts = Query()
         for id in self.posts:
             post = self.db.posts.get(eid=id)
-            if post:  # pragma: no coverage
-                yield Entry(os.path.join(CONFIG['content_root'], post['filename']), id)
-            else:
+            if not post:  # pragma: no coverage
                 raise ValueError("No post found for eid %s" % id)
+            yield Entry(os.path.join(CONFIG['content_root'], post['filename']), id)
 
     def render(self):
         """Render html page and atom feed"""
