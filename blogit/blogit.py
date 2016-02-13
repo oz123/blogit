@@ -133,7 +133,7 @@ class Tag(object):
             post = self.db.posts.get(eid=id)
             if not post:
                  raise ValueError("no post found for eid %s" % id)
-            yield Entry(os.path.join(CONFIG['content_root'], post['filename']))
+            yield Entry(os.path.join(CONFIG['content_root'], post['filename']), id)
 
     def render(self):
         """Render html page and atom feed"""
@@ -198,14 +198,14 @@ class Entry(object):
     db = DB
 
     @classmethod
-    def entry_from_db(kls, filename):
+    def entry_from_db(kls, filename, eid=None):
         f = os.path.join(filename)
-        return kls(f)
+        return kls(f, eid)
 
-    def __init__(self, path):
+    def __init__(self, path, eid=None):
         self._path = path
         self.path = path.split(CONFIG['content_root'])[-1].lstrip('/')
-        self.id = None  # this is set inside prepare()
+        self.id = eid  # this is set inside prepare()
         try:
             self.prepare()
         except KeyError as E:
@@ -232,10 +232,6 @@ class Entry(object):
     @property
     def title(self):
         return self.header['title']
-
-    #@property
-    #def summary_html(self):
-    #    return "%s" % markdown2.markdown(self.header.get('summary', "").strip())
 
     @property
     def summary_atom(self):
@@ -291,19 +287,14 @@ class Entry(object):
             except AttributeError:
                 pass
 
+        if self.id:
+            return
+
         if self.header['kind'] == 'writing':
-            rv = Entry.db.posts.search(where('filename') == self.path)
-            if not rv:
-                _id = Entry.db.posts.insert({'filename': self.path})
-            else:
-                _id = rv[0].eid
+            _id = Entry.db.posts.insert({'filename': self.path})
 
         elif self.header['kind'] == 'page':
-            rv = Entry.db.pages.search(where('filename') == self.path)
-            if not rv:
-                _id = Entry.db.pages.insert({'filename': self.path})
-            else:
-                _id = rv[0].eid
+            _id = Entry.db.pages.insert({'filename': self.path})
 
         self.id = _id
 
@@ -369,7 +360,7 @@ def _get_last_entries(db):
     eids = [post.eid for post in db.posts.all()]
     eids = sorted(eids)[-10:][::-1]
     entries = [Entry(os.path.join(CONFIG['content_root'],
-                     db.posts.get(eid=eid)['filename'])) for eid in eids]
+                     db.posts.get(eid=eid)['filename']), eid) for eid in eids]
     return entries
 
 
@@ -412,6 +403,8 @@ def build(config):
         print("updating tag %s" % name)
         to.render()
 
+    # This is expensive, we should insert only the recent entries
+    # to the index using BeautifulSoup
     # update index
     print("updating index")
     update_index(_get_last_entries(DB))
@@ -423,7 +416,7 @@ def build(config):
     # to the archive using BeautifulSoup
 
     entries = [Entry.entry_from_db(
-        os.path.join(CONFIG['content_root'], e.get('filename'))) for e in
+        os.path.join(CONFIG['content_root'], e.get('filename')), e.eid) for e in
         DB.posts.all()]
 
     render_archive(_sort_entries(entries, reversed=True)[config['ARCHIVE_SIZE']:])

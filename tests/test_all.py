@@ -131,8 +131,8 @@ def test_find_new_posts_and_pages():
     assert foo[0]['post_ids'] == range(1, 16)
 
 def test_tags():
-    entries = map(Entry.entry_from_db,
-                  [os.path.join(CONFIG['content_root'], e.get('filename'))
+    entries = map(lambda (p, e): Entry.entry_from_db(p, e),
+                  [(os.path.join(CONFIG['content_root'], e.get('filename')), e.eid)
                       for e in DB.posts.all()])
     tags = DB.tags.all()
 
@@ -156,7 +156,7 @@ def test_slug():
     t = Tag('foo:;bar,.,baz')
     assert t.slug == "foo-bar-baz"
 
-
+"""
 def test_tag_posts():
 
     example = Tag('example')
@@ -184,7 +184,7 @@ def test_tag_entries():
     tf = Tag(u'example')
     entries = list(tf.entries)
     assert len(entries)
-
+"""
 
 def test_tag_post_ids():
     m ="""\
@@ -192,13 +192,14 @@ def test_tag_post_ids():
 title: Blog post {}
 author: Famous author
 published: 2015-01-{}
-    tags: tag1, tag2
+tags: tag1, tag2
 public: yes
 chronological: yes
 kind: writing
 summary: This is a summary
 ---
 """
+    assert len(DB.posts.all()) == 20
     with open(os.path.join(CONFIG['content_root'], 'e.md'), 'w') as f:
         f.write(m.format(25, 25))
     with open(os.path.join(CONFIG['content_root'], 'f.md'), 'w') as f:
@@ -209,20 +210,20 @@ summary: This is a summary
 
     e2 = Entry(os.path.join(CONFIG['content_root'], 'f.md'))
     e2.tags
-
+    assert len(DB.posts.all()) == 22
     assert e1.tags[0].posts == e2.tags[0].posts
     e1.render()
     [t.render() for t in e1.tags]
 
     l = _sort_entries([e2, e1])
     assert l == [e2, e1]
+    assert len(DB.posts.all()) == 22
 
 
 def test_tag_render():
-
     p = DB.posts.get(eid=1)
     entry = Entry.entry_from_db(
-        os.path.join(CONFIG['content_root'], p.get('filename')))
+        os.path.join(CONFIG['content_root'], p.get('filename')), 1)
 
     #entry = Entry(os.path.join(CONFIG['content_root'], 'post1.md'))
     tags = entry.tags
@@ -232,9 +233,11 @@ def test_tag_render():
     assert tags[0].render()
     assert len(list(tags[0].entries))
 
+    assert len(DB.posts.all()) == 22
 
 def test_get_last_entries():
 
+    assert len(DB.posts.all()) == 22
     le = _get_last_entries(DB)
     assert [e.id for e in le] == range(22, 12, -1)
 
@@ -242,7 +245,7 @@ def test_get_last_entries():
 def test_render_archive():
 
     entries = [Entry.entry_from_db(
-        os.path.join(CONFIG['content_root'], e.get('filename'))) for e in
+        os.path.join(CONFIG['content_root'], e.get('filename')), e.eid) for e in
         DB.posts.all()]
 
     render_archive(_sort_entries(entries, reversed=True)[ARCHIVE_SIZE:])
@@ -277,6 +280,3 @@ def test_build():
                   soup.find_all(class_="clearfix entry")]
         for title, idx in zip(titles, range(15, 0, -1)):
             assert title.split()[-1] == str(idx)
-
-
-
