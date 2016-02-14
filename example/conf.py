@@ -10,8 +10,8 @@ ini, yaml, or what ever DSL for configuration.
 # 10 meas that all the entries except the last 10
 
 CONFIG = {
-    'content_root': 'test_root',  # where the markdown files are
-    'output_to': 'oz123.github.com',
+    'content_root': 'content',  # where the markdown files are
+    'output_to': '.',
     'templates': 'templates',
     'date_format': '%Y-%m-%d',
     'base_url': 'http://oz123.github.com',
