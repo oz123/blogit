@@ -12,7 +12,6 @@ ini, yaml, or what ever DSL for configuration.
 CONFIG = {
     'content_root': 'test_root',  # where the markdown files are
     'output_to': 'oz123.github.com',
-    'raw_content': 'oz123.github.com/writings_raw/content',
     'templates': 'templates',
     'date_format': '%Y-%m-%d',
     'base_url': 'http://oz123.github.com',
