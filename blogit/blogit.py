@@ -422,31 +422,6 @@ def build(config):
     render_archive(_sort_entries(entries, reversed=True)[config['ARCHIVE_SIZE']:])
 
 
-
-class StoppableHTTPServer(BaseHTTPServer.HTTPServer):  # pragma: no coverage
-
-    def server_bind(self):
-        BaseHTTPServer.HTTPServer.server_bind(self)
-        self.socket.settimeout(1)
-        self.run = True
-
-    def get_request(self):
-        while self.run:
-            try:
-                sock, addr = self.socket.accept()
-                sock.settimeout(None)
-                return (sock, addr)
-            except socket.timeout:
-                pass
-
-    def stop(self):
-        self.run = False
-
-    def serve(self):
-        while self.run:
-            self.handle_request()
-
-
 def preview():  # pragma: no coverage
     """launch an HTTP to preview the website"""
     Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
