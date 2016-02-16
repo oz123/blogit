@@ -382,8 +382,6 @@ def update_index(entries):
 
 def build(config):
     """Incremental build of the website"""
-    import pdb; pdb.set_trace()
-
     print("\nRendering website now...\n")
     print("entries:")
     tags = dict()
