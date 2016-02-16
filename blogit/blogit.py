@@ -382,6 +382,7 @@ def update_index(entries):
 
 def build(config):
     """Incremental build of the website"""
+    import pdb; pdb.set_trace()
 
     print("\nRendering website now...\n")
     print("entries:")
@@ -403,6 +404,7 @@ def build(config):
         print("updating tag %s" % name)
         to.render()
 
+    # BUG: Only public entries should be added to the index
     # This is expensive, we should insert only the recent entries
     # to the index using BeautifulSoup
     # update index
