@@ -6,7 +6,8 @@ date:   2014-08-12 10:18:00
 tags: fables fiction
 subclass: 'post tag-test tag-content'
 categories: 'casper'
-navigation: True
+kind: writing
+public: true
 logo: 'assets/images/ghost.png'
 ---
 

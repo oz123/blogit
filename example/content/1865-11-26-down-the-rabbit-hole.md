@@ -3,6 +3,8 @@ layout: post
 cover: false
 title: Down The Rabbit Hole
 date:   1865-11-26 10:18:00
+kind: writing
+public: true
 tags: fiction
 subclass: 'post tag-fiction'
 categories: 'casper'
