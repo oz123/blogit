@@ -1,12 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
 	<title>{% block title %}{% endblock title %}</title>
-	<meta name="description" content={% block site %}""{% endblock %} />
+    <meta name="description" content="{{ site_name }} - {{ site_description }}" />
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="/media/images/favicon.ico" >
@@ -16,10 +15,24 @@
 						href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
 			<link rel="stylesheet" type="text/css" href="/media/css/syntax.css" />
 			{% include 'includes/head.html' %}
-</head>
-<body class="paged archive-template home-template nav-closed">
-	{% block content %}
-	{% endblock content %}
+	</head>
+	<body class="paged archive-template home-template nav-closed">
+
+			{% include 'includes/navigation.html' %}
+
+			<div class="site-wrapper">
+
+				{% block content %}
+				{% endblock content %}
+
+					<footer class="site-footer clearfix">
+						<section class="copyright"><a href="{{ site_url }}">{{ site_name }}</a> &copy; 2016</section>
+						<section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> using <a href="https://github.com/biomadeira/jasper">Jasper</a></section>
+					</footer>
+			</div>
+			<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+			<script type="text/javascript" src="/media/js/jquery.fitvids.js"></script>
+			<script type="text/javascript" src="/media/js/index.js"></script>
+
 </body>
 </html>
-
