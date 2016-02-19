@@ -30,6 +30,7 @@ GLOBAL_TEMPLATE_CONTEXT = {
     'twitter': 'https://twitter.com/#!/OzNTiram',
     'stackoverflow': "http://stackoverflow.com/users/492620/oz123",
     'github': "https://github.com/oz123",
+    'site_name': "Oz's Blog"
 }
 
 
