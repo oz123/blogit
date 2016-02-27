@@ -1,4 +1,45 @@
 {% extends "base.html" %}
 {% block content %}
-{{super()}}
-{% endblock content%}
+       <main id="content" class="content" role="main">
+       <div class="extra-pagination inner">
+       <nav class="pagination" role="pagination">
+       <span class="page-number"> Page 1 of 2 </span>
+       <a class="older-posts" href="/jasper/page2/" title="Next Page">Older Posts &raquo;</a>
+       </nav>
+       </div>
+       <!-- This is the post loop - each post will be output using this markup -->
+
+        {% for entry in entries %}
+				<article class="post">
+						<header class="post-header">
+                <h2 class="post-title"><a href="{{entry.permalink}}">{{ entry.title }}</a></h2>
+						</header>
+						<section class="post-excerpt">
+              <p>This is just an ipsis verbis copy of the first example running on the Ghost Demo. This shows how you can use html styling to achieve... <a class="read-more" href="{{entry.permalink}}">&raquo;</a></p>
+						</section>
+						<footer class="post-meta">
+								<img class="author-thumb" src="/media/images/casper.png" alt="Author image" nopin="nopin" />
+								<!-- author -->
+								<a href='/jasper/author/casper'>Casper McFadden</a>
+										on
+                {% for tag in entry.tags %}
+                <a href="{{tag.slug}}">{{tag.name}}</a>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+                <time class="post-date" datetime="{{entry.publish_date}}">{{ entry.publish_date }}</time>
+						</footer>
+				</article>
+        {% endfor %}
+
+				<nav class="pagination" role="pagination">
+				<span class="page-number"> Page 1 of 2 </span>
+				<a class="older-posts" href="/jasper/page2/" title="Next Page">Older Posts &raquo;</a>
+				</nav>
+        </main>
+				{% block footer %}
+				<footer class="site-footer clearfix">
+							<section class="copyright"><a href="/jasper/">Finding The Way Home</a> &copy; 2016</section>
+							<section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> using <a href="https://github.com/biomadeira/jasper">Jasper</a></section>
+				</footer>
+				{% endblock %}
+				</div>
+{% endblock content %}
