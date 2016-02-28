@@ -1,6 +1,5 @@
 body {
     font: normal 18px/28px "Gentium Basic", Gentium, Palatino, Georgia, serif;
-    font-family:
     color:#444;
     padding:0;margin:0;
     background: #fff;
@@ -139,6 +138,9 @@ div.popup .content .image img {
 }
 
 
+.navbar {
+    font-family: Ubuntu, Helvetica, Arial, sans-serif;
+}
 
 @media (min-width: 768px) {
   .sidebar-nav .navbar .navbar-collapse {
@@ -288,7 +290,7 @@ div.popup .content .image img {
 }
 
 .permalink{
-    font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;
+    /*font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;*/
     font-size: 14px;
     text-align:center;
     float:right;
@@ -362,5 +364,5 @@ img.displayed {
 	margin-bottom: 25px;
 }
 .archive p {
-	margin-top:-20px;
+	margin-top:-3px;
 }
