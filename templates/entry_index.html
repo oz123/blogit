@@ -5,7 +5,7 @@
   <div class="clearfix entry">
 	 <h2><a title="Goes to &rarr; {{ entry.permalink }}" href="{{ entry.permalink }}">{{ entry.title }}</a></h2>
 	<div class="clearfix">
-    <div class="date-published">{{ entry.publish_date }}</div>
+    <div class="date-published">{{ entry.publish_date.strftime("%B %d, %Y") }}</div>
 		<div class="tags">tagged:
 		  {% for tag in entry.tags %}
 		   <a class="tag" href="/tags/{{ tag.slug }}"><span>{{ tag.name }}</span></a>{% if not loop.last %}, {% endif %}

@@ -146,6 +146,7 @@ class Tag(object):
         if not os.path.exists(render_to):  # pragma: no coverage
             os.makedirs(render_to)
         _render(context, 'tag_index.html', os.path.join(render_to, 'index.html'))
+
         # render atom.xml
         context['entries'] = context['entries'][:10]
         context['last_build'] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -242,8 +243,11 @@ class Entry(object):
 
     @property
     def publish_date(self):
-        return self.header.get('published',
-                               datetime.date.today().strftime("%Y-%m-%d"))
+        try:
+            r = datetime.datetime.strptime(self.header.get('published', ''), "%Y-%m-%d")
+        except ValueError:
+            r = datetime.date.today()
+        return r
 
     @property
     def permalink(self):
@@ -310,6 +314,7 @@ class Entry(object):
                 print(context)
                 print(self.path)
                 print(e)
+                import pdb; pdb.set_trace()
                 sys.exit(1)
 
 
@@ -526,3 +531,8 @@ def main():   # pragma: no coverage
 
 if __name__ == '__main__':  # pragma: no coverage
     main()
+
+# TODO:
+
+# Change font size of the tag in the index to 100%
+# Replace the fonts to CDN fonts (Roboto and some others)
