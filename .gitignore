@@ -4,3 +4,6 @@ oz123.github.com
 *swp
 *pyc
 .coverage
+.cache
+*.egg-info
+test_root
