@@ -245,7 +245,7 @@ class Entry(object):
     @property
     def permalink(self):
         if self.kind == 'page':
-            dest = '%s.html' % self.title.replace('/', "-")
+            dest = '%s.html' % self._path.replace('.md', "")
         else:
             dest = "%s/%s/index.html" % (KINDS[self.kind]['name_plural'], self.name)
             dest = dest.lstrip('/')
@@ -301,7 +301,7 @@ class Entry(object):
                 context = GLOBAL_TEMPLATE_CONTEXT.copy()
                 context['entry'] = self
                 _render(context, self.header.get('template', 'entry.html'),
-                        self.destination)
+                        self.header.get('template', self.destination))
                 return True
             except Exception as e:  # pragma: no cover
                 print(context)
