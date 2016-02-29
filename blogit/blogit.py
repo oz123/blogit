@@ -235,13 +235,6 @@ class Entry(object):
         return self.header['title']
 
     @property
-    def summary_atom(self):
-        summarya = markdown2.markdown(self.header.get('summary', "").strip())
-        summarya = re.sub("<p>|</p>", "", summarya)
-        more = '<a href="%s"> continue reading...</a>' % (self.permalink)
-        return summarya+more
-
-    @property
     def publish_date(self):
         try:
             r = datetime.datetime.strptime(self.header.get('published', ''), "%Y-%m-%d")
@@ -533,6 +526,4 @@ if __name__ == '__main__':  # pragma: no coverage
     main()
 
 # TODO:
-
-# Change font size of the tag in the index to 100%
 # Replace the fonts to CDN fonts (Roboto and some others)
