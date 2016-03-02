@@ -15,7 +15,6 @@
 # Copyright (C) 2013-2016 Oz Nahum Tiram <nahumoz@gmail.com>
 # ============================================================================
 
-from __future__ import print_function
 import os
 import re
 import datetime
@@ -23,13 +22,12 @@ import argparse
 import sys
 import operator
 import shutil
-from StringIO import StringIO
+from io import StringIO
 import codecs
+import http.server
 import subprocess as sp
-import SimpleHTTPServer
-import BaseHTTPServer
 import socket
-import SocketServer
+import socketserver
 
 from jinja2 import Environment, FileSystemLoader
 import markdown2
@@ -257,7 +255,7 @@ class Entry(object):
         """this property is always called after prepare"""
         if 'tags' in self.header:
             tags = [Tag(t) for t in self.header['tags']]
-            map(lambda t: setattr(t, 'posts', [self.id]), tags)
+            list(map(lambda t: setattr(t, 'posts', [self.id]), tags))
             return tags
         else:
             return []
@@ -275,7 +273,7 @@ class Entry(object):
 
         self.date = self.header.get('published', datetime.datetime.now())
 
-        if isinstance(self.date, unicode):
+        if isinstance(self.date, str):
             self.date = datetime.datetime.strptime(self.date, "%Y-%m-%d")
 
         for k, v in self.header.items():
@@ -373,9 +371,9 @@ def update_index(entries):
     context['entries'] = entries
     context['last_build'] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    map(lambda x: _render(
-        context, x[0], os.path.join(CONFIG['output_to'], x[1])),
-        (('entry_index.html', 'index.html'), ('atom.xml', 'atom.xml')))
+    list(map(lambda x: _render(
+         context, x[0], os.path.join(CONFIG['output_to'], x[1])),
+         (('entry_index.html', 'index.html'), ('atom.xml', 'atom.xml'))))
 
 
 def build(config):
@@ -396,7 +394,7 @@ def build(config):
                 entries.append(post)
         print("%s" % post.path)
 
-    for name, to in tags.iteritems():
+    for name, to in tags.items():
         print("updating tag %s" % name)
         to.render()
 
@@ -422,10 +420,10 @@ def build(config):
 
 def preview():  # pragma: no coverage
     """launch an HTTP to preview the website"""
-    Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
-    SocketServer.TCPServer.allow_reuse_address = True
+    Handler = http.server.SimpleHTTPRequestHandler
+    socketserver.TCPServer.allow_reuse_address = True
     port = CONFIG['http_port']
-    httpd = SocketServer.TCPServer(("", port), Handler)
+    httpd = socketserver.TCPServer(("", port), Handler)
     os.chdir(CONFIG['output_to'])
     print("and ready to test at http://127.0.0.1:%d" % CONFIG['http_port'])
     print("Hit Ctrl+C to exit")
@@ -448,13 +446,13 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
     Most other fields should be defaults.
     TODO: update this function
     """
-    title = raw_input("Give the title of the post: ")
+    title = input("Give the title of the post: ")
     while ':' in title:
-        title = raw_input("Give the title of the post (':' not allowed): ")
+        title = input("Give the title of the post (':' not allowed): ")
 
     author = CONFIG['author']
     date = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d')
-    tags = raw_input("Give the tags, separated by ', ':")
+    tags = input("Give the tags, separated by ', ':")
     published = 'yes'
     chronological = 'yes'
     summary = ("summary: Type your summary here.")

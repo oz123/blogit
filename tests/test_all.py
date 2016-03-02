@@ -78,8 +78,7 @@ try:
 except OSError:
     pass
 
-shift_factors = map(lambda x: (x - 1) / 5 +1,   range(1,21))
-
+shift_factors = list([(x - 1) // 5 +1 for x in range(1,21)])
 
 f = open((os.path.join(CONFIG['content_root'],
                        'page.md')), 'w')
@@ -128,18 +127,18 @@ def test_find_new_posts_and_pages():
 
     [e[0].tags for e in entries]
     foo = DB.tags.search(where('name')=='foo')
-    assert foo[0]['post_ids'] == range(1, 16)
+    assert foo[0]['post_ids'] == list(range(1, 16))
 
 def test_tags():
-    entries = map(lambda (p, e): Entry.entry_from_db(p, e),
-                  [(os.path.join(CONFIG['content_root'], e.get('filename')), e.eid)
-                      for e in DB.posts.all()])
+    entries = list(map(lambda p, e: Entry.entry_from_db(p, e),
+                   [(os.path.join(CONFIG['content_root'], e.get('filename')), e.eid)
+                      for e in DB.posts.all()]))
     tags = DB.tags.all()
 
     t = entries[0].tags
 
     assert len(t) == 4
-    assert t[0].name == u'buf'
+    assert t[0].name == 'buf'
 
     new_tag = Tag('buggg')
     new_tag.posts = [100,100]
@@ -233,7 +232,7 @@ def test_tag_render():
     #entry = Entry(os.path.join(CONFIG['content_root'], 'post1.md'))
     tags = entry.tags
 
-    assert map(str, tags) == ['buf', 'foo', 'bar', 'baz']
+    assert list(map(str, tags)) == ['buf', 'foo', 'bar', 'baz']
     # the entries are wrongly sorted, need to look at that
     assert tags[0].render()
     assert len(list(tags[0].entries))
@@ -284,5 +283,5 @@ def test_build():
         soup = BeautifulSoup(tag_foo.read(), 'html.parser')
         titles = [c.a.string for c in
                   soup.find_all(class_="clearfix entry")]
-        for title, idx in zip(titles, range(15, 0, -1)):
+        for title, idx in zip(titles, list(range(15, 0, -1))):
             assert title.split()[-1] == str(idx)
