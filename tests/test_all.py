@@ -130,9 +130,9 @@ def test_find_new_posts_and_pages():
     assert foo[0]['post_ids'] == list(range(1, 16))
 
 def test_tags():
-    entries = list(map(lambda p, e: Entry.entry_from_db(p, e),
-                   [(os.path.join(CONFIG['content_root'], e.get('filename')), e.eid)
-                      for e in DB.posts.all()]))
+    entries = [
+            Entry.entry_from_db(os.path.join(CONFIG['content_root'],
+                                e.get('filename')), e.eid) for e in DB.posts.all()]
     tags = DB.tags.all()
 
     t = entries[0].tags
@@ -243,7 +243,7 @@ def test_get_last_entries():
 
     assert len(DB.posts.all()) == 22
     le = _get_last_entries(DB, 10)
-    assert [e.id for e in le] == range(22, 12, -1)
+    assert [e.id for e in le] == list(range(22, 12, -1))
 
 
 def test_render_archive():
