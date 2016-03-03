@@ -19,6 +19,7 @@ import os
 import re
 import datetime
 import argparse
+import logging
 import sys
 import operator
 import shutil
@@ -34,23 +35,16 @@ import markdown2
 import tinydb
 from tinydb import Query, where
 
+logger = logging.getLogger()
+
 sys.path.insert(0, os.getcwd())
 
 from conf import CONFIG, GLOBAL_TEMPLATE_CONTEXT
 
 # with this config, pages are rendered to the location of their title
 KINDS = {
-    'writing': {
+     'writing': {
         'name': 'writing', 'name_plural': 'writings',
-    },
-    'note': {
-        'name': 'note', 'name_plural': 'notes',
-    },
-    'link': {
-        'name': 'link', 'name_plural': 'links',
-    },
-    'photo': {
-        'name': 'photo', 'name_plural': 'photos',
     },
 }
 
@@ -101,9 +95,7 @@ class Tag(object):
 
     @property
     def posts(self):
-        """
-        return a list of post ids tagged with Tag
-        """
+        """return a listpost ids tagged with Tag"""
         Tags = Query()
         tag = self.table.get(Tags.name == self.name)
         return tag['post_ids']
@@ -115,9 +107,6 @@ class Tag(object):
         Tags = Query()
         tag = self.table.get(Tags.name == self.name)
 
-        # if not tag:  # pragma: no coverage
-        #     raise ValueError("Tag %s not found" % self.name)
-        # else:
         new = set(post_ids) - set(tag['post_ids'])
 
         tag['post_ids'].extend(list(new))
@@ -184,7 +173,7 @@ class Entry(object):
         title: Blog post 1
         author: Famous author
         published: 2015-01-11
-        tags: [python, git, bash, linux]
+        tags: python, git, bash, linux
         public: yes
         chronological: yes
         kind: writing
@@ -236,7 +225,7 @@ class Entry(object):
     def publish_date(self):
         try:
             r = datetime.datetime.strptime(self.header.get('published', ''), "%Y-%m-%d")
-        except ValueError:
+        except ValueError:  # pragma: no coverage
             r = datetime.date.today()
         return r
 
@@ -302,10 +291,7 @@ class Entry(object):
                         self.header.get('template', self.destination))
                 return True
             except Exception as e:  # pragma: no cover
-                print(context)
-                print(self.path)
-                print(e)
-                import pdb; pdb.set_trace()
+                logger.exception("Found some problem with %s", self.path)
                 sys.exit(1)
 
 
@@ -328,9 +314,7 @@ def _render(context, template_path, output_path, encoding='utf-8'):
 
 
 def render_archive(entries):
-    """
-    This function creates the archive page
-    """
+    """Creates the archive page"""
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
     context['entries'] = entries
     _render(context, 'archive_index.html',
@@ -378,8 +362,8 @@ def update_index(entries):
 
 def build(config):
     """Incremental build of the website"""
-    print("\nRendering website now...\n")
-    print("entries:")
+    logger.info("\nRendering website now...\n")
+    logger.info("entries:")
     tags = dict()
     entries = list()
     root = CONFIG['content_root']
@@ -392,21 +376,21 @@ def build(config):
                     tag.posts = [post_id]
                     tags[tag.name] = tag
                 entries.append(post)
-        print("%s" % post.path)
+            logger.info("%s" % post.path)
 
     for name, to in tags.items():
-        print("updating tag %s" % name)
+        logger.info("updating tag %s" % name)
         to.render()
 
     # BUG: Only public entries should be added to the index
     # This is expensive, we should insert only the recent entries
     # to the index using BeautifulSoup
     # update index
-    print("updating index")
+    logger.info("Updating index")
     update_index(_get_last_entries(DB, config['INDEX_SIZE']))
 
     # update archive
-    print("updating archive")
+    logger.info("Updating archive")
 
     # This is expensive, we should insert only the recent entries
     # to the archive using BeautifulSoup
@@ -425,9 +409,9 @@ def preview():  # pragma: no coverage
     port = CONFIG['http_port']
     httpd = socketserver.TCPServer(("", port), Handler)
     os.chdir(CONFIG['output_to'])
-    print("and ready to test at http://127.0.0.1:%d" % CONFIG['http_port'])
-    print("Hit Ctrl+C to exit")
     try:
+        logger.info("and ready to test at http://127.0.0.1:%d" % CONFIG['http_port'])
+        logger.info("Hit Ctrl+C to exit")
         httpd.serve_forever()
     except KeyboardInterrupt:
         httpd.shutdown()
@@ -475,15 +459,7 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
         npost.write('%s' % summary)
         npost.write('---\n')
 
-    print('%s %s' % (CONFIG['editor'], repr(fname)))
     os.system('%s %s' % (CONFIG['editor'], fname))
-
-
-def clean(GITDIRECTORY=CONFIG['output_to']):  # pragma: no coverage
-    directoriestoclean = ["writings", "notes", "links", "tags", "archive"]
-    os.chdir(GITDIRECTORY)
-    for directory in directoriestoclean:
-        shutil.rmtree(directory)
 
 
 def main():   # pragma: no coverage
@@ -522,6 +498,3 @@ def main():   # pragma: no coverage
 
 if __name__ == '__main__':  # pragma: no coverage
     main()
-
-# TODO:
-# Replace the fonts to CDN fonts (Roboto and some others)
