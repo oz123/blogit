@@ -35,7 +35,11 @@ import markdown2
 import tinydb
 from tinydb import Query, where
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+logger.addHandler(ch)
 
 sys.path.insert(0, os.getcwd())
 
@@ -462,9 +466,12 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
     os.system('%s %s' % (CONFIG['editor'], fname))
 
 
-def main():   # pragma: no coverage
+def get_parser(formatter_class=argparse.HelpFormatter):  # pragma: no coverage
+
     parser = argparse.ArgumentParser(
-        description='blogit - a tool to blog on github.')
+        prog='blogit',
+        description='blogit - a simple static site generator.',
+        formatter_class=formatter_class)
     parser.add_argument('-b', '--build', action="store_true",
                         help='convert the markdown files to HTML')
     parser.add_argument('-p', '--preview', action="store_true",
@@ -475,17 +482,19 @@ def main():   # pragma: no coverage
                         help='create new post')
     parser.add_argument('--publish', action="store_true",
                         help='push built HTML to git upstream')
+    return parser
 
-    args = parser.parse_args()
+
+def main():  # pragma: no coverage
 
     if not os.path.exists(os.path.join(CONFIG['content_root'])):
         os.makedirs(os.path.join(CONFIG['content_root']))
+    parser = get_parser()
+    args = parser.parse_args()
 
     if len(sys.argv) < 2:
         parser.print_help()
         sys.exit()
-    if args.clean:
-        clean()
     if args.build:
         build(CONFIG)
     if args.preview:
