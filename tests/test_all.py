@@ -1,27 +1,32 @@
 import os
-
+import sys
 import pytest
 from bs4 import BeautifulSoup
 from tinydb import Query, where
 
-from blogit.blogit import (CONFIG, find_new_posts_and_pages, DataBase,
-                           Entry, Tag, _sort_entries, _get_last_entries,
-                           render_archive, update_index, build)
+sys.path.insert(0, os.getcwd())
+from conf import CONFIG
 
-import blogit.blogit as m
-
-
-CONFIG['content_root'] = 'test_root'
-ARCHIVE_SIZE = 10
 db_name = os.path.join(CONFIG['content_root'], 'blogit.db')
-
 
 if os.path.exists(db_name):
     import shutil
     shutil.rmtree(CONFIG['content_root'])
 
 if not os.path.exists(CONFIG['content_root']):
+    import pdb; pdb.set_trace()
     os.mkdir(CONFIG['content_root'])
+
+CONFIG['content_root'] = 'test_root'
+ARCHIVE_SIZE = 10
+
+from blogit.blogit import (find_new_posts_and_pages, DataBase,
+                           Entry, Tag, _sort_entries, _get_last_entries,
+                           render_archive, update_index, build)
+
+import blogit.blogit as m
+
+
 
 DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
 
