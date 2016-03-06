@@ -14,7 +14,6 @@ if os.path.exists(db_name):
     shutil.rmtree(CONFIG['content_root'])
 
 if not os.path.exists(CONFIG['content_root']):
-    import pdb; pdb.set_trace()
     os.mkdir(CONFIG['content_root'])
 
 CONFIG['content_root'] = 'test_root'
