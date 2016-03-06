@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{% endblock title %}</title>
+<link rel="stylesheet" type="text/css" href="/media/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="/media/css/style.css" />
+<link rel="stylesheet" type="text/css" href="/media/css/pygments_style.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="/media/css/site.css" media="screen" />
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
+<body>
+	<div class="container-fluid">
+		<div class="row" style="padding-top: 10px">
+			<div class="col-lg-1 col-md-1"></div>
+			<div class="col-lg-1 col-md-1 col-sm-2">
+			{% block navbar %}
+				<div class="sidebar-nav">
+					<div class="navbar navbar-default" role="navigation">
+						<div class="navbar-header">
+							<button type="button" class="navbar-left navbar-toggle" data-toggle="collapse" data-target=".sidebar-navbar-collapse">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							</button>
+							<span class="visible-xs navbar-brand">menu</span>
+						</div><!--navbar-header-->
+						<div id="menu">
+							<div class="navbar-collapse collapse sidebar-navbar-collapse">
+								<div id="profile"><img src="/media/img/about.png"></div>				
+								<a title="Home" href="/">home</a>
+								<a title="About" class="about" href="/about.html">about</a>
+								<a title="Archive" class="archive" href="/archive">archive</a>
+								<a title="Atom feeds" href="/atom.xml">atom</a>
+								<a title="Twitter" href="https://twitter.com/#!/OzNTiram">twitter</a>
+								<a title="Stackoverflow" href="http://stackoverflow.com/users/492620/oz123">stackoverflow</a>
+								<a title="Github" href="https://github.com/oz123">github</a>
+								</div><!--/.nav-collapse -->
+							</div><!-- menu -->
+						</div><!--navbar-->
+				</div><!--sidebar-->
+				{% endblock navbar %}
+			</div> <!-- end of colum -->
+			<div class="col-lg-7 col-md-7 col-sm-10">
+			{% block content %}
+			{% endblock content %}
+			<div id="footer"><p>&copy; Oz Nahum Tiram 2016. Some Rights Reserved</p></div>
+			</div><!-- end column-->
+		<div class="col-lg-3"></div>
+	</div><!--end row-->
+	</div><!--end container-->
+	{% block scripts %}
+	<script src="/media/js/jquery.min.js"></script>
+	<script src="/media/js/bootstrap.min.js"></script>
+	<script src="/media/js/scripts.js"></script>
+	{% endblock scripts %}
+	</body>
+</html>
+

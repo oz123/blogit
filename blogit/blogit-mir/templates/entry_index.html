@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="index">
+  {% for entry in entries %}
+  <div class="clearfix entry">
+	 <h2><a title="Goes to &rarr; {{ entry.permalink }}" href="{{ entry.permalink }}">{{ entry.title }}</a></h2>
+	<div class="clearfix">
+    <div class="date-published">{{ entry.publish_date.strftime("%B %d, %Y") }}</div>
+		<div class="tags">tagged:
+		  {% for tag in entry.tags %}
+		   <a class="tag" href="/tags/{{ tag.slug }}"><span>{{ tag.name }}</span></a>{% if not loop.last %}, {% endif %}
+		   {% endfor %}
+		</div>
+     </div>
+     <p>{{ entry.summary }}</p>
+
+	<div class="link-url"><p><a href="{{ entry.permalink }}">continue reading ...</a></p></div>
+	<div class="permalink"><a title="Permalink to: {{ entry.title }}" href="{{ entry.permalink }}"><span>&para;</span></a></div>
+
+   </div>
+   {% endfor %}
+</div>
+{% endblock %}

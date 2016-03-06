@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %} Archive &raquo; {{ site_url }} {% endblock %}
+{% block content %}
+<div class="archive index">
+<h2>This is an archive of everything posted here ...</h2>
+  {% for entry in entries %}
+    <p class="post">{{ entry.publish_date.strftime("%B %d, %Y") }} <a title="../{{ entry.permalink }}" href="../{{entry.permalink}}">{{entry.title }}</a></p>
+  {% endfor %}
+</div>
+{% endblock content %}
+{% block body %}
+{{ super() }}
+{% set static_prefix = "../../" %}
+{% endblock body %}

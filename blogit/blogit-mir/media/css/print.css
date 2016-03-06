@@ -1,0 +1,51 @@
+body {
+    font: normal 18px/28px  Georgia, serif;
+    font-family:    
+    color:#444;
+    padding:0;margin:0;
+    background: #fff; 
+}
+h1, h2, h3, h4 {
+    font-family: Helvetica, Arial, sans-serif;
+}
+h2, h3, h4 {
+    border-bottom: 1px solid #eee;
+    color: #444;
+}
+
+h1 {
+    font-size:45px;
+    line-height:50px;
+}
+
+h2 {
+    font-size:32px;
+    line-height:50px;
+}
+
+h3 {
+    font-size:23px
+    line-height:25px;
+}
+
+h4 {
+    font-size:18px;
+    line-height:25px;
+}
+
+h1 a, h2 a, h3 a, h4 a {
+    color:#444;
+}
+#page { width: 99%; margin: 0 auto; }
+#nav { display:none;} 
+.codehilite {
+    background: #002B36 ;
+    padding:40px 10px 20px 20px;
+    border-radius: 0 0 5px 5px;
+    line-height:0.78em;
+    overflow:auto;
+    font-size:0.8em !important;
+    border-radius: 5px;
+    max-width: 99%;
+    margin: -15px auto auto;
+}

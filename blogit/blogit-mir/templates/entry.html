@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %} {{ entry.title }} {% endblock %}
+{% block content %}
+<div class="index">
+	<div id="header" class="published"><a href="{{site_url}}">{{ entry.author }}</a> &ndash; {{ entry.publish_date.strftime("%B %d, %Y") }}</div>
+	<h1>{{ entry.title }}</h1>
+	{{ entry.body_html }}
+	<div class="tags">
+	<p>This entry was tagged:
+	{% for tag in entry.tags %}<a class="tag" href="/tags/{{ tag.slug }}"><span>{{ tag.name }}</span></a>{% if not loop.last %}, {% endif %}{% endfor %}
+	</div>
+	<div id="social-btns" style="margin-top: 50px; margin-bottom: 0px">
+		<h4>Share this post:</h4>
+		<a href="https://www.linkedin.com/shareArticle?mini=true&url={{site_url}}{{entry.permalink}}&title={{entry.title}}&source={{site_url}}" onclick="javascript:window.open(this.href, 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fa fa-linkedin-square fa-2x"></i></a>
+		<a href="http://www.facebook.com/sharer/sharer.php?u={{site_url}}{{entry.permalink}}&title={{entry.title}}" onclick="javascript:window.open(this.href, 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fa fa-facebook-square fa-2x"></i></a>
+		<a class="tweet" href="{{site_url}}/{{entry.permalink}}" title="{{entry.title}}" target="_blank"><i class="fa fa-twitter-square fa-2x"></i></a>
+		<a href="https://plus.google.com/share?url={{site_url}}{{entry.permalink}}" onclick="javascript:window.open(this.href, 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fa fa-google-plus-square fa-2x"></i></a>
+		<a href="mailto:?subject={{site_url}}{{entry.permalink}}&body={{entry.title}}" onclick="javascript:window.open(this.href, 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;"><i class="fa fa-envelope-square fa-2x"></i></a>
+	</div>
+	<div id="underpost">
+		<h3>Discussions/Feedback.</h3>
+		{% include 'discuss.html' %}
+	</div>
+</div>
+{% endblock content %}

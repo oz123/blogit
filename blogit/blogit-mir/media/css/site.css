@@ -1,0 +1,374 @@
+body {
+    font: normal 18px/28px "Gentium Basic", Gentium, Palatino, Georgia, serif;
+    color:#444;
+    padding:0;margin:0;
+    background: #fff;
+		font-size: 90%
+}
+img {
+    max-width:680px;
+    margin:0 auto;
+}
+
+pre {
+	font-size: 90%;
+}
+
+pre code {
+  font-size: 90%;
+}
+
+html>body {font-size:18px;
+           /*line-height:28px;*/
+
+		}
+
+a {
+    color:#2760BF;
+}
+
+a:hover {
+    border-bottom: 1px dotted #444;
+    color:#00252e;
+		text-decoration: none;
+}
+
+a  img { border: 0;}
+a:visited {
+}
+
+h1, h2, h3, h4 {
+    font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;
+}
+
+h1 {
+    font-size:45px;
+    line-height:50px;
+}
+
+h2 {
+    font-size:32px;
+    line-height:50px;
+}
+
+h3 {
+    font-size:23px
+    line-height:25px;
+}
+
+h4 {
+    font-size:18px;
+    line-height:25px;
+}
+
+
+h1 a, h2 a, h3 a, h4 a {
+    color:#444;
+}
+
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover {
+    color:#4183c4;
+    text-decoration:none;
+    border:none;
+}
+
+
+li {
+    margin-top:-6px;
+}
+
+
+h1, h2, h3, h4 {
+    font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;
+}
+
+h2, h3, h4 {
+    border-bottom: 1px solid #eee;
+    color: #444;
+    font-weight: bold;
+}
+
+h1 {
+    font-size:45px;
+    line-height:50px;
+}
+
+h2 {
+    font-size:32px;
+    line-height:50px;
+}
+
+h3 {
+    font-size:23px
+    line-height:25px;
+}
+
+h4 {
+    font-size:18px;
+    line-height:25px;
+}
+
+h1 a, h2 a, h3 a, h4 a {
+    color:#444;
+}
+
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover {
+    color:#4183c4;
+    text-decoration:none;
+    border:none;
+}
+
+.entry {
+  line-height: 1.44;
+}
+
+.entry h2 {
+    border-bottom:1px solid #e1d1c1;
+    margin:0;
+    font-weight:bold;
+    font-size:28px;
+    line-height:42px;
+}
+
+
+div.popup .content .image img {
+    max-width:100%;
+}
+
+
+.navbar {
+    font-family: Ubuntu, Helvetica, Arial, sans-serif;
+}
+
+@media (min-width: 768px) {
+  .sidebar-nav .navbar .navbar-collapse {
+	padding: 0;
+    padding-left: 0px;
+    padding-right: 0px;
+	max-height: none;
+	font-size: 13px;
+    width: 105px;
+	border-radius:5px;
+  }
+  .sidebar-nav .navbar ul {
+	float: none;
+  }
+  .sidebar-nav .navbar ul:not {
+	display: block;
+
+  }
+  .sidebar-nav .navbar li {
+	float: none;
+	display: block;
+  }
+  .sidebar-nav .navbar li a {
+	padding-top: 12px;
+	padding-bottom: 12px;
+  }
+}
+
+
+@media (max-width: 768px) {
+
+ #profile {
+    display: none;
+  }
+
+ .index {margin-left: 0px;}
+
+ .navbar-collapse {
+	padding: 0;
+    padding-left: 0px;
+    padding-right: 0px;
+	}
+}
+
+
+@media (max-width: 992px) {
+
+
+ .index {margin-left: 0px;}
+
+  #menu {
+    margin-left: 10px;
+    float: center;}
+
+}
+
+
+@media (min-width: 768px) {
+	.navbar {
+	position: fixed;
+	width: 104px;
+	z-index: 2;
+  }
+
+  .navbar-default {
+	background: white;
+    border: white}
+
+  .index {margin-left: 20px;}
+
+}
+
+
+
+@media (min-width: 992px) {
+  .navbar {
+	width: 104px;
+  }
+
+  .index {margin-left: 2em;}
+
+  }
+
+
+}
+
+@media (min-width: 1200px) {
+  .navbar {
+		width: 104px;
+  }
+
+ .index {margin-left: 30px;}
+
+}
+.index {
+		font-size: 100%;
+}
+
+.index a {font-size: 100%;
+          }
+
+.sidebar-nav .navbar-header{ float: none; }
+
+
+.navbar-toggle.navbar-left {
+  float: left;
+  margin-left: 10px;
+}
+
+.sidebar-nav a {
+	text-align:left;
+	display:block;
+	border:none;
+	font-size: 13px;
+	line-height:22px;
+	background: #f0f0f5;
+	color:#333;
+	padding:0 6px 0 8px;
+    margin-bottom: 2px;
+    /*margin-left: -20px; */
+	border-radius:5px;
+
+}
+
+.sidebar-nav img { margin-top: 3px;
+	margin-bottom: 3px;
+	border-radius:5px; }
+
+.clearfix:before,
+.clearfix:after {
+    content:"";
+    display:table;
+}
+
+.clearfix:after {
+    clear:both;
+}
+
+.link-url {
+	font-style:italic;
+	float:left;
+	padding-left: 0px;
+}
+
+.link-url a{
+	font-size: 100%;
+}
+
+.index h1 {
+	font-weight: bold;
+}
+
+.permalink {
+    /*font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;*/
+    font-size: 14px;
+    text-align:center;
+    float:right;
+		margin-bottom: 2em;
+}
+
+.entry .meta .permalink a{
+    text-decoration:none;
+    display:block;
+    margin:5px 10px;
+    width:25px;
+    border-radius:5px;
+}
+
+.date-published {
+  font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;
+  padding-right:23px;
+	float:left;
+	font-size: 90%;
+}
+
+
+.tags {
+  font-style:italic;
+  float:right;
+  margin-bottom: 10px;
+}
+
+.tags a {
+  text-decoration:none;
+}
+
+.tags a:hover {
+  text-decoration:none;
+}
+
+img.displayed {
+
+    display: block;
+    /*margin-left: -20px;*/
+    }
+
+#footer {
+    text-align:center;
+    margin-top: 10px;
+    font-size:13px;
+    line-height: 20px;
+    color:#444;
+}
+
+
+.published {
+    font-family:"Yanone Kaffeesatz", Ubuntu, Helvetica, Arial, sans-serif;
+    font-weight:700;
+    text-align:left;
+    margin-top:18px;
+    margin-bottom:-22px;
+    border-bottom:1px solid #444;
+}
+
+.published a {
+    color:#444;
+}
+
+.published a:hover {
+    color:#444;;
+}
+
+#underpost {
+	font-size: 0.85em;
+	margin-top: 0px;
+}
+
+.archive h2 {
+	margin-bottom: 25px;
+}
+.archive p {
+	margin-top:-3px;
+}
