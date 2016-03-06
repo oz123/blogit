@@ -32,9 +32,9 @@ lines of code [#]_.
 Blogit, does all what they do, with a hubmle ~320 lines of code, in beatiful
 Python. A simple code, which is simply a wrapper around Jinja2 and
 Markdown. That is Unixy. It does not invent it's own template language, rather
-it uses the really good and established Jinja2 template engine. It does not
-include it's own markdown parser, it uses the excellent, feature rich and speedy
-markdown2 parser.
+it uses the really good and established `Jinja2 template engine <http://jinja.pocoo.org/>`_.
+It does not include it's own markdown parser, it uses the excellent, feature rich and speedy
+`markdown2 <https://github.com/trentm/python-markdown2>`_ parser.
 
 It sticks to the following philosophy - less code equals less bugs.
 
