@@ -338,8 +338,8 @@ def find_new_posts_and_pages(db):
 
     Q = Query()
     for root, dirs, files in os.walk(CONFIG['content_root']):
-        for filename in files:
-            if filename.endswith(('md', 'markdown')):
+        for filename in [f for f in files if f.endswith(('md', 'markdown'))]:
+            #if filename.endswith(('md', 'markdown')):
                 fullpath = os.path.join(root, filename)
                 _p = fullpath.split(CONFIG['content_root'])[-1].lstrip('/')
                 if not db.posts.contains(Q.filename == _p) and \

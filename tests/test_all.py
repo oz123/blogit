@@ -107,7 +107,7 @@ f.close()
 
 def write_file(i):
     f = open((os.path.join(CONFIG['content_root'],
-                           'post{}.md'.format(i))), 'w')
+                           'post{0:03d}.md'.format(i))), 'w')
     f.write(post.format(**{'number': i,
                            'tags':
                            ','.join(shift(tags, shift_factors[i-1])[:-1])}))
