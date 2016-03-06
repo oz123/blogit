@@ -22,6 +22,9 @@ import argparse
 import logging
 import sys
 import operator
+from pkg_resources import Requirement, resource_filename
+from distutils.dir_util import copy_tree
+from collections import namedtuple
 import shutil
 from io import StringIO
 import codecs
@@ -29,6 +32,7 @@ import http.server
 import subprocess as sp
 import socket
 import socketserver
+
 
 from jinja2 import Environment, FileSystemLoader
 import markdown2
@@ -43,7 +47,29 @@ logger.addHandler(ch)
 
 sys.path.insert(0, os.getcwd())
 
-from conf import CONFIG, GLOBAL_TEMPLATE_CONTEXT
+
+# before quickstart was run, there is no conf...
+try:
+    from conf import CONFIG, GLOBAL_TEMPLATE_CONTEXT
+    jinja_env = Environment(lstrip_blocks=True, trim_blocks=True,
+                            loader=FileSystemLoader(CONFIG['templates']))
+    class DataBase(object): # pragma: no coverage
+        """A thin wrapper around TinyDB instance"""
+
+        def __init__(self, path):
+            _db = tinydb.TinyDB(path)
+            self.posts = _db.table('posts')
+            self.tags = _db.table('tags')
+            self.pages = _db.table('pages')
+            self.templates = _db.table('templates')
+            self._db = _db
+
+    DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
+except ImportError:
+    cwd = os.getcwd()
+    CONFIG = {'output_to': cwd, 'content_root': os.path.join(cwd, 'content')}
+    DataBaseDummy = namedtuple('DataBaseDummy', ['path', 'tags'])
+    DB = DataBaseDummy('dummy', 'tags')
 
 # with this config, pages are rendered to the location of their title
 KINDS = {
@@ -51,24 +77,6 @@ KINDS = {
         'name': 'writing', 'name_plural': 'writings',
     },
 }
-
-jinja_env = Environment(lstrip_blocks=True, trim_blocks=True,
-                        loader=FileSystemLoader(CONFIG['templates']))
-
-
-class DataBase(object): # pragma: no coverage
-    """A thin wrapper around TinyDB instance"""
-
-    def __init__(self, path):
-        _db = tinydb.TinyDB(path)
-        self.posts = _db.table('posts')
-        self.tags = _db.table('tags')
-        self.pages = _db.table('pages')
-        self.templates = _db.table('templates')
-        self._db = _db
-
-
-DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
 
 
 class Tag(object):
@@ -421,6 +429,11 @@ def preview():  # pragma: no coverage
         httpd.shutdown()
 
 
+def quick_start():  # pragma: no coverage
+    path = resource_filename(Requirement.parse("blogit"), 'blogit/blogit-mir')
+    copy_tree(path, '.')
+
+
 def publish(GITDIRECTORY=CONFIG['output_to']):  # pragma: no coverage
     sp.call('git push', cwd=GITDIRECTORY, shell=True)
 
@@ -482,13 +495,12 @@ def get_parser(formatter_class=argparse.HelpFormatter):  # pragma: no coverage
                         help='create new post')
     parser.add_argument('--publish', action="store_true",
                         help='push built HTML to git upstream')
+    parser.add_argument('--quick-start', action="store_true")
     return parser
 
 
 def main():  # pragma: no coverage
 
-    if not os.path.exists(os.path.join(CONFIG['content_root'])):
-        os.makedirs(os.path.join(CONFIG['content_root']))
     parser = get_parser()
     args = parser.parse_args()
 
@@ -503,6 +515,8 @@ def main():  # pragma: no coverage
         new_post()
     if args.publish:
         publish()
+    if args.quick_start:
+        quick_start()
 
 
 if __name__ == '__main__':  # pragma: no coverage
