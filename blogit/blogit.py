@@ -338,14 +338,14 @@ def find_new_posts_and_pages(db):
 
     Q = Query()
     for root, dirs, files in os.walk(CONFIG['content_root']):
-        for filename in [f for f in files if f.endswith(('md', 'markdown'))]:
-            #if filename.endswith(('md', 'markdown')):
-                fullpath = os.path.join(root, filename)
-                _p = fullpath.split(CONFIG['content_root'])[-1].lstrip('/')
-                if not db.posts.contains(Q.filename == _p) and \
-                        not db.pages.contains(Q.filename == _p):
-                    e = Entry(fullpath)
-                    yield e, e.id
+        for filename in sorted([f for f in files if
+                               f.endswith(('md', 'markdown'))]):
+            fullpath = os.path.join(root, filename)
+            _p = fullpath.split(CONFIG['content_root'])[-1].lstrip('/')
+            if not db.posts.contains(Q.filename == _p) and \
+                    not db.pages.contains(Q.filename == _p):
+                e = Entry(fullpath)
+                yield e, e.id
 
 
 def _get_last_entries(db, qty):
