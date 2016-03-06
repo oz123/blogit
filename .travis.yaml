@@ -1,0 +1,14 @@
+language: python
+python:
+  - 3.5
+
+install:
+  - "pip install -r requirements.txt"
+  - "pip -r test_requirements.txt"
+  - "pip install ."
+
+script: make coverage
+
+after_success:
+  coveralls
+
