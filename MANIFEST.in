@@ -1,0 +1,10 @@
+recursive-include blogit/blogit-mir *
+recursive-include blogit/blogit-mir/templates *
+recursive-include blogit/blogit-mir/templates/pages *
+recursive-include blogit/blogit-mir/templates/includes *
+recursive-include blogit/blogit-mir/content *
+recursive-include blogit/blogit-mir/media *
+recursive-include blogit/blogit-mir/media/css *
+recursive-include blogit/blogit-mir/media/fonts *
+recursive-include blogit/blogit-mir/media/images *
+recursive-include blogit/blogit-mir/media/js *

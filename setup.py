@@ -286,6 +286,7 @@ setup(name='blogit',
       url='http://github.com/oz123/blogit',
       packages=find_packages(exclude=['tests']),
       install_requires=['Jinja2', 'markdown2', 'tinydb', 'pygments'],
+      include_package_data=True,
       tests_require=['pytest', 'beautifulsoup4'],
       entry_points={
               'console_scripts': ['blogit = blogit.blogit:main']
