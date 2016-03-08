@@ -282,6 +282,7 @@ class ManPageCreator(object):
 
 setup(name='blogit',
       version='0.1',
+      description='A quick and simple static site generator based on markdown and jinja2',
       license="GNU GPL",
       url='http://github.com/oz123/blogit',
       packages=find_packages(exclude=['tests']),
