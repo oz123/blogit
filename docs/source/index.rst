@@ -13,7 +13,7 @@ About blogit:
 Blogit is a Python3 static site generator. It uses the markdown2 parser,
 and the Jinja2 template engine. It is a small code base, and does
 gradual builds of your content. Thus it is quick! New posts are added by
-demand, without the need to reparse and  rebuild all the content every
+demand, without the need to re-parse and  rebuild all the content every
 time.
 
 Oh no, why another static site generator?
@@ -29,7 +29,7 @@ Pelican, which is smaller, but still has ~7600 lines of code. One of the mostly
 used static site generator, jekyll is written in Ruby, and has only a mere ~4800
 lines of code [#]_.
 
-Blogit, does all what they do, with a hubmle ~320 lines of code, in beatiful
+Blogit, does all what they do, with a humble ~320 lines of code, in beautiful
 Python. A simple code, which is simply a wrapper around Jinja2 and
 Markdown. That is Unixy. It does not invent it's own template language, rather
 it uses the really good and established `Jinja2 template engine <http://jinja.pocoo.org/>`_.
@@ -49,7 +49,7 @@ You can obtain blogit using pip::
 Getting started
 ^^^^^^^^^^^^^^^
 
-To use blogit you should create an empty directory contating a simple
+To use blogit you should create an empty directory containing a simple
 configuration file ``conf.py``, the file has the following content for a start::
 
 
