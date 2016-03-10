@@ -286,11 +286,13 @@ class Entry(object):
         if self.id:
             return
 
+        rec = {'filename': self.path, 'mtime':int(os.path.getmtime(self.abspath))}
+
         if self.header['kind'] == 'writing':
-            _id = Entry.db.posts.insert({'filename': self.path})
+            _id = Entry.db.posts.insert(rec)
 
         elif self.header['kind'] == 'page':
-            _id = Entry.db.pages.insert({'filename': self.path})
+            _id = Entry.db.pages.insert(rec)
 
         self.id = _id
 
