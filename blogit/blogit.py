@@ -344,11 +344,23 @@ def find_new_posts_and_pages(db):
                                f.endswith(('md', 'markdown'))]):
             fullpath = os.path.join(root, filename)
             _p = fullpath.split(CONFIG['content_root'])[-1].lstrip('/')
-            if not db.posts.contains(Q.filename == _p) and \
-                    not db.pages.contains(Q.filename == _p):
+
+            #    if not db.posts.contains(Q.filename == _p) and \
+            #        not db.pages.contains(Q.filename == _p):
+            #    e = Entry(fullpath)
+            #    yield e, e.id
+
+            if db.posts.contains(Q.filename == _p):
+                p = db.posts.get(Q.filename == _p)
+                if int(os.path.getmtime(fullpath)) > p['mtime']:
+                    # TODO:
+                    # insert entry here ...
+                    pass
+            elif db.pages.contains(Q.filename == _p):
+                p = db.posts.get(Q.filename == _p)
+            else:
                 e = Entry(fullpath)
                 yield e, e.id
-
 
 def _get_last_entries(db, qty):
     eids = [post.eid for post in db.posts.all()]
