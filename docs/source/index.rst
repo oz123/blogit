@@ -180,15 +180,20 @@ The next time you will add a new post **only** that post will be build. Other,
 pages that will be updated are the posts tags, the archive and the main index.
 Everything else remains unchanged. Hence, the speed up in build times.
 
-There is only one caveat for the way blogit does gradual builds. Currently,
-once a post is built it is stored in the file ``content_root/blogit.db`` and
-it is not built again. Future versions of blogit will store also the last
-modification time of the file and will build the file if the change time is
-newer then the one stored in the database.
+If you modify a file, while you needed to edit something. blogit will detect it,
+and will add it to the build::
 
-If you can't wait until than, you can modify the database, or completely remove
-it. Modifying the database is straight forward. It's a simple JSON file. Just
-make sure you don't forget to close curly brackets when you edit the file.
+    $ touch -m content/posts/1912-07-24-out-to-sea.md
+    $ ~/Software/t $ blogit -b
+
+    Rendering website now...
+
+    entries:
+    posts/1912-07-24-out-to-sea.md
+    updating tag fiction
+    Updating index
+    Updating archive
+
 
 Contributing
 ^^^^^^^^^^^^
