@@ -281,7 +281,7 @@ class ManPageCreator(object):
                                           distribution.get_description())
 
 setup(name='blogit',
-      version='0.1.1',
+      version='0.2',
       description='A quick and simple static site generator based on markdown and jinja2',
       license="GNU GPL",
       url='http://github.com/oz123/blogit',
