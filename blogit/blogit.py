@@ -65,7 +65,7 @@ try:
             self._db = _db
 
     DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
-except ImportError:
+except ImportError:  # pragma: no coverage
     cwd = os.getcwd()
     CONFIG = {'output_to': cwd, 'content_root': os.path.join(cwd, 'content')}
     DataBaseDummy = namedtuple('DataBaseDummy', ['path', 'tags'])
