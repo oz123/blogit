@@ -3,12 +3,15 @@
 import argparse
 import datetime
 from distutils.core import Command
-from distutils.command.build import build
+from distutils.errors import DistutilsOptionError
 
 from setuptools import setup
 from setuptools import find_packages
 
-build.sub_commands.append(('build_manpage', None))
+# adding this automates the creation of man page
+# from distutils.command.build import build
+# Only package maintainers want this to happen always
+# build.sub_commands.append(('build_manpage', None))
 
 
 class BuildManPage(Command):
@@ -81,7 +84,6 @@ class BuildManPage(Command):
         self._today = datetime.date.today()
 
     def run(self):
-
         dist = self.distribution
         homepage = dist.get_url()
         appname = self._parser.prog
@@ -279,7 +281,6 @@ class ManPageCreator(object):
         """
         return '.SH NAME\n%s \\- %s\n' % (distribution.get_name(),
                                           distribution.get_description())
-
 setup(name='blogit',
       version='0.2',
       description='A quick and simple static site generator based on markdown and jinja2',
@@ -290,9 +291,7 @@ setup(name='blogit',
       include_package_data=True,
       tests_require=['pytest', 'beautifulsoup4'],
       entry_points={
-              'console_scripts': ['blogit = blogit.blogit:main']
-          },
-
+              'console_scripts': ['blogit = blogit.blogit:main']},
       cmdclass={
           'build_manpage': BuildManPage
       },
@@ -309,4 +308,3 @@ setup(name='blogit',
                    'Programming Language :: Python :: 3.5',
                    ],
       )
-
