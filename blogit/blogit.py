@@ -25,19 +25,16 @@ import operator
 from pkg_resources import Requirement, resource_filename
 from distutils.dir_util import copy_tree
 from collections import namedtuple
-import shutil
-from io import StringIO
 import codecs
 import http.server
 import subprocess as sp
-import socket
 import socketserver
 
 
 from jinja2 import Environment, FileSystemLoader
 import markdown2
 import tinydb
-from tinydb import Query, where
+from tinydb import Query
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -53,7 +50,9 @@ try:
     from conf import CONFIG, GLOBAL_TEMPLATE_CONTEXT
     jinja_env = Environment(lstrip_blocks=True, trim_blocks=True,
                             loader=FileSystemLoader(CONFIG['templates']))
-    class DataBase(object): # pragma: no coverage
+
+    class DataBase(object):  # pragma: no coverage
+
         """A thin wrapper around TinyDB instance"""
 
         def __init__(self, path):
@@ -64,19 +63,16 @@ try:
             self.templates = _db.table('templates')
             self._db = _db
 
+    # this won't work when installing - content root does not exist
     DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
-except ImportError:  # pragma: no coverage
+except (ImportError, OSError):  # pragma: no coverage
     cwd = os.getcwd()
     CONFIG = {'output_to': cwd, 'content_root': os.path.join(cwd, 'content')}
     DataBaseDummy = namedtuple('DataBaseDummy', ['path', 'tags'])
     DB = DataBaseDummy('dummy', 'tags')
 
 # with this config, pages are rendered to the location of their title
-KINDS = {
-     'writing': {
-        'name': 'writing', 'name_plural': 'writings',
-    },
-}
+KINDS = {'writing': {'name': 'writing', 'name_plural': 'writings', }, }
 
 
 class Tag(object):
@@ -127,7 +123,7 @@ class Tag(object):
     @property
     def entries(self):
         """return the actual lists of entries tagged with"""
-        Posts = Query()
+
         for id in self.posts:
             post = self.db.posts.get(eid=id)
             if not post:  # pragma: no coverage
@@ -208,8 +204,8 @@ class Entry(object):
         self.id = eid  # this is set inside prepare()
         try:
             self.prepare()
-        except KeyError as E:  # pragma: no coverage
-            import pdb; pdb.set_trace()
+        except KeyError:  # pragma: no coverage
+            pass
 
     def __str__(self):
         return self.path
@@ -264,8 +260,8 @@ class Entry(object):
     def prepare(self):
 
         self.body_html = markdown2.markdown(
-                codecs.open(self.abspath, 'r').read(),
-                extras=['fenced-code-blocks', 'hilite', 'tables', 'metadata'])
+            codecs.open(self.abspath, 'r').read(),
+            extras=['fenced-code-blocks', 'hilite', 'tables', 'metadata'])
 
         self.header = self.body_html.metadata
 
@@ -286,7 +282,7 @@ class Entry(object):
         if self.id:
             return
 
-        rec = {'filename': self.path, 'mtime':int(os.path.getmtime(self.abspath))}
+        rec = {'filename': self.path, 'mtime': int(os.path.getmtime(self.abspath))}
 
         if self.header['kind'] == 'writing':
             _id = Entry.db.posts.insert(rec)
@@ -304,7 +300,7 @@ class Entry(object):
                 _render(context, self.header.get('template', 'entry.html'),
                         self.header.get('template', self.destination))
                 return True
-            except Exception as e:  # pragma: no cover
+            except Exception:  # pragma: no cover
                 logger.exception("Found some problem with %s", self.path)
                 sys.exit(1)
 
@@ -316,7 +312,6 @@ def _sort_entries(entries, reversed=True):
 
 def _render(context, template_path, output_path, encoding='utf-8'):
     template = jinja_env.get_template(template_path)
-    rendered = template.render(context)
     html = template.render(context)
     try:
         os.makedirs(os.path.dirname(output_path))
@@ -332,7 +327,7 @@ def render_archive(entries):
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
     context['entries'] = entries
     _render(context, 'archive_index.html',
-            os.path.join(CONFIG['output_to'],'archive/index.html')),
+            os.path.join(CONFIG['output_to'], 'archive/index.html')),
 
 
 def find_new_posts_and_pages(db):
@@ -362,6 +357,7 @@ def find_new_posts_and_pages(db):
             if e:
                 yield e, e.id
 
+
 def _get_last_entries(db, qty):
     eids = [post.eid for post in db.posts.all()]
     eids = sorted(eids, reverse=True)
@@ -381,9 +377,9 @@ def update_index(entries):
     context['entries'] = entries
     context['last_build'] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    list(map(lambda x: _render(
-         context, x[0], os.path.join(CONFIG['output_to'], x[1])),
-         (('entry_index.html', 'index.html'), ('atom.xml', 'atom.xml'))))
+    list(map(lambda x: _render(context, x[0],
+                               os.path.join(CONFIG['output_to'], x[1])),
+             (('entry_index.html', 'index.html'), ('atom.xml', 'atom.xml'))))
 
 
 def build(config):
@@ -392,7 +388,6 @@ def build(config):
     logger.info("entries:")
     tags = dict()
     entries = list()
-    root = CONFIG['content_root']
     for post, post_id in find_new_posts_and_pages(DB):
         # this method will also parse the post's tags and
         # update the db collection containing the tags.
@@ -452,15 +447,14 @@ def publish(GITDIRECTORY=CONFIG['output_to']):  # pragma: no coverage
     sp.call('git push', cwd=GITDIRECTORY, shell=True)
 
 
-def new_post(GITDIRECTORY=CONFIG['output_to'],
-             kind=KINDS['writing']):  # pragma: no coverage
-
+def new_post(GITDIRECTORY=CONFIG['output_to'], kind=KINDS['writing']):  # pragma: no coverage
     """
     This function should create a template for a new post with a title
     read from the user input.
     Most other fields should be defaults.
     TODO: update this function
     """
+
     title = input("Give the title of the post: ")
     while ':' in title:
         title = input("Give the title of the post (':' not allowed): ")
@@ -476,7 +470,7 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
     fname = os.path.join(os.getcwd(), 'content', kind['name_plural'],
                          datetime.datetime.strftime(datetime.datetime.now(),
                                                     '%Y'),
-                         date+'-'+title.replace(' ', '-')+'.markdown')
+                         date + '-' + title.replace(' ', '-') + '.markdown')
 
     with open(fname, 'w') as npost:
         npost.write('---\n')
@@ -494,7 +488,6 @@ def new_post(GITDIRECTORY=CONFIG['output_to'],
 
 
 def get_parser(formatter_class=argparse.HelpFormatter):  # pragma: no coverage
-
     parser = argparse.ArgumentParser(
         prog='blogit',
         description='blogit - a simple static site generator.',
