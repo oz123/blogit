@@ -11,7 +11,7 @@ A **quick** and simple static site generator based on markdown and jinja2.
 
 
 Blogit is a Python3 static site generator. It uses the markdown2 parser,
-and the Jinja2 template engine. It is a small code base, and does
+and the Jinja2 template engine. It has a small code base, and does
 gradual builds of your content. Thus it is quick! New posts are added by
 demand, without the need to re-parse and  rebuild all the content every
 time.
@@ -26,7 +26,7 @@ what I needed - a simple and fast static site generator.
 Take a look for example at nikola, which has ~14,000 lines of code(!), or
 Pelican, which is smaller, but still has ~7600 lines of code. One of the mostly
 used static site generator, jekyll is written in Ruby, and has only a mere ~4800
-lines of code [#]_.
+lines of code.
 
 Blogit, does all what they do, with a humble ~320 lines of code, in beautiful
 Python. A simple code, which is simply a wrapper around Jinja2 and
