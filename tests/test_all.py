@@ -2,7 +2,7 @@ import os
 import sys
 import pytest
 from bs4 import BeautifulSoup
-from tinydb import Query, where
+from tinydb import where
 
 sys.path.insert(0, os.getcwd())
 from conf import CONFIG
@@ -20,11 +20,10 @@ CONFIG['content_root'] = 'test_root'
 ARCHIVE_SIZE = 10
 
 from blogit.blogit import (find_new_posts_and_pages, DataBase,
-                           Entry, Tag, _sort_entries, _get_last_entries,
+                           Entry, Tag, _get_last_entries,
                            render_archive, update_index, build)
 
 import blogit.blogit as m
-
 
 
 DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
@@ -105,6 +104,7 @@ some more content
 """)
 f.close()
 
+
 def write_file(i):
     f = open((os.path.join(CONFIG['content_root'],
                            'post{0:03d}.md'.format(i))), 'w')
@@ -133,6 +133,7 @@ def test_find_new_posts_and_pages():
     foo = DB.tags.search(where('name')=='foo')
     assert foo[0]['post_ids'] == list(range(1, 16))
 
+
 def test_tags():
     entries = [
             Entry.entry_from_db(os.path.join(CONFIG['content_root'],
@@ -154,7 +155,6 @@ def test_tags():
     new_tag.posts = [100]
     with pytest.raises(ValueError):
         list(new_tag.entries)
-
 
 
 def test_slug():
@@ -194,8 +194,9 @@ def test_tag_entries():
     assert len(entries)
 """
 
+
 def test_tag_post_ids():
-    m ="""\
+    m = """\
 ---
 title: Blog post {}
 author: Famous author
@@ -223,8 +224,6 @@ summary: This is a summary
     e1.render()
     [t.render() for t in e1.tags]
 
-    l = _sort_entries([e2, e1])
-    assert l == [e2, e1]
     assert len(DB.posts.all()) == 22
 
 
@@ -243,10 +242,11 @@ def test_tag_render():
 
     assert len(DB.posts.all()) == 22
 
+
 def test_get_last_entries():
 
     assert len(DB.posts.all()) == 22
-    le = _get_last_entries(DB, 10)
+    le, all = _get_last_entries(DB, 10)
     assert [e.id for e in le] == list(range(22, 12, -1))
 
 
@@ -256,7 +256,7 @@ def test_render_archive():
         os.path.join(CONFIG['content_root'], e.get('filename')), e.eid) for e in
         DB.posts.all()]
 
-    render_archive(_sort_entries(entries, reversed=True)[ARCHIVE_SIZE:])
+    render_archive(entries[ARCHIVE_SIZE:])
     # pages should not be in the archive
     with open(os.path.join(CONFIG['output_to'], 'archive', 'index.html')) as html_index:
         soup = BeautifulSoup(html_index.read(), 'html.parser')
@@ -264,7 +264,8 @@ def test_render_archive():
 
 
 def test_render_index():
-    update_index(_get_last_entries(DB, 10))
+    le, all_entries = _get_last_entries(DB, 10)
+    update_index(le)
     with open(os.path.join(CONFIG['output_to'], 'index.html')) as html_index:
         soup = BeautifulSoup(html_index.read(), 'html.parser')
         assert len(soup.find_all(class_='clearfix entry')) == 10

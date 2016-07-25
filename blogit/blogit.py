@@ -134,7 +134,9 @@ class Tag(object):
         """Render html page and atom feed"""
         context = GLOBAL_TEMPLATE_CONTEXT.copy()
         context['tag'] = self
-        context['entries'] = _sort_entries(self.entries)
+        entries = list(self.entries)
+        entries.sort(key=operator.attrgetter('date'), reverse=True)
+        context['entries'] = entries
 
         # render html page
         render_to = os.path.join(CONFIG['output_to'], 'tags', self.slug)
@@ -305,11 +307,6 @@ class Entry(object):
                 sys.exit(1)
 
 
-def _sort_entries(entries, reversed=True):
-    """Sort all entries by date and reverse the list"""
-    return list(sorted(entries, key=operator.attrgetter('date'), reverse=reversed))
-
-
 def _render(context, template_path, output_path, encoding='utf-8'):
     template = jinja_env.get_template(template_path)
     html = template.render(context)
@@ -359,11 +356,14 @@ def find_new_posts_and_pages(db):
 
 
 def _get_last_entries(db, qty):
+    """get all entries and the last qty entries"""
     eids = [post.eid for post in db.posts.all()]
     eids = sorted(eids, reverse=True)
     entries = [Entry(os.path.join(CONFIG['content_root'],
                      db.posts.get(eid=eid)['filename']), eid) for eid in eids]
-    return _sort_entries(entries)[:qty]
+    # return _sort_entries(entries)[:qty]
+    entries.sort(key=operator.attrgetter('date'), reverse=True)
+    return entries[:qty], entries
 
 
 def update_index(entries):
@@ -408,7 +408,8 @@ def build(config):
     # to the index using BeautifulSoup
     # update index
     logger.info("Updating index")
-    update_index(_get_last_entries(DB, config['INDEX_SIZE']))
+    last_entries, all_entries = _get_last_entries(DB, config['INDEX_SIZE'])
+    update_index(last_entries)
 
     # update archive
     logger.info("Updating archive")
@@ -417,10 +418,11 @@ def build(config):
     # to the archive using BeautifulSoup
 
     entries = [Entry.entry_from_db(
-        os.path.join(CONFIG['content_root'], e.get('filename')), e.eid) for e in
-        DB.posts.all()]
+               os.path.join(CONFIG['content_root'], e.get('filename')), e.eid) for e in
+               DB.posts.all()]
 
-    render_archive(_sort_entries(entries, reversed=True)[config['ARCHIVE_SIZE']:])
+    all_entries.reverse()
+    render_archive(all_entries[config['ARCHIVE_SIZE']:])
 
 
 def preview():  # pragma: no coverage
