@@ -42,8 +42,8 @@ class BuildManPage(Command):
 
         $ python setup.py build
 
-    If automatically want to build the man page every time you invoke your build,
-    add to your ```setup.cfg``` the following::
+    If automatically want to build the man page every time you invoke your
+    build, add to your ```setup.cfg``` the following::
 
         [build_manpage]
         output = <appname>.1
@@ -283,12 +283,14 @@ class ManPageCreator(object):
                                           distribution.get_description())
 setup(name='blogit',
       version='0.2',
-      description='A quick and simple static site generator based on markdown and jinja2',
+      description=('A quick and simple static site generator based on markdown'
+                   'and jinja2'),
       license="GNU GPL",
       url='http://github.com/oz123/blogit',
       packages=find_packages(exclude=['tests']),
       install_requires=['Jinja2', 'markdown2', 'tinydb', 'pygments'],
       include_package_data=True,
+      setup_requires=['pytest-runner'],
       tests_require=['pytest', 'beautifulsoup4'],
       entry_points={
               'console_scripts': ['blogit = blogit.blogit:main']},
