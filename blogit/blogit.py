@@ -391,6 +391,12 @@ def update_index(entries):
              (('entry_index.html', 'index.html'), ('atom.xml', 'atom.xml'))))
 
 
+def _filter_none_public(entries):
+    for e in entries:
+        if e.header.get('public').lower() in ('true', 'yes'):
+            yield e
+
+
 def build(config):
     """Incremental build of the website"""
     logger.info("\nRendering website now...\n")
@@ -412,12 +418,12 @@ def build(config):
         logger.info("updating tag %s" % name)
         to.render()
 
-    # BUG: Only public entries should be added to the index
     # This is expensive, we should insert only the recent entries
     # to the index using BeautifulSoup
     # update index
     logger.info("Updating index")
     last_entries, all_entries = _get_last_entries(DB, config['INDEX_SIZE'])
+    last_entries = list(_filter_none_public(last_entries))
     update_index(last_entries)
 
     # update archive
@@ -430,7 +436,7 @@ def build(config):
                os.path.join(CONFIG['content_root'],
                             e.get('filename')), e.eid) for e in
                DB.posts.all()]
-
+    all_entries = list(_filter_none_public(all_entries))
     all_entries.sort(key=operator.attrgetter('date'), reverse=True)
     render_archive(all_entries[config['ARCHIVE_SIZE']:])
 
