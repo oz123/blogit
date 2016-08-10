@@ -431,7 +431,7 @@ def build(config):
                             e.get('filename')), e.eid) for e in
                DB.posts.all()]
 
-    all_entries.reverse()
+    all_entries.sort(key=operator.attrgetter('date'), reverse=True)
     render_archive(all_entries[config['ARCHIVE_SIZE']:])
 
 
