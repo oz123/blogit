@@ -14,7 +14,6 @@
 # ============================================================================
 # Copyright (C) 2013-2016 Oz Nahum Tiram <nahumoz@gmail.com>
 # ============================================================================
-
 import os
 import re
 import datetime
@@ -22,7 +21,8 @@ import argparse
 import logging
 import sys
 import operator
-from pkg_resources import Requirement, resource_filename
+from pkg_resources import (Requirement, resource_filename, get_distribution,
+                           DistributionNotFound)
 from distutils.dir_util import copy_tree
 from collections import namedtuple
 import codecs
@@ -35,6 +35,11 @@ from jinja2 import Environment, FileSystemLoader
 import markdown2
 import tinydb
 from tinydb import Query
+
+try:
+    __version__ = get_distribution('blogit').version
+except DistributionNotFound:  # pragma: no cover
+    __version__ = '0.2'
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -128,7 +133,7 @@ class Tag(object):
             post = self.db.posts.get(eid=id)
             if not post:  # pragma: no coverage
                 raise ValueError("No post found for eid %s" % id)
-            yield Entry(os.path.join(CONFIG['content_root'], post['filename']), id)
+            yield Entry(os.path.join(CONFIG['content_root'], post['filename']), id)  # noqa
 
     def render(self):
         """Render html page and atom feed"""
@@ -142,11 +147,11 @@ class Tag(object):
         render_to = os.path.join(CONFIG['output_to'], 'tags', self.slug)
         if not os.path.exists(render_to):  # pragma: no coverage
             os.makedirs(render_to)
-        _render(context, 'tag_index.html', os.path.join(render_to, 'index.html'))
+        _render(context, 'tag_index.html', os.path.join(render_to, 'index.html'))  # noqa
 
         # render atom.xml
         context['entries'] = context['entries'][:10]
-        context['last_build'] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+        context['last_build'] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")  # noqa
 
         _render(context, 'atom.xml', os.path.join(render_to, 'atom.xml'))
         return True
@@ -234,7 +239,8 @@ class Entry(object):
     @property
     def publish_date(self):
         try:
-            r = datetime.datetime.strptime(self.header.get('published', ''), "%Y-%m-%d")
+            r = datetime.datetime.strptime(self.header.get('published', ''),
+                                           "%Y-%m-%d")
         except ValueError:  # pragma: no coverage
             r = datetime.date.today()
         return r
@@ -244,7 +250,8 @@ class Entry(object):
         if self.kind == 'page':
             dest = '%s.html' % self._path.replace('.md', "")
         else:
-            dest = "%s/%s/index.html" % (KINDS[self.kind]['name_plural'], self.name)
+            dest = "%s/%s/index.html" % (KINDS[self.kind]['name_plural'],
+                                         self.name)
             dest = dest.lstrip('/')
 
         return dest
@@ -284,7 +291,8 @@ class Entry(object):
         if self.id:
             return
 
-        rec = {'filename': self.path, 'mtime': int(os.path.getmtime(self.abspath))}
+        rec = {'filename': self.path,
+               'mtime': int(os.path.getmtime(self.abspath))}
 
         if self.header['kind'] == 'writing':
             _id = Entry.db.posts.insert(rec)
@@ -375,7 +383,8 @@ def update_index(entries):
     """
     context = GLOBAL_TEMPLATE_CONTEXT.copy()
     context['entries'] = entries
-    context['last_build'] = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
+    context['last_build'] = datetime.datetime.now().strftime(
+        "%Y-%m-%dT%H:%M:%SZ")
 
     list(map(lambda x: _render(context, x[0],
                                os.path.join(CONFIG['output_to'], x[1])),
@@ -418,7 +427,8 @@ def build(config):
     # to the archive using BeautifulSoup
 
     entries = [Entry.entry_from_db(
-               os.path.join(CONFIG['content_root'], e.get('filename')), e.eid) for e in
+               os.path.join(CONFIG['content_root'],
+                            e.get('filename')), e.eid) for e in
                DB.posts.all()]
 
     all_entries.reverse()
@@ -433,7 +443,8 @@ def preview():  # pragma: no coverage
     httpd = socketserver.TCPServer(("", port), Handler)
     os.chdir(CONFIG['output_to'])
     try:
-        logger.info("and ready to test at http://127.0.0.1:%d" % CONFIG['http_port'])
+        logger.info("and ready to test at "
+                    "http://127.0.0.1:%d" % CONFIG['http_port'])
         logger.info("Hit Ctrl+C to exit")
         httpd.serve_forever()
     except KeyboardInterrupt:
@@ -449,7 +460,7 @@ def publish(GITDIRECTORY=CONFIG['output_to']):  # pragma: no coverage
     sp.call('git push', cwd=GITDIRECTORY, shell=True)
 
 
-def new_post(GITDIRECTORY=CONFIG['output_to'], kind=KINDS['writing']):  # pragma: no coverage
+def new_post(GITDIRECTORY=CONFIG['output_to'], kind=KINDS['writing']):  # pragma: no coverage # noqa
     """
     This function should create a template for a new post with a title
     read from the user input.
@@ -505,6 +516,7 @@ def get_parser(formatter_class=argparse.HelpFormatter):  # pragma: no coverage
     parser.add_argument('--publish', action="store_true",
                         help='push built HTML to git upstream')
     parser.add_argument('--quick-start', action="store_true")
+    parser.add_argument('--version', action="store_true")
     return parser
 
 
@@ -516,6 +528,9 @@ def main():  # pragma: no coverage
     if len(sys.argv) < 2:
         parser.print_help()
         sys.exit()
+    if args._version:
+        print("This is blogit {} Copyright Oz N Tiram "
+              "<oz.tiram@gmail.com>".format(__version__))
     if args.build:
         build(CONFIG)
     if args.preview:
