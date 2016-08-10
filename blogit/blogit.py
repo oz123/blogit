@@ -303,16 +303,15 @@ class Entry(object):
         self.id = _id
 
     def render(self):
-        if self.header.get('public', '').lower() in ['true', 'yes']:
-            try:
-                context = GLOBAL_TEMPLATE_CONTEXT.copy()
-                context['entry'] = self
-                _render(context, self.header.get('template', 'entry.html'),
-                        self.header.get('template', self.destination))
-                return True
-            except Exception:  # pragma: no cover
-                logger.exception("Found some problem with %s", self.path)
-                sys.exit(1)
+        try:
+            context = GLOBAL_TEMPLATE_CONTEXT.copy()
+            context['entry'] = self
+            _render(context, self.header.get('template', 'entry.html'),
+                    self.header.get('template', self.destination))
+            return True
+        except Exception:  # pragma: no cover
+            logger.exception("Found some problem with %s", self.path)
+            sys.exit(1)
 
 
 def _render(context, template_path, output_path, encoding='utf-8'):
