@@ -273,9 +273,9 @@ class Entry(object):
             extras=['fenced-code-blocks', 'hilite', 'tables', 'metadata'])
 
         self.header = self.body_html.metadata
-
         if 'tags' in self.header:  # pages can lack tags
-            self.header['tags'] = self.header['tags'].split(',')
+            self.header['tags'] = [t.strip().lower() for t in
+                                   self.header['tags'].split(',')]
 
         self.date = self.header.get('published', datetime.datetime.now())
 
@@ -494,7 +494,7 @@ def new_post(GITDIRECTORY=CONFIG['output_to'], kind=KINDS['writing']):  # pragma
         npost.write('public: %s\n' % published)
         npost.write('chronological: %s\n' % chronological)
         npost.write('kind: %s\n' % kind['name'])
-        npost.write('%s' % summary)
+        npost.write('%s\n' % summary)
         npost.write('---\n')
 
     os.system('%s %s' % (CONFIG['editor'], fname))
@@ -528,8 +528,8 @@ def main():  # pragma: no coverage
     if len(sys.argv) < 2:
         parser.print_help()
         sys.exit()
-    if args._version:
-        print("This is blogit {} Copyright Oz N Tiram "
+    if args.version:
+        print("This is blogit {}. Copyright Oz N Tiram "
               "<oz.tiram@gmail.com>".format(__version__))
     if args.build:
         build(CONFIG)
