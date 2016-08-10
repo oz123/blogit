@@ -36,7 +36,7 @@ clean-pyc:
 	find . -name '__pycache__' -exec rm -rf {} +
 
 lint:
-	flake8 pwman scripts
+	flake8 blogit
 
 test:
 	py.test -vv tests
