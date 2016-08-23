@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from tinydb import where
 
 sys.path.insert(0, os.getcwd())
-from conf import CONFIG
+from conf import CONFIG  # noqa
 
 db_name = os.path.join(CONFIG['content_root'], 'blogit.db')
 
@@ -19,11 +19,11 @@ if not os.path.exists(CONFIG['content_root']):
 CONFIG['content_root'] = 'test_root'
 ARCHIVE_SIZE = 10
 
-from blogit.blogit import (find_new_posts_and_pages, DataBase,
+from blogit.blogit import (find_new_posts_and_pages, DataBase,  # noqa
                            Entry, Tag, _get_last_entries,
                            render_archive, update_index, build)
 
-import blogit.blogit as m
+import blogit.blogit as m  # noqa
 
 
 DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
@@ -36,7 +36,9 @@ Entry.db = DB
 
 tags = ['foo', 'bar', 'baz', 'bug', 'buf']
 
-shift = lambda l, n: l[-n:] + l[:-n]
+
+def shift(l, n):
+    return l[-n:] + l[:-n]
 
 post = '''\
 ---
@@ -81,7 +83,8 @@ try:
 except OSError:
     pass
 
-shift_factors = list([(x - 1) // 5 +1 for x in range(1,21)])
+
+shift_factors = list([(x - 1) // 5 + 1 for x in range(1, 21)])
 
 f = open((os.path.join(CONFIG['content_root'],
                        'page.md')), 'w')
@@ -110,7 +113,7 @@ def write_file(i):
                            'post{0:03d}.md'.format(i))), 'w')
     f.write(post.format(**{'number': i,
                            'tags':
-                           ','.join(shift(tags, shift_factors[i-1])[:-1])}))
+                           ','.join(shift(tags, shift_factors[i - 1])[:-1])}))
 
 [write_file(i) for i in range(1, 21)]
 
@@ -130,15 +133,16 @@ def test_find_new_posts_and_pages():
     assert len(new_entries) == 0
 
     [e[0].tags for e in entries]
-    foo = DB.tags.search(where('name')=='foo')
+    foo = DB.tags.search(where('name') == 'foo')
     assert foo[0]['post_ids'] == list(range(1, 16))
 
 
 def test_tags():
     entries = [
-            Entry.entry_from_db(os.path.join(CONFIG['content_root'],
-                                e.get('filename')), e.eid) for e in DB.posts.all()]
-    tags = DB.tags.all()
+        Entry.entry_from_db(os.path.join(CONFIG['content_root'],
+                                         e.get('filename')), e.eid)
+        for e in DB.posts.all()]
+    tags = DB.tags.all()  # noqa
 
     t = entries[0].tags
 
@@ -146,7 +150,7 @@ def test_tags():
     assert t[0].name == 'buf'
 
     new_tag = Tag('buggg')
-    new_tag.posts = [100,100]
+    new_tag.posts = [100, 100]
     with pytest.raises(ValueError):
         new_tag.posts = "This should not work"
     with pytest.raises(ValueError):
@@ -232,7 +236,6 @@ def test_tag_render():
     entry = Entry.entry_from_db(
         os.path.join(CONFIG['content_root'], p.get('filename')), 1)
 
-    #entry = Entry(os.path.join(CONFIG['content_root'], 'post1.md'))
     tags = entry.tags
 
     assert list(map(str, tags)) == ['buf', 'foo', 'bar', 'baz']
