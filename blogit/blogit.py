@@ -350,21 +350,20 @@ def find_new_posts_and_pages(db):
             fullpath = os.path.join(root, filename)
             _p = fullpath.split(CONFIG['content_root'])[-1].lstrip('/')
             new_mtime = int(os.path.getmtime(fullpath))
-            e, page = None, None
-            post = db.posts.get(Q.filename == _p)
+            e, item = None, None
 
-            if post:
-                if new_mtime > post['mtime']:
-                    db.posts.update({'mtime': new_mtime}, eids=[post.eid])
-                    e = Entry(fullpath, eid=post.eid)
+            for collection in ['posts', 'pages']:
+                item = db[collection].get(Q.filename == _p)
+                if item:
+                    break
 
-            if not post:
-                page = db.pages.get(Q.filename == _p)
-                if page:
-                    if new_mtime > page['mtime']:
-                        db.pages.update({'mtime': new_mtime}, eids=[page.eid])
-                        e = Entry(fullpath, eid=page.eid)
-            if not (post or page):
+            if item:
+                if new_mtime > item['mtime']:
+                    db[collection].update({'mtime': new_mtime},
+                                          eids=[item.eid])
+                    e = Entry(fullpath, eid=item.eid)
+
+            if not item:
                 e = Entry(fullpath)
             if e:
                 yield e, e.id
