@@ -65,12 +65,14 @@ try:
         """A thin wrapper around TinyDB instance"""
 
         def __init__(self, path):
-            _db = tinydb.TinyDB(path)
-            self.posts = _db.table('posts')
-            self.tags = _db.table('tags')
-            self.pages = _db.table('pages')
-            self.templates = _db.table('templates')
-            self._db = _db
+            self._db = tinydb.TinyDB(path)
+            self.posts = self._db.table('posts')
+            self.tags = self._db.table('tags')
+            self.pages = self._db.table('pages')
+            self.templates = self._db.table('templates')
+
+        def __getitem__(self, key):
+            return self._db.table(key)
 
     # this won't work when installing - content root does not exist
     DB = DataBase(os.path.join(CONFIG['content_root'], 'blogit.db'))
