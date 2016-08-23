@@ -355,13 +355,11 @@ def find_new_posts_and_pages(db):
             for collection in ['posts', 'pages']:
                 item = db[collection].get(Q.filename == _p)
                 if item:
+                    if new_mtime > item['mtime']:
+                        db[collection].update({'mtime': new_mtime},
+                                              eids=[item.eid])
+                        e = Entry(fullpath, eid=item.eid)
                     break
-
-            if item:
-                if new_mtime > item['mtime']:
-                    db[collection].update({'mtime': new_mtime},
-                                          eids=[item.eid])
-                    e = Entry(fullpath, eid=item.eid)
 
             if not item:
                 e = Entry(fullpath)
