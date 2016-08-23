@@ -31,8 +31,9 @@ import subprocess as sp
 import socketserver
 
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, Markup
 import markdown2
+import markdown2 as md2
 import tinydb
 from tinydb import Query
 
@@ -55,6 +56,9 @@ try:
     from conf import CONFIG, GLOBAL_TEMPLATE_CONTEXT
     jinja_env = Environment(lstrip_blocks=True, trim_blocks=True,
                             loader=FileSystemLoader(CONFIG['templates']))
+
+    jinja_env.filters['markdown'] = lambda text: Markup(md2.markdown(
+        text, extras=['fenced-code-blocks', 'hilite', 'tables', 'metadata']))
 
     class DataBase(object):  # pragma: no coverage
 
