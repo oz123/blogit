@@ -63,14 +63,11 @@ class Markdown(md2.Markdown):
 
         kv = re.findall(self._key_val_pat, metadata_str)
         kvm = re.findall(self._key_val_block_pat, metadata_str)
+        kvm = [item.replace(": >\n", ":", 1) for item in kvm]
 
-        for item in kv:
+        for item in kv + kvm:
             k, v = item.split(":", 1)
             self.metadata[k.strip()] = v.strip()
-
-        for item in kvm:
-            k, v = item.split(": >", 1)
-            self.metadata[k.strip()] = " ".join(v.split())
 
         return tail
 
