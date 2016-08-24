@@ -32,7 +32,6 @@ import socketserver
 
 
 from jinja2 import Environment, FileSystemLoader, Markup
-import markdown2
 import markdown2 as md2
 import tinydb
 from tinydb import Query
@@ -274,7 +273,7 @@ class Entry(object):
 
     def prepare(self):
 
-        self.body_html = markdown2.markdown(
+        self.body_html = md2.markdown(
             codecs.open(self.abspath, 'r').read(),
             extras=['fenced-code-blocks', 'hilite', 'tables', 'metadata'])
 
@@ -371,6 +370,9 @@ def _get_last_entries(db, qty):
     """get all entries and the last qty entries"""
     eids = [post.eid for post in db.posts.all()]
     eids = sorted(eids, reverse=True)
+    # bug: here we shoud only render eids[:qty]
+    # but we can't use mtimes for sorting. We'll need to add ptime for the
+    # database (publish time)
     entries = [Entry(os.path.join(CONFIG['content_root'],
                      db.posts.get(eid=eid)['filename']), eid) for eid in eids]
     # return _sort_entries(entries)[:qty]
