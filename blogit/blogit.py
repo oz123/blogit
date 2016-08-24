@@ -41,6 +41,49 @@ try:
 except DistributionNotFound:  # pragma: no cover
     __version__ = '0.2'
 
+
+class Markdown(md2.Markdown):
+    _metadata_pat = re.compile("^---\W(?P<metadata>[\S+:\S+\s]+\n)---\n")
+    _key_val_pat = re.compile("^\w+:(?! >)\s*(?:[ \t].*\n?)+", re.MULTILINE)
+    # this allows key: >
+    #                   value
+    #                   conutiues over multiple lines
+    _key_val_block_pat = re.compile(
+        "(\w+:\s+>\n\s+[\S\s]+?)(?=\n\w+\s*:\s*\w+\n|\Z)")
+
+    def _extract_metadata(self, text):
+        # fast test
+        if not text.startswith("---"):
+            return text
+        match = self._metadata_pat.match(text)
+        if not match:
+            return text
+        tail = text[len(match.group(0)):]
+        metadata_str = match.groupdict()['metadata']
+
+        kv = re.findall(self._key_val_pat, metadata_str)
+        kvm = re.findall(self._key_val_block_pat, metadata_str)
+
+        for item in kv:
+            k, v = item.split(":", 1)
+            self.metadata[k.strip()] = v.strip()
+
+        for item in kvm:
+            k, v = item.split(": >", 1)
+            self.metadata[k.strip()] = " ".join(v.split())
+
+        return tail
+
+
+def markdown(text, html4tags=False, tab_width=4,
+             safe_mode=None, extras=None, link_patterns=None,
+             use_file_vars=False):
+    return Markdown(html4tags=html4tags, tab_width=tab_width,
+                    safe_mode=safe_mode, extras=extras,
+                    link_patterns=link_patterns,
+                    use_file_vars=use_file_vars).convert(text)
+
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
@@ -56,8 +99,12 @@ try:
     jinja_env = Environment(lstrip_blocks=True, trim_blocks=True,
                             loader=FileSystemLoader(CONFIG['templates']))
 
-    jinja_env.filters['markdown'] = lambda text: Markup(md2.markdown(
-        text, extras=['fenced-code-blocks', 'hilite', 'tables', 'metadata']))
+    def s2md(text):
+        return Markup(markdown(text,
+                               extras=['fenced-code-blocks',
+                                       'hilite', 'tables']))
+
+    jinja_env.filters['markdown'] = s2md
 
     class DataBase(object):  # pragma: no coverage
 
@@ -273,14 +320,18 @@ class Entry(object):
 
     def prepare(self):
 
-        self.body_html = md2.markdown(
+        self.body_html = markdown(
             codecs.open(self.abspath, 'r').read(),
             extras=['fenced-code-blocks', 'hilite', 'tables', 'metadata'])
 
         self.header = self.body_html.metadata
+        """a blog post without tags causes an error ..."""
         if 'tags' in self.header:  # pages can lack tags
             self.header['tags'] = [t.strip().lower() for t in
                                    self.header['tags'].split(',')]
+
+        else:
+            self.header['tags'] = ("",)
 
         self.date = self.header.get('published', datetime.datetime.now())
 
@@ -398,8 +449,9 @@ def update_index(entries):
 
 
 def _filter_none_public(entries):
+    """by default entries are public, but one can hide them"""
     for e in entries:
-        if e.header.get('public').lower() in ('true', 'yes'):
+        if e.header.get('public', 'yes').lower() in ('true', 'yes'):
             yield e
 
 
