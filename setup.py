@@ -282,7 +282,7 @@ class ManPageCreator(object):
         return '.SH NAME\n%s \\- %s\n' % (distribution.get_name(),
                                           distribution.get_description())
 setup(name='blogit',
-      version='0.2',
+      version='0.3',
       description=('A quick and simple static site generator based on markdown'
                    'and jinja2'),
       license="GNU GPL",

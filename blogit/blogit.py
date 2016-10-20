@@ -39,7 +39,7 @@ from tinydb import Query
 try:
     __version__ = get_distribution('blogit').version
 except DistributionNotFound:  # pragma: no cover
-    __version__ = '0.2'
+    __version__ = '0.3'
 
 
 class Markdown(md2.Markdown):
