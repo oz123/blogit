@@ -155,15 +155,7 @@ class Tag(object):
         _slug = re.sub(r'[;:,. ]+', '-', _slug.lstrip(',.;:-'))
         return _slug.lstrip('-')
 
-    @property
-    def posts(self):
-        """return a listpost ids tagged with Tag"""
-        Tags = Query()
-        tag = self.table.get(Tags.name == self.name)
-        return tag['post_ids']
-
-    @posts.setter
-    def posts(self, post_ids):
+    def set_posts(self, post_ids):
         if not isinstance(post_ids, list):
             raise ValueError("post_ids must be of type list")
         Tags = Query()
@@ -174,11 +166,16 @@ class Tag(object):
         tag['post_ids'].extend(list(new))
         self.table.update({'post_ids': tag['post_ids']}, eids=[tag.eid])
 
+    posts = property(fget=None, fset=set_posts)
+
     @property
     def entries(self):
         """return the actual lists of entries tagged with"""
+        Tags = Query()
+        tag = self.table.get(Tags.name == self.name)
+        posts = tag['post_ids']
 
-        for id in self.posts:
+        for id in posts:
             post = self.db.posts.get(eid=id)
             if not post:  # pragma: no coverage
                 raise ValueError("No post found for eid %s" % id)
