@@ -542,6 +542,9 @@ def new_post(GITDIRECTORY=CONFIG['output_to'], kind=KINDS['writing']):  # pragma
                          datetime.datetime.strftime(datetime.datetime.now(),
                                                     '%Y'),
                          date + '-' + title.replace(' ', '-') + '.markdown')
+    # first post every year need to create a new directory
+    if not os.path.exists(os.path.dirname(fname)):
+        os.makedirs(os.path.dirname(fname))
 
     with open(fname, 'w') as npost:
         npost.write('---\n')
