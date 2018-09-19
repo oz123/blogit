@@ -31,9 +31,8 @@ import http.server
 import subprocess as sp
 import socketserver
 
-
 from jinja2 import Environment, FileSystemLoader, Markup
-import markdown2 as md2
+from markdown2 import Markdown
 import tinydb
 from tinydb import Query
 
@@ -41,36 +40,6 @@ try:
     __version__ = get_distribution('blogit').version
 except DistributionNotFound:  # pragma: no cover
     __version__ = '0.3'
-
-
-class Markdown(md2.Markdown):
-    _metadata_pat = re.compile("^---\W(?P<metadata>[\S+:\S+\s]+\n)---\n")
-    _key_val_pat = re.compile("^\w+:(?! >)\s*(?:[ \t].*\n?)+", re.MULTILINE)
-    # this allows key: >
-    #                   value
-    #                   conutiues over multiple lines
-    _key_val_block_pat = re.compile(
-        "(\w+:\s+>\n\s+[\S\s]+?)(?=\n\w+\s*:\s*\w+\n|\Z)")
-
-    def _extract_metadata(self, text):
-        # fast test
-        if not text.startswith("---"):
-            return text
-        match = self._metadata_pat.match(text)
-        if not match:
-            return text
-        tail = text[len(match.group(0)):]
-        metadata_str = match.groupdict()['metadata']
-
-        kv = re.findall(self._key_val_pat, metadata_str)
-        kvm = re.findall(self._key_val_block_pat, metadata_str)
-        kvm = [item.replace(": >\n", ":", 1) for item in kvm]
-
-        for item in kv + kvm:
-            k, v = item.split(":", 1)
-            self.metadata[k.strip()] = v.strip()
-
-        return tail
 
 
 def markdown(text, html4tags=False, tab_width=4,
