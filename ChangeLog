@@ -1,0 +1,312 @@
+CHANGES
+=======
+
+* Bump TinyDB requirement to 3.6.0 because of newer API usage
+* Bump Markdown2 version requirement
+* Markdown2 can already parse headers, remove custom code for it
+* Add about.html into gitignore
+* Add GPLv3 text and rename LICENSE to NOTICE.txt
+* Update gitignore file
+* compat: Update eid to post\_id for newer TinyDB
+* Fix a once year bug
+
+v0.3
+----
+
+* Bump version
+* Simplify code - remove un-needed method
+* Simplify the code a bit
+* Enable multiple lines in value of metadata
+* remove duplicate import of markdown
+* Remove obsolete if check
+* Remove some more duplicate code
+* pep8ify
+* Don't check database twice
+* Allow dict style access to database tables
+* Allow markdown in post summary
+* Remove redundant check
+* hide none public entries
+* Fix bug
+* Make all tags lower case
+* Integrate pytest in setup.py
+* pep8ify, add option to show version
+* Update Makefile
+* Drop function \_sort\_entries
+* Update readme.md
+* multiple pep8 fixes
+* Fix installer
+
+v0.2
+----
+
+*  Bump version
+* Update documentation
+*  ignore block that happens only once
+*  update times of page and post
+*  read mtime from database
+*  successfuly add mtime to each record
+
+v0.1.1
+------
+
+* Bump version
+* update missing description
+
+v0.1
+----
+
+* Update readme and fix spelling
+* Add coveralls badge
+* update travis config
+* add sorted function
+* deterministic ordering, to fix tests?
+* fix travis builds
+* remove break point
+* fix tests on plain fs
+* fix missing pip command
+* add travis status
+* rename travis config
+* add travis config
+* update README
+* update external links
+* update documentation
+* add quick start skeleton
+* add quickstart data files
+* add quick start option
+* Expand the documentation
+* update README
+* add docs - skeleton
+* add setup.cfg - simplify man page building
+* update setup, add man page builder
+* add logging instead of printing and make get\_parser
+* some more clean-up before release
+* update metadata
+* all tests passed with python3
+* update test requirements
+* port to python3
+* update gitignore
+* fix templates
+* fix output path of pages
+* improve templates and clean up
+* fix css to match old theme
+* fix publication date, always return an object
+* fix navbar font
+* fix links in tag index
+* add includes
+* add content block
+* remove posts descriptions
+* add commas to tags
+* white space
+* port more elements from jasper
+* start porting jasper
+* remove deubg break point
+* update pages format
+* fix includes for discuss
+* document a bug
+* remove unused server class
+* more generic example
+* add all media files
+* add templates to example blog
+* add coverage to gitignore
+* add some example posts
+* remove obsolete key from config
+* update requirements
+* properly get last entries
+* remove converter - a one time hack
+* small refactor
+* improve testing
+* make index size configurable
+* sort last entries
+* avoid expensive database searches
+* fix rendering of archive
+* fix tests which where broken
+* remove conditional for obsolete option
+* remove obsolete option
+* ah, tags are now tested too
+* fix another bug in slugify
+* fix typo
+* fix slug method
+* strip down config to plain dictionaries
+* 100% test and the blog out puts look fine
+* update test\_requirements
+* remove obsolete tests
+* fix more bugs and add testing to 100%
+* add testing for archive rendering
+* better logic and better sorting
+* add tests for \_get\_last\_entries
+* white space
+* fix how entries are sorted
+* fix bugs with creation of tags and posts, add tests
+* fix more bugs, add more testings
+* add more testing
+* remove global DB
+* this should work as generator too
+* add more testing for Tag
+* add more tests
+* fix bug in slug method
+* add more testing
+* add more testing
+* no need to define DB here
+* Database is now a class property,
+* fix missing comma
+* add some more testing
+* remove file
+* add more tests to test\_all
+* code style, remove redundancies
+* Use list comperhansion instead of for loop
+* update setup.py
+* start working on better testings
+* update dependencies
+* exit with status 1 on error
+* fix how new post is created
+* remove unused Entry properties
+* no need to parse the date,
+* bug fixes: print statements are now functions
+* misc stuff related to refactoring
+* huge refactor - to more functional style
+* remove method perpare
+* remove useless comment, and re-organize imports
+* add converter from YAML format to markdown2 metadata format
+* Simplify how header is read
+* add some more principles for design
+* this is now a template instead of a page
+* properly ident and close divs
+* fixes in templates
+* fix identation
+* add some documentation to Entry
+* pages can now specify in the template in the header
+* improve the looks of the entry index
+* remove double declaration
+* re-introduce the date
+* fix silly archive template
+* fix this darn css highlight
+* fix links and remove duplicate code
+* render pages to the correct location
+* clean imports specify requirements in the installer
+* refactor - use new function to detect new content
+* properly detect pages, vs posts
+* add tests and fixture
+* revert accidental change
+* rename find\_new\_posts to find\_new\_items
+* :x
+* all social buttons finished
+* working linkedin button
+* working share on g+ button
+* test long lines
+* twitter button now works
+* add missing font awesome to base template
+* Add missing colon
+* remove unnecessary top margin
+* add font aewsome, needed for social buttons
+* added missing class prefix
+* Better rendering of Jinja2 templates (white space)
+* merge changes from dummy site
+* revert to working version of codehighlight
+* fix broken mobile menu
+* fix prefix for static pages
+* update pygments css
+* base archive on base template
+* add emply file for users to override
+* add more tests
+* fuck yeah! solarized dark!
+* add some more meat to the tests
+* update how disquss comments are included
+* update local css file
+* update templates to use bootsrap
+* rename blogit2.py to blogit.py
+* fix bugs
+* white space
+* render archive properly
+* fix tests to package structure
+* fix typo
+* properly create package
+* move file
+* Documentation
+* fix long standing bug
+* Fixes for testing
+* Add Makefile
+* fix tests
+* remove old build method
+* Remove unused functions, add methods functionality
+* add a small task
+* propely render index page
+* fix tag updating
+* remove unused functions
+* remove hard coded site url from entry
+* clean tag template
+* add setup.py
+* atom feeds render properly
+* server static pages with a lighter way
+* move the test to own directory
+* remove hard coded site url
+* fix tests of blogit2
+* Tag page renders fine
+* continue working on Tag class
+* continue working on Tag object
+* slowly but surely going N-to-M with posts and tags
+* handle tags better
+* Extend tags class
+* changes to comply with new version
+* start working on 2nd iteration of blogit.py
+* Tiny fixes
+* Fix funny bug
+* replace tables type supported
+* add support for tables
+* Reduce complexity of the method prepare
+* Insert current working directory to path,
+* Add non-blocking simple HTTPServer for preview
+* ignore pyc files
+* Add publish method
+* Remove more conf options from main script
+* fix typo
+* Reap configuration from main script
+* Prepare to migrate to python-markdown
+* Better debug message
+* Add some comments on next tasks
+* fix creation of new post
+* Remove new line in summary
+* update license
+* Improve creation of new post
+* Improve imports
+* update requirements
+* use syntax highlight from fenced-code-blocks
+* add css files
+* Add gitignore
+* Add jquery and highlight.js
+* Start working on option to create a new post
+* Extract discuss from blogit.py
+* Some HTML Lint work
+* Remove the sidebar HTML code from the renderer
+* fix tags link
+* add link to pdf
+* explain how the archive size works
+* only try to process .md or .markdown files, so .swp files from vim are ignored
+* pep8 lintian work
+* fix typo
+* add option to sync raw files
+* 	new file:   requirements.txt
+* Update templates/about.html
+* Create explorer.html
+* Update templates/base.html
+* update about page
+* restore credit to mir nazim
+* update the template to include disquss
+* update address to blogit.py
+* add disquss
+* com
+* lines should be joined with "" not with " "
+* fix joining of lines
+* update site\_url and base\_url
+* remove site url replace with keyword
+* remove url and replace with keyword
+* improve self documentation of the template
+* remove hard reference to the site\_url
+* add adsense tower
+* add google analytics
+* - solve the problem with ugly looking codes (' '.join(..) instead of '\n'.join(...)) - some more clean up
+* add function to clean
+* add readme
+* Initial commit
+*    - document the quirks of the header    - replace 'file' with 'fileName'    - Catch error, and notify user which file name is causing the error ..
+* add all templates
+* add blogit.py
