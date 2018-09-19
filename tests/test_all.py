@@ -140,7 +140,7 @@ def test_find_new_posts_and_pages():
 def test_tags():
     entries = [
         Entry.entry_from_db(os.path.join(CONFIG['content_root'],
-                                         e.get('filename')), e.eid)
+                                         e.get('filename')), e.doc_id)
         for e in DB.posts.all()]
     tags = DB.tags.all()  # noqa
 
@@ -232,7 +232,7 @@ summary: This is a summary
 
 
 def test_tag_render():
-    p = DB.posts.get(eid=1)
+    p = DB.posts.get(doc_id=1)
     entry = Entry.entry_from_db(
         os.path.join(CONFIG['content_root'], p.get('filename')), 1)
 
@@ -256,7 +256,7 @@ def test_get_last_entries():
 def test_render_archive():
 
     entries = [Entry.entry_from_db(
-        os.path.join(CONFIG['content_root'], e.get('filename')), e.eid) for e in
+        os.path.join(CONFIG['content_root'], e.get('filename')), e.doc_id) for e in
         DB.posts.all()]
 
     render_archive(entries[ARCHIVE_SIZE:])
