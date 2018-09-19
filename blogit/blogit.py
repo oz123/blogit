@@ -14,6 +14,7 @@
 # ============================================================================
 # Copyright (C) 2013-2016 Oz Nahum Tiram <nahumoz@gmail.com>
 # ============================================================================
+
 import os
 import re
 import datetime
@@ -30,9 +31,8 @@ import http.server
 import subprocess as sp
 import socketserver
 
-
 from jinja2 import Environment, FileSystemLoader, Markup
-import markdown2 as md2
+from markdown2 import Markdown
 import tinydb
 from tinydb import Query
 
@@ -40,36 +40,6 @@ try:
     __version__ = get_distribution('blogit').version
 except DistributionNotFound:  # pragma: no cover
     __version__ = '0.3'
-
-
-class Markdown(md2.Markdown):
-    _metadata_pat = re.compile("^---\W(?P<metadata>[\S+:\S+\s]+\n)---\n")
-    _key_val_pat = re.compile("^\w+:(?! >)\s*(?:[ \t].*\n?)+", re.MULTILINE)
-    # this allows key: >
-    #                   value
-    #                   conutiues over multiple lines
-    _key_val_block_pat = re.compile(
-        "(\w+:\s+>\n\s+[\S\s]+?)(?=\n\w+\s*:\s*\w+\n|\Z)")
-
-    def _extract_metadata(self, text):
-        # fast test
-        if not text.startswith("---"):
-            return text
-        match = self._metadata_pat.match(text)
-        if not match:
-            return text
-        tail = text[len(match.group(0)):]
-        metadata_str = match.groupdict()['metadata']
-
-        kv = re.findall(self._key_val_pat, metadata_str)
-        kvm = re.findall(self._key_val_block_pat, metadata_str)
-        kvm = [item.replace(": >\n", ":", 1) for item in kvm]
-
-        for item in kv + kvm:
-            k, v = item.split(":", 1)
-            self.metadata[k.strip()] = v.strip()
-
-        return tail
 
 
 def markdown(text, html4tags=False, tab_width=4,
@@ -164,7 +134,7 @@ class Tag(object):
         new = set(post_ids) - set(tag['post_ids'])
 
         tag['post_ids'].extend(list(new))
-        self.table.update({'post_ids': tag['post_ids']}, eids=[tag.eid])
+        self.table.update({'post_ids': tag['post_ids']}, doc_ids=[tag.doc_id])
 
     posts = property(fget=None, fset=set_posts)
 
@@ -176,9 +146,9 @@ class Tag(object):
         posts = tag['post_ids']
 
         for id in posts:
-            post = self.db.posts.get(eid=id)
+            post = self.db.posts.get(doc_id=id)
             if not post:  # pragma: no coverage
-                raise ValueError("No post found for eid %s" % id)
+                raise ValueError("No post found for doc_id %s" % id)
             yield Entry(os.path.join(CONFIG['content_root'], post['filename']), id)  # noqa
 
     def render(self):
@@ -247,14 +217,14 @@ class Entry(object):
     db = DB
 
     @classmethod
-    def entry_from_db(kls, filename, eid=None):
+    def entry_from_db(kls, filename, doc_id=None):
         f = os.path.join(filename)
-        return kls(f, eid)
+        return kls(f, doc_id)
 
-    def __init__(self, path, eid=None):
+    def __init__(self, path, doc_id=None):
         self._path = path
         self.path = path.split(CONFIG['content_root'])[-1].lstrip('/')
-        self.id = eid  # this is set inside prepare()
+        self.id = doc_id  # this is set inside prepare()
         try:
             self.prepare()
         except KeyError:  # pragma: no coverage
@@ -401,8 +371,8 @@ def find_new_posts_and_pages(db):
                 if item:
                     if new_mtime > item['mtime']:
                         db[collection].update({'mtime': new_mtime},
-                                              eids=[item.eid])
-                        e = Entry(fullpath, eid=item.eid)
+                                              doc_ids=[item.doc_id])
+                        e = Entry(fullpath, doc_id=item.doc_id)
                     break
 
             if not item:
@@ -413,13 +383,13 @@ def find_new_posts_and_pages(db):
 
 def _get_last_entries(db, qty):
     """get all entries and the last qty entries"""
-    eids = [post.eid for post in db.posts.all()]
-    eids = sorted(eids, reverse=True)
-    # bug: here we shoud only render eids[:qty]
+    doc_ids = [post.doc_id for post in db.posts.all()]
+    doc_ids = sorted(doc_ids, reverse=True)
+    # bug: here we shoud only render doc_ids[:qty]
     # but we can't use mtimes for sorting. We'll need to add ptime for the
     # database (publish time)
     entries = [Entry(os.path.join(CONFIG['content_root'],
-                     db.posts.get(eid=eid)['filename']), eid) for eid in eids]
+                     db.posts.get(doc_id=doc_id)['filename']), doc_id) for doc_id in doc_ids]
     # return _sort_entries(entries)[:qty]
     entries.sort(key=operator.attrgetter('date'), reverse=True)
     return entries[:qty], entries
@@ -428,7 +398,7 @@ def _get_last_entries(db, qty):
 def update_index(entries):
     """find the last 10 entries in the database and create the main
     page.
-    Each entry in has an eid, so we only get the last 10 eids.
+    Each entry in has an doc_id, so we only get the last 10 doc_ids.
 
     This method also updates the ATOM feed.
     """
@@ -486,7 +456,7 @@ def build(config):
 
     entries = [Entry.entry_from_db(
                os.path.join(CONFIG['content_root'],
-                            e.get('filename')), e.eid) for e in
+                            e.get('filename')), e.doc_id) for e in
                DB.posts.all()]
     all_entries = list(_filter_none_public(all_entries))
     all_entries.sort(key=operator.attrgetter('date'), reverse=True)
