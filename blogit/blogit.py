@@ -389,7 +389,8 @@ def _get_last_entries(db, qty):
     # but we can't use mtimes for sorting. We'll need to add ptime for the
     # database (publish time)
     entries = [Entry(os.path.join(CONFIG['content_root'],
-                     db.posts.get(doc_id=doc_id)['filename']), doc_id) for doc_id in doc_ids]
+                     db.posts.get(doc_id=doc_id)['filename']), doc_id)
+               for doc_id in doc_ids]
     # return _sort_entries(entries)[:qty]
     entries.sort(key=operator.attrgetter('date'), reverse=True)
     return entries[:qty], entries
@@ -482,6 +483,7 @@ def preview():  # pragma: no coverage
 def quick_start():  # pragma: no coverage
     path = resource_filename(Requirement.parse("blogit"), 'blogit/blogit-mir')
     copy_tree(path, '.')
+    print("edit conf.py, create some pages and posts and run blogit --preview")
 
 
 def publish(GITDIRECTORY=CONFIG['output_to']):  # pragma: no coverage
