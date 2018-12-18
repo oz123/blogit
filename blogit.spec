@@ -38,7 +38,8 @@ def Entrypoint(dist, group, name, **kwargs):
         **kwargs
     )
 
-a = Entrypoint('blogit', 'console_scripts', 'blogit')
+a = Entrypoint('blogit', 'console_scripts', 'blogit',
+               datas=[('blogit/blogit-mir/*', 'blogit-mir')])
 
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)

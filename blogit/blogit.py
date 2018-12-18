@@ -481,8 +481,11 @@ def preview():  # pragma: no coverage
 
 
 def quick_start():  # pragma: no coverage
-    # TODO: handle this exception, won't work in pyinstaller
-    path = resource_filename(Requirement.parse("blogit"), 'blogit/blogit-mir')
+    if getattr(sys, 'frozen', False):
+        path = os.path.join(sys._MEIPASS, 'blogit-mir')
+    else:
+        path = resource_filename(Requirement.parse("blogit"),
+                                 'blogit/blogit-mir')
     copy_tree(path, '.')
     print("edit conf.py, create some pages and posts and run blogit --preview")
 
