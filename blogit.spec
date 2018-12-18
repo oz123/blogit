@@ -55,3 +55,13 @@ exe = EXE(pyz,
           upx=True,
           runtime_tmpdir=None,
           console=True )
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    name='blogit-dir',
+    strip=False,
+    upx=True
+)
