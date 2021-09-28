@@ -1,3 +1,6 @@
+# NOTE: The development of this software project continues in gitlab: 
+https://gitlab.com/oz123/blogit
+
 blogit
 ======
 
